@@ -6,12 +6,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Free Online Markdown Editor - Live Preview, Syntax Highlighting | MarkdownMaster</title>
-  <meta name="description" content="Free online Markdown editor with real-time live preview and syntax highlighting. Write Markdown instantly — no sign-up, no install. Supports GFM, code blocks, tables, and export." />
+  <title>Free Online Markdown Editor & HTML Converter - Live Preview | MarkdownMaster</title>
+  <meta name="description" content="Free online Markdown editor with real-time live preview and HTML export. Write, preview, and convert Markdown to HTML instantly — no sign-up, no install. Supports GFM, code blocks, tables, and download." />
   <meta name="robots" content="index, follow" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Free Online Markdown Editor - Live Preview, Syntax Highlighting | MarkdownMaster" />
-  <meta property="og:description" content="Free online Markdown editor with real-time live preview and syntax highlighting. Write Markdown instantly — no sign-up, no install. Supports GFM, code blocks, tables, and export." />
+  <meta property="og:title" content="Free Online Markdown Editor & HTML Converter - Live Preview | MarkdownMaster" />
+  <meta property="og:description" content="Free online Markdown editor with real-time live preview and HTML export. Write, preview, and convert Markdown to HTML instantly — no sign-up, no install. Supports GFM, code blocks, tables, and download." />
   <meta property="og:image" content="https://markdownmaster.site/og-image.svg" />
   <meta property="og:url" content="https://markdownmaster.site/editor/" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -128,6 +128,7 @@
   </div><div class="tb-sep"></div>
   <div class="tb-group">
     <button class="tb-btn" onclick="cp()" title="Copy Markdown">&larr; Copy</button>
+    <button class="tb-btn" onclick="xh()" title="Export as HTML" style="color:#a78bfa">⇓ HTML</button>
     <button class="tb-btn" onclick="cl()" title="Clear all content" style="color:#f87171">Clear</button>
   </div>
   <div class="tb-title"><span class="tb-dot"></span> Live Preview</div>
@@ -192,6 +193,30 @@
       var b = event && event.target || document.querySelector('.tb-btn[onclick*="cp()"]');
       if (b) { var t = b.textContent; b.textContent = 'Copied!'; setTimeout(function(){ b.textContent = t; }, 1200); }
     }).catch(function(){});
+  };
+  window.xh = function() {
+    var v = input.value.trim();
+    if (!v) { alert('Nothing to export — write some Markdown first.'); return; }
+    var html = '<!DOCTYPE html>\n<html lang="en">\n<head>\n' +
+      '<meta charset="UTF-8">\n' +
+      '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+      '<title>Exported from MarkdownMaster</title>\n' +
+      '<style>body{max-width:720px;margin:2rem auto;padding:0 1rem;font-family:system-ui,sans-serif;line-height:1.7;color:#1e293b}</style>\n' +
+      '</head>\n<body>\n' +
+      preview.innerHTML +
+      '\n<hr><p><em>Exported from <a href="https://markdownmaster.site/editor/">MarkdownMaster</a></em></p>\n' +
+      '</body>\n</html>';
+    var b = new Blob([html], { type:'text/html;charset=utf-8' });
+    var u = URL.createObjectURL(b);
+    var a = document.createElement('a');
+    a.href = u;
+    a.download = 'markdown-export.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(u);
+    var btn = document.querySelector('.tb-btn[onclick*="xh()"]');
+    if (btn) { var t=btn.textContent; btn.textContent='Done!'; setTimeout(function(){btn.textContent=t;},1200); }
   };
   window.cl = function() {
     if (!input.value.trim()) return;
