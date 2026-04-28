@@ -1,0 +1,314 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const jsonld = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "The Complete Markdown Syntax Guide: Every Rule, Extension, and Feature Explained with Examples",
+  "description": "The most comprehensive Markdown syntax guide on the web. Covers all standard syntax, GFM extensions, tables, fenced code blocks, task lists, emoji, math, diagrams, and best practices with hundreds of examples.",
+  "author": { "@type": "Organization", "name": "MarkdownMaster" },
+  "publisher": { "@type": "Organization", "name": "MarkdownMaster", "url": "https://markdownmaster.site" },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://markdownmaster.site/blog/markdown-syntax-complete-guide/" },
+  "datePublished": "2026-04-28",
+  "dateModified": "2026-04-28"
+};
+
+const pyExample = '```python\ndef hello(name):\n    print("Hello, " + name + "!")\n```';
+
+const mermaidExample = '```mermaid\ngraph TD\n    A --> B\n    B --> C\n    C --> D\n```';
+---
+
+<BlogLayout
+  title="The Complete Markdown Syntax Guide: Every Rule, Extension, and Feature Explained with Examples"
+  description="The most comprehensive Markdown syntax reference on the web. Covers headings, bold, italic, lists, tables, code blocks, links, images, footnotes, task lists, emoji, math, Mermaid diagrams, and all GFM extensions with clear examples."
+  canonical="https://markdownmaster.site/blog/markdown-syntax-complete-guide/"
+  publishedDate="2026-04-28"
+  category="Markdown Tutorial"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonld)}></script>
+
+  <div class="toc">
+    <p>Table of Contents</p>
+    <a href="#intro">What is Markdown?</a>
+    <a href="#basics">1. Basic Syntax (Core Markdown)</a>
+    <a href="#headings" class="l2">1.1 Headings</a>
+    <a href="#paragraphs" class="l2">1.2 Paragraphs and Line Breaks</a>
+    <a href="#emphasis" class="l2">1.3 Emphasis (Bold and Italic)</a>
+    <a href="#blockquotes" class="l2">1.4 Blockquotes</a>
+    <a href="#lists" class="l2">1.5 Lists (Ordered and Unordered)</a>
+    <a href="#code" class="l2">1.6 Code (Inline and Blocks)</a>
+    <a href="#dividers" class="l2">1.7 Horizontal Rules</a>
+    <a href="#links" class="l2">1.8 Links</a>
+    <a href="#images" class="l2">1.9 Images</a>
+    <a href="#escape" class="l2">1.10 Escaping Characters</a>
+    <a href="#gfm">2. GitHub Flavored Markdown (GFM)</a>
+    <a href="#tables" class="l2">2.1 Tables</a>
+    <a href="#fenced" class="l2">2.2 Fenced Code Blocks with Syntax Highlighting</a>
+    <a href="#tasklists" class="l2">2.3 Task Lists (Checkboxes)</a>
+    <a href="#strikethrough" class="l2">2.4 Strikethrough</a>
+    <a href="#autolinks" class="l2">2.5 Autolinks</a>
+    <a href="#disallowed" class="l2">2.6 Disallowed Raw HTML</a>
+    <a href="#extensions">3. Extended Syntax (Common Extensions)</a>
+    <a href="#tables-ext" class="l2">3.1 Tables (Advanced)</a>
+    <a href="#footnotes" class="l2">3.2 Footnotes</a>
+    <a href="#heading-ids" class="l2">3.3 Heading IDs</a>
+    <a href="#definitions" class="l2">3.4 Definition Lists</a>
+    <a href="#highlight" class="l2">3.5 Highlight and Subscript/Superscript</a>
+    <a href="#emoji" class="l2">3.6 Emoji</a>
+    <a href="#math" class="l2">3.7 Mathematical Expressions (LaTeX)</a>
+    <a href="#diagrams" class="l2">3.8 Diagrams (Mermaid)</a>
+    <a href="#best-practices">4. Best Practices</a>
+    <a href="#example">5. Complete Example Document</a>
+    <a href="#cheatsheet">6. Quick Reference Cheat Sheet</a>
+  </div>
+
+    <h2 id="intro">What is Markdown?</h2>
+  <p>Markdown is a lightweight markup language.</p>
+  <h2 id="basics">1. Basic Syntax (Core Markdown)</h2>
+
+  <p>These are the elements defined in John Gruber's original Markdown specification. They work everywhere Markdown is supported.</p>
+
+  <h3 id="headings">1.1 Headings</h3>
+
+  <p>Markdown supports six levels of headings, corresponding to HTML <code>&lt;h1&gt;</code> through <code>&lt;h6&gt;</code>:</p>
+
+  <table>
+    <thead><tr><th>Markdown</th><th>Rendered As</th></tr></thead>
+    <tbody>
+      <tr><td><code># Heading 1</code></td><td><strong>&lt;h1&gt;</strong> - Page title</td></tr>
+      <tr><td><code>## Heading 2</code></td><td><strong>&lt;h2&gt;</strong> - Major section</td></tr>
+      <tr><td><code>### Heading 3</code></td><td><strong>&lt;h3&gt;</strong> - Subsection</td></tr>
+      <tr><td><code>#### Heading 4</code></td><td><strong>&lt;h4&gt;</strong> - Sub-subsection</td></tr>
+      <tr><td><code>##### Heading 5</code></td><td><strong>&lt;h5&gt;</strong> - Minor section</td></tr>
+      <tr><td><code>###### Heading 6</code></td><td><strong>&lt;h6&gt;</strong> - Smallest heading</td></tr>
+    </tbody>
+  </table>
+
+  <p><strong>Rules:</strong></p>
+  <ul>
+    <li>Always put a <strong>space</strong> after the <code>#</code> signs</li>
+    <li>Use headings <strong>sequentially</strong> (do not jump from H2 to H5)</li>
+    <li>Use only <strong>one</strong> H1 per page (the title)</li>
+    <li>ATX-style (<code>#</code>) is preferred over Setext-style (<code>===</code> under text)</li>
+  </ul>
+
+  <p><strong>Alternative syntax (Setext):</strong></p>
+  <p>Underline heading text with <code>===</code> (H1) or <code>---</code> (H2).</p>
+
+  <h3 id="paragraphs">1.2 Paragraphs and Line Breaks</h3>
+
+  <p>Paragraphs are separated by a blank line. Line breaks require two trailing spaces or a backslash at the end of a line.</p>
+
+  <h3 id="emphasis">1.3 Emphasis (Bold and Italic)</h3>
+
+  <table>
+    <thead><tr><th>Style</th><th>Syntax</th><th>Example</th><th>Output</th></tr></thead>
+    <tbody>
+      <tr><td>Italic</td><td><code>*text*</code> or <code>_text_</code></td><td><code>*italic*</code></td><td><em>italic</em></td></tr>
+      <tr><td>Bold</td><td><code>**text**</code> or <code>__text__</code></td><td><code>**bold**</code></td><td><strong>bold</strong></td></tr>
+      <tr><td>Bold + Italic</td><td><code>***text***</code></td><td><code>***both***</code></td><td><strong><em>both</em></strong></td></tr>
+      <tr><td>Strikethrough</td><td><code>~~text~~</code></td><td><code>~~strike~~</code></td><td><del>strike</del></td></tr>
+    </tbody>
+  </table>
+
+  <p><strong>Pro tip:</strong> Use asterisks (<code>*</code>) rather than underscores (<code>_</code>) for better compatibility. Underscores in the middle of words (like <code>file_name</code>) will not trigger italic.</p>
+
+  <h3 id="blockquotes">1.4 Blockquotes</h3>
+
+  <p>Create blockquotes with the <code>&gt;</code> character. They can contain other Markdown elements as long as everything is preceded by <code>&gt;</code>.</p>
+
+  <h3 id="lists">1.5 Lists (Ordered and Unordered)</h3>
+
+  <p>Unordered lists use <code>*</code>, <code>-</code>, or <code>+</code> with indent for nesting. Ordered lists use numbers followed by a period. Use <code>1.</code> for every item and the renderer handles sequential numbering.</p>
+
+  <p><strong>Important rules:</strong></p>
+  <ul>
+    <li>Indent nested items by 2 or 4 spaces (be consistent)</li>
+    <li>Leave a blank line between list items for paragraphs inside list items</li>
+  </ul>
+
+  <h3 id="code">1.6 Code (Inline and Blocks)</h3>
+
+  <p><strong>Inline code</strong> uses single backticks: <code>`code`</code> renders as <code>code</code>.</p>
+
+  <p>Code blocks are traditionally created by indenting with 4 spaces. The modern approach uses fenced code blocks (see GFM section).</p>
+
+  <h3 id="dividers">1.7 Horizontal Rules</h3>
+
+  <p>Use three or more <code>*</code>, <code>-</code>, or <code>_</code> on a line. Include a blank line before and after to avoid being parsed as a Setext heading.</p>
+
+  <hr>
+
+  <h3 id="links">1.8 Links</h3>
+
+  <p><strong>Inline links:</strong> <code>[MarkdownMaster Editor](https://markdownmaster.site/editor/)</code> renders as <a href="https://markdownmaster.site/editor/">MarkdownMaster Editor</a>.</p>
+
+  <p><strong>With title attribute:</strong> <code>[MarkdownMaster](https://markdownmaster.site/ "Free Online Markdown Editor")</code></p>
+
+  <p><strong>Reference-style links</strong> define the URL once and reference it multiple times.</p>
+
+  <p><strong>URLs and email addresses:</strong> Enclose in angle brackets: <code>&lt;https://markdownmaster.site&gt;</code>.</p>
+
+  <h3 id="images">1.9 Images</h3>
+
+  <p>Follow the same pattern as links with a leading <code>!</code>: <code>![Alt text](https://example.com/image.png "Optional title")</code>. Always include descriptive alt text for accessibility and SEO.</p>
+
+  <h3 id="escape">1.10 Escaping Characters</h3>
+
+  <p>Use the backslash <code>\</code> to display literal Markdown characters: <code>\*</code>, <code>\#</code>, <code>\[</code>, <code>\(</code>, <code>\|</code>, and so on.</p>
+
+  <h2 id="gfm">2. GitHub Flavored Markdown (GFM)</h2>
+
+  <p>GFM extends standard Markdown with features specifically useful for code collaboration and technical documentation. It is the default on GitHub, GitLab, and many modern platforms.</p>
+
+  <h3 id="tables">2.1 Tables</h3>
+
+  <p>Tables use pipes (<code>|</code>) and dashes (<code>-</code>) to define columns and headers. Alignment is controlled with colons in the separator row: <code>:---</code> (left), <code>:---:</code> (center), <code>---:</code> (right).</p>
+
+  <h3 id="fenced">2.2 Fenced Code Blocks with Syntax Highlighting</h3>
+
+  <p>Use three backticks or tildes to create fenced code blocks. Add a language identifier for syntax highlighting.</p>
+
+  <h3 id="tasklists">2.3 Task Lists (Checkboxes)</h3>
+
+  <p>Create task lists with <code>- [ ]</code> (incomplete) and <code>- [x]</code> (complete). Task lists work in any list context.</p>
+
+  <h3 id="strikethrough">2.4 Strikethrough</h3>
+
+  <p>Wrap text with double tildes: <code>~~crossed out~~</code> renders as <del>crossed out</del>.</p>
+
+  <h3 id="autolinks">2.5 Autolinks</h3>
+
+  <p>GFM automatically turns URLs into clickable links: <code>https://markdownmaster.site</code> (no brackets needed).</p>
+
+  <h3 id="disallowed">2.6 Disallowed Raw HTML</h3>
+
+  <p>For security, GFM strips certain HTML tags. Safe tags like <code>&lt;a&gt;</code>, <code>&lt;img&gt;</code>, <code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code>, <code>&lt;code&gt;</code>, <code>&lt;pre&gt;</code>, <code>&lt;blockquote&gt;</code>, <code>&lt;table&gt;</code> are allowed. Unsafe tags like <code>&lt;script&gt;</code>, <code>&lt;iframe&gt;</code> are removed.</p>
+  <h2 id="extensions">3. Extended Syntax (Common Extensions)</h2>
+
+  <p>These features are not part of the original Markdown spec or GFM, but are supported by many popular Markdown processors and editors.</p>
+
+  <h3 id="tables-ext">3.1 Tables (Advanced)</h3>
+
+  <p>Multi-line tables and grid tables are supported in processors like Pandoc.</p>
+
+  <h3 id="footnotes">3.2 Footnotes</h3>
+
+  <p>Add footnotes with <code>[^label]</code> and define them at the bottom.</p>
+  <h3 id="heading-ids">3.3 Heading IDs</h3>
+
+  <p>Some processors let you add custom IDs to headings: <code>### My Heading &#123;#custom-id&#125;</code>. This allows deep linking to specific sections.</p>
+
+  <h3 id="definitions">3.4 Definition Lists</h3>
+
+  <p>Supported in Pandoc and Kramdown for glossary-style content where a term has one or more definitions.</p>
+  <h3 id="highlight">3.5 Highlight and Subscript/Superscript</h3>
+
+  <p>Some processors support <code>==highlighted text==</code> (<mark>highlighted</mark>), <code>X^2^</code> (X<sup>2</sup>), and <code>H~2~O</code> (H<sub>2</sub>O). Not universally supported.</p>
+
+  <h3 id="emoji">3.6 Emoji</h3>
+
+  <p>Most modern Markdown platforms support emoji shortcodes: <code>:smile:</code> becomes smiley, <code>:rocket:</code> becomes rocket, <code>:+1:</code> becomes thumbs up. GitHub and GitLab have excellent emoji support.</p>
+
+  <h3 id="math">3.7 Mathematical Expressions (LaTeX)</h3>
+
+  <p>Rendered by MathJax or KaTeX in supporting platforms. Use <code>$E = mc^2$</code> for inline math and <code>$$...$$</code> for display math.</p>
+
+  <h3 id="diagrams">3.8 Diagrams (Mermaid)</h3>
+
+  <p>GitHub, GitLab, and Notion support Mermaid diagram code blocks. Mermaid supports flowcharts, sequence diagrams, Gantt charts, class diagrams, and more.</p>
+  <h2 id="best-practices">4. Best Practices</h2>
+
+  <ol>
+    <li><strong>Use blank lines around block elements</strong> - headings, lists, code blocks, and blockquotes should be separated by blank lines.</li>
+    <li><strong>Prefer asterisks over underscores</strong> - <code>*italic*</code> and <code>**bold**</code> avoid issues with filenames.</li>
+    <li><strong>Use fenced code blocks</strong> - Always cite the language for syntax highlighting.</li>
+    <li><strong>Lazy numbering</strong> - Use <code>1.</code> for all ordered list items.</li>
+    <li><strong>Keep lines under 80-100 characters</strong> for readability in diff views.</li>
+    <li><strong>Alt text always</strong> - Every image needs meaningful alt text.</li>
+    <li><strong>One H1 per page</strong> - Use a single <code># Title</code> per document.</li>
+    <li><strong>Test with an editor</strong> - Use the <a href="https://markdownmaster.site/editor/">MarkdownMaster Editor</a> to preview before publishing.</li>
+  </ol>
+  <h2 id="example">5. Complete Example Document</h2>
+
+  <p>Here is a full Markdown document demonstrating syntax in context:</p>
+
+  <pre>
+# Project Documentation Guide
+
+## Getting Started
+
+This guide helps you set up and run the project.
+
+### Prerequisites
+
+- **Node.js** v18 or later
+- **npm** v9 or later
+- A code editor (VS Code recommended)
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies: <code>npm install</code>
+3. Start the server: <code>npm run dev</code>
+
+> <strong>Tip:</strong> Use <code>npm run build</code> for production.
+
+## API Reference
+
+| Header | Value | Required |
+|--------|-------|----------|
+| X-API-Key | Your secret key | Yes |
+| Content-Type | application/json | Yes |
+
+### POST /api/users
+
+Create a new user with name and email fields.
+
+## Configuration
+
+- ~~debug: true~~ (deprecated)
+- port: Server port (default: 3000)
+- features: Feature flags for markdown-editor and export-html
+
+## Contributing
+
+- [x] Read the contributing guide
+- [ ] Set up development environment
+- [ ] Write tests
+- [ ] Submit a pull request</pre>
+
+  <p><a href="https://markdownmaster.site/editor/">Open this in MarkdownMaster Editor</a> to see it rendered live.</p>
+  <h2 id="cheatsheet">6. Quick Reference Cheat Sheet</h2>
+
+  <table>
+    <thead><tr><th>Element</th><th>Syntax</th></tr></thead>
+    <tbody>
+      <tr><td>Heading (H1-H6)</td><td><code>#</code> to <code>######</code></td></tr>
+      <tr><td>Bold</td><td><code>**text**</code></td></tr>
+      <tr><td>Italic</td><td><code>*text*</code></td></tr>
+      <tr><td>Strikethrough</td><td><code>~~text~~</code></td></tr>
+      <tr><td>Highlight</td><td><code>==text==</code></td></tr>
+      <tr><td>Link</td><td><code>[text](url)</code></td></tr>
+      <tr><td>Image</td><td><code>![alt](url)</code></td></tr>
+      <tr><td>Inline Code</td><td><code>\`code\`</code></td></tr>
+      <tr><td>Code Block</td><td><code>\`\`\`lang ... \`\`\`</code></td></tr>
+      <tr><td>Blockquote</td><td><code>&gt; text</code></td></tr>
+      <tr><td>Unordered List</td><td><code>- item</code></td></tr>
+      <tr><td>Ordered List</td><td><code>1. item</code></td></tr>
+      <tr><td>Task List</td><td><code>- [x]</code></td></tr>
+      <tr><td>Table</td><td><code>| col | col |</code></td></tr>
+      <tr><td>Horizontal Rule</td><td><code>---</code></td></tr>
+      <tr><td>Footnote</td><td><code>[^1]</code></td></tr>
+      <tr><td>Emoji</td><td><code>:emoji:</code></td></tr>
+      <tr><td>Math (inline)</td><td><code>$formula$</code></td></tr>
+      <tr><td>Math (block)</td><td><code>$$formula$$</code></td></tr>
+      <tr><td>Diagram</td><td><code>\`\`\`mermaid</code></td></tr>
+      <tr><td>Escaping</td><td><code>\*</code> <code>\#</code> <code>\[</code></td></tr>
+    </tbody>
+  </table>
+  <hr>
+
+  <p><strong>Ready to practice?</strong> Open the <a href="https://markdownmaster.site/editor/">MarkdownMaster Editor</a> - a free online Markdown editor with live preview and HTML export.</p>
+
+  <p><em>Bookmark this page - it is the only Markdown syntax guide you will ever need.</em></p>
