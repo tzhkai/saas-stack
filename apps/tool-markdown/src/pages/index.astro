@@ -3,89 +3,339 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
-  title="Free Online Markdown Editor - Live Preview | MarkdownMaster"
-  description="Free online Markdown editor with real-time preview, syntax highlighting, and full GFM support. No sign-up required. Export to HTML, PDF and more."
+  title="Free Online Markdown Editor - Live Preview, No Sign-up | MarkdownMaster"
+  description="Free online Markdown editor with real-time live preview, GitHub Flavored Markdown, syntax highlighting, and code blocks. Zero sign-up. Write, preview, and export your content instantly."
   canonical="https://markdownmaster.site/"
 >
   <style>
+    /* ── Hero ── */
     .hero {
-      text-align: center; padding: 5rem 1.5rem;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      text-align:center; padding:5rem 1.5rem 4rem;
+      background: linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      position:relative; overflow:hidden;
+    }
+    .hero::before {
+      content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%;
+      background: radial-gradient(ellipse at 30% 50%, rgba(14,165,233,0.06) 0%, transparent 60%);
+      pointer-events:none;
     }
     .hero h1 {
-      font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 700;
-      margin-bottom: 1rem; letter-spacing: -0.02em;
+      font-size:clamp(2rem,5vw,3.5rem); font-weight:800;
+      letter-spacing:-0.03em; line-height:1.15; position:relative;
     }
-    .hero h1 span { color: var(--accent); }
+    .hero .gradient-text {
+      background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
     .hero p {
-      font-size: 1.1rem; color: var(--text-dim);
-      max-width: 600px; margin: 0 auto 2rem;
+      font-size:clamp(1rem,2vw,1.2rem); color:var(--text-dim);
+      max-width:640px; margin:1.25rem auto 2rem; line-height:1.7;
     }
-    .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .hero-actions { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
     .btn-primary {
-      display: inline-block; padding: 0.75rem 2rem;
-      background: var(--accent); color: #fff; text-decoration: none;
-      border-radius: 8px; font-weight: 600; transition: all 0.15s;
+      display:inline-flex; align-items:center; gap:0.4rem;
+      padding:0.85rem 2.25rem; background:var(--accent); color:#fff;
+      text-decoration:none; border-radius:10px; font-weight:600;
+      transition:all 0.15s; font-size:1rem;
     }
-    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .btn-primary:hover { background:var(--accent-hover); transform:translateY(-2px); box-shadow:0 8px 24px rgba(14,165,233,0.3); }
     .btn-secondary {
-      display: inline-block; padding: 0.75rem 2rem;
-      border: 1px solid var(--border); color: var(--text);
-      text-decoration: none; border-radius: 8px; font-weight: 600; transition: all 0.15s;
+      display:inline-flex; align-items:center; gap:0.4rem;
+      padding:0.85rem 2.25rem; border:1px solid var(--border); color:var(--text);
+      text-decoration:none; border-radius:10px; font-weight:500;
+      transition:all 0.15s; font-size:1rem;
     }
-    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
-    .features {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem; padding: 3rem 1.5rem; max-width: 1100px; margin: 0 auto;
+    .btn-secondary:hover { border-color:var(--accent); color:var(--accent); transform:translateY(-1px); }
+
+    /* ── Stats bar ── */
+    .stats {
+      display:flex; justify-content:center; gap:3rem; padding:2rem 1.5rem 3rem;
+      flex-wrap:wrap;
+    }
+    .stat { text-align:center; }
+    .stat-num { font-size:1.5rem; font-weight:700; color:var(--accent); }
+    .stat-label { font-size:0.8rem; color:var(--text-muted); margin-top:0.2rem; }
+
+    /* ── Features ── */
+    .features { max-width:1100px; margin:0 auto; padding:0 1.5rem 3rem; }
+    .features h2 {
+      text-align:center; font-size:1.75rem; font-weight:700;
+      margin-bottom:0.5rem;
+    }
+    .features .subtitle {
+      text-align:center; color:var(--text-dim); font-size:0.95rem;
+      margin-bottom:2.5rem;
+    }
+    .feature-grid {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+      gap:1rem;
     }
     .feature-card {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 12px; padding: 1.75rem; transition: all 0.15s;
+      background:var(--bg-card); border:1px solid var(--border);
+      border-radius:12px; padding:1.75rem;
+      transition:all 0.15s;
     }
-    .feature-card:hover { border-color: var(--accent); transform: translateY(-2px); }
-    .feature-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
-    .feature-card p { color: var(--text-dim); font-size: 0.9rem; line-height: 1.7; }
+    .feature-card:hover { border-color:var(--accent); transform:translateY(-2px); }
+    .feature-icon {
+      width:40px; height:40px; background:rgba(14,165,233,0.12);
+      border-radius:10px; display:flex; align-items:center; justify-content:center;
+      font-size:1.3rem; margin-bottom:1rem;
+    }
+    .feature-card h3 { font-size:1rem; font-weight:600; margin-bottom:0.4rem; }
+    .feature-card p { color:var(--text-dim); font-size:0.9rem; line-height:1.7; }
+
+    /* ── Demo preview ── */
+    .demo {
+      max-width:900px; margin:0 auto; padding:0 1.5rem 4rem;
+    }
+    .demo-box {
+      border:1px solid var(--border); border-radius:12px; overflow:hidden;
+      background:var(--bg-card);
+    }
+    .demo-tabs {
+      display:flex; border-bottom:1px solid var(--border); background:var(--bg);
+    }
+    .demo-tab {
+      padding:0.6rem 1.25rem; font-size:0.8rem; font-family:var(--font-mono);
+      color:var(--text-dim); border-bottom:2px solid transparent;
+    }
+    .demo-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+    .demo-body {
+      display:grid; grid-template-columns:1fr 1fr; min-height:200px;
+    }
+    .demo-left, .demo-right { padding:1rem; font-size:0.85rem; line-height:1.8; }
+    .demo-left {
+      border-right:1px solid var(--border);
+      font-family:var(--font-mono); color:#a5f3fc;
+      white-space:pre-wrap;
+    }
+    .demo-right { }
+    .demo-right h2 { font-size:1.2rem; color:#f1f5f9; margin-bottom:0.5rem; }
+    .demo-right p { color:#cbd5e1; margin-bottom:0.5rem; }
+    .demo-right code { background:var(--bg); padding:1px 5px; border-radius:3px; font-family:var(--font-mono); font-size:0.85em; color:#f8b4b4; }
+    .demo-right pre { background:var(--bg); padding:0.75rem; border-radius:6px; margin-top:0.5rem; overflow-x:auto; }
+    .demo-right pre code { background:none; padding:0; color:#a5f3fc; }
+    .demo-caption { text-align:center; padding:0.75rem; font-size:0.8rem; color:var(--text-muted); }
+
+    /* ── Use cases ── */
+    .usecases { max-width:900px; margin:0 auto; padding:0 1.5rem 4rem; }
+    .usecases h2 {
+      text-align:center; font-size:1.75rem; font-weight:700; margin-bottom:2rem;
+    }
+    .uc-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1rem; }
+    .uc-card {
+      background:var(--bg-card); border:1px solid var(--border);
+      border-radius:12px; padding:1.5rem; text-align:center;
+      transition:all 0.15s;
+    }
+    .uc-card:hover { border-color:var(--border); transform:translateY(-1px); }
+    .uc-card .emoji { font-size:2rem; margin-bottom:0.75rem; }
+    .uc-card h3 { font-size:1rem; font-weight:600; margin-bottom:0.3rem; }
+    .uc-card p { font-size:0.85rem; color:var(--text-dim); line-height:1.6; }
+
+    /* ── Affiliate ── */
+    .affiliate { max-width:700px; margin:0 auto; padding:0 1.5rem 4rem; }
+    .aff-box {
+      background:var(--bg-card); border:1px solid var(--border);
+      border-radius:12px; padding:1.5rem;
+    }
+    .aff-box h3 {
+      font-size:0.85rem; font-weight:600; color:var(--text-dim);
+      margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.05em;
+    }
+    .aff-item {
+      display:flex; align-items:center; gap:0.75rem;
+      padding:0.75rem; border-radius:8px;
+      text-decoration:none; color:var(--text);
+      transition:background 0.15s;
+    }
+    .aff-item:hover { background:rgba(51,65,85,0.5); }
+    .aff-icon {
+      width:40px; height:40px; background:var(--accent);
+      border-radius:10px; display:flex; align-items:center;
+      justify-content:center; font-size:1.2rem; flex-shrink:0;
+    }
+    .aff-icon.alt { background:var(--bg); }
+    .aff-info { flex:1; }
+    .aff-name { font-weight:600; color:var(--accent); }
+    .aff-desc { font-size:0.85rem; color:var(--text-dim); }
+    .aff-cta { color:var(--accent); font-size:0.85rem; font-weight:500; white-space:nowrap; }
+    .aff-divider { height:1px; background:var(--border); margin:0.5rem 0; }
   </style>
 
+  <!-- ═══ Hero ═══ -->
   <section class="hero">
-    <h1>Write Markdown <span>Beautifully</span></h1>
-    <p>A free online Markdown editor with real-time preview, syntax highlighting, and GFM support. No sign-up required.</p>
+    <h1>
+      Write Markdown.<br />
+      <span class="gradient-text">See It Instantly.</span>
+    </h1>
+    <p>
+      The fastest, cleanest online Markdown editor — real-time preview,
+      GitHub Flavored Markdown, syntax highlighting, and zero sign-up.
+      Just open and write.
+    </p>
     <div class="hero-actions">
-      <a href="/editor/" class="btn-primary">Open Editor &rarr;</a>
-      <a href="/docs/" class="btn-secondary">Documentation</a>
+      <a href="/editor/" class="btn-primary">
+        Open Editor &#8599;
+      </a>
+      <a href="/docs/" class="btn-secondary">
+        Learn Markdown &rarr;
+      </a>
     </div>
   </section>
 
+  <!-- ═══ Stats ═══ -->
+  <section class="stats">
+    <div class="stat">
+      <div class="stat-num">0&nbsp;min</div>
+      <div class="stat-label">Setup time</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Free &amp; open</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">No</div>
+      <div class="stat-label">Account required</div>
+    </div>
+  </section>
+
+  <!-- ═══ Features ═══ -->
   <section class="features">
-    <div class="feature-card">
-      <h3>&#x26A1; Live Preview</h3>
-      <p>Write Markdown on the left, see the rendered result on the right in real time. Full GitHub Flavored Markdown support.</p>
-    </div>
-    <div class="feature-card">
-      <h3>&#x1F4E4; Multi-Format Export</h3>
-      <p>Export your documents to HTML, PDF, and other formats with a single click. Clean output every time.</p>
-    </div>
-    <div class="feature-card">
-      <h3>&#x1F3A8; Syntax Highlighting</h3>
-      <p>Syntax highlighting for all major programming languages. Beautiful code blocks in your documents.</p>
+    <h2>Why Use MarkdownMaster?</h2>
+    <p class="subtitle">Built for writers, developers, and anyone who works with text.</p>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">&#x26A1;</div>
+        <h3>Real-Time Preview</h3>
+        <p>See your formatted content update instantly as you type. No refresh, no delay — just seamless editing.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F4DD;</div>
+        <h3>GitHub Flavored Markdown</h3>
+        <p>Full GFM support including tables, task lists, strikethrough, emoji, and auto-links. Import GitHub content seamlessly.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F4BB;</div>
+        <h3>Syntax Highlighting</h3>
+        <p>Code blocks with syntax highlighting for 100+ languages. Beautiful output for technical documentation.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F310;</div>
+        <h3>Works Everywhere</h3>
+        <p>Responsive design works on desktop, tablet, and phone. No app to install, no account to create.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F4A8;</div>
+        <h3>Fast &amp; Lightweight</h3>
+        <p>Zero dependencies at runtime. Pure client-side rendering means your content never leaves your browser.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F511;</div>
+        <h3>Privacy First</h3>
+        <p>Everything runs in your browser. No data storage, no tracking, no sign-up forms. Your writing stays yours.</p>
+      </div>
     </div>
   </section>
 
-  <!-- Affiliate section -->
-  <section style="max-width:700px;margin:0 auto;padding:2rem 1.5rem 4rem">
-    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.5rem">
-      <h3 style="font-size:1rem;margin-bottom:1rem;color:var(--text-dim)">&#x1F517; Recommended Tools</h3>
-      <a href="https://markdownmaster.site" target="_blank" rel="sponsored" style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;border-radius:8px;text-decoration:none;color:var(--text);transition:background 0.15s">
-        <div style="width:40px;height:40px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">&#x1F4DD;</div>
-        <div style="flex:1"><div style="font-weight:600;color:var(--accent)">MarkdownMaster</div><div style="font-size:0.85rem;color:var(--text-muted)">Write Markdown beautifully &mdash; free online editor</div></div>
-        <span style="color:var(--accent);font-size:0.85rem;font-weight:500;white-space:nowrap">Learn More &rarr;</span>
+  <!-- ═══ Demo ═══ -->
+  <section class="demo">
+    <div class="demo-box">
+      <div class="demo-tabs">
+        <span class="demo-tab active">editor</span>
+      </div>
+      <div class="demo-body">
+        <div class="demo-left"># Hello Markdown&#xAF;
+
+**Bold** and *italic* text.
+
+| Feature | Status |
+|---------|--------|
+| GFM    | &#x2713; |
+| Syntax | &#x2713; |
+
+```js
+const msg = "Hello!";
+```
+
+- [x] Task done
+- [ ] Todo</div>
+        <div class="demo-right">
+          <h2>Hello Markdown</h2>
+          <p><strong>Bold</strong> and <em>italic</em> text.</p>
+          <table>
+            <thead><tr><th>Feature</th><th>Status</th></tr></thead>
+            <tbody><tr><td>GFM</td><td>&#x2713;</td><tr><td>Syntax</td><td>&#x2713;</td></tr></tbody>
+          </table>
+          <pre><code>const msg = "Hello!";</code></pre>
+          <p><input type="checkbox" checked disabled /> Task done<br /><input type="checkbox" disabled /> Todo</p>
+        </div>
+      </div>
+      <div class="demo-caption">Type on the left, preview on the right. It&rsquo;s that simple.</div>
+    </div>
+  </section>
+
+  <!-- ═══ Use Cases ═══ -->
+  <section class="usecases">
+    <h2>Perfect For&hellip;</h2>
+    <div class="uc-grid">
+      <div class="uc-card">
+        <div class="emoji">&#x1F4D6;</div>
+        <h3>Blog Writers</h3>
+        <p>Draft and preview blog posts in real time. Export clean HTML for any CMS.</p>
+      </div>
+      <div class="uc-card">
+        <div class="emoji">&#x1F4C4;</div>
+        <h3>Technical Writers</h3>
+        <p>Document APIs, write READMEs, and format code samples with syntax highlighting.</p>
+      </div>
+      <div class="uc-card">
+        <div class="emoji">&#x1F469;&#x200D;&#x1F4BB;</div>
+        <h3>Developers</h3>
+        <p>Quickly format Markdown for GitHub issues, PRs, and project documentation.</p>
+      </div>
+      <div class="uc-card">
+        <div class="emoji">&#x1F393;</div>
+        <h3>Students</h3>
+        <p>Take notes, write assignments, and format research papers without distractions.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CTA ═══ -->
+  <section style="text-align:center;padding:0 1.5rem 4rem">
+    <h2 style="font-size:1.5rem;font-weight:700;margin-bottom:0.75rem">Ready to Write?</h2>
+    <p style="color:var(--text-dim);max-width:480px;margin:0 auto 1.5rem">
+      No sign-up, no downloads, no distractions. Just you and your content.
+    </p>
+    <a href="/editor/" class="btn-primary" style="font-size:1.05rem;padding:1rem 2.5rem">
+      Start Writing Now &#8599;
+    </a>
+  </section>
+
+  <!-- ═══ Affiliate ═══ -->
+  <section class="affiliate">
+    <div class="aff-box">
+      <h3>&#x1F517; Recommended Tools for Writers</h3>
+      <a class="aff-item" href="https://markdownmaster.site" target="_blank" rel="sponsored">
+        <div class="aff-icon">&#x1F4DD;</div>
+        <div class="aff-info">
+          <div class="aff-name">MarkdownMaster Editor</div>
+          <div class="aff-desc">Free online Markdown editor with live preview</div>
+        </div>
+        <span class="aff-cta">Learn More &rarr;</span>
       </a>
-      <div style="height:1px;background:var(--border);margin:0.5rem 0"></div>
-      <a href="https://markdownmaster.site/editor/" target="_blank" rel="sponsored" style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;border-radius:8px;text-decoration:none;color:var(--text);transition:background 0.15s">
-        <div style="width:40px;height:40px;background:var(--bg);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">&#x1F4DD;</div>
-        <div style="flex:1"><div style="font-weight:600;color:var(--accent)">Free Markdown Editor</div><div style="font-size:0.85rem;color:var(--text-muted)">Real-time preview &mdash; no signup needed</div></div>
-        <span style="color:var(--accent);font-size:0.85rem;font-weight:500;white-space:nowrap">Learn More &rarr;</span>
+      <div class="aff-divider"></div>
+      <a class="aff-item" href="/editor/" rel="sponsored">
+        <div class="aff-icon alt">&#x1F4DD;</div>
+        <div class="aff-info">
+          <div class="aff-name">Online Markdown Editor</div>
+          <div class="aff-desc">Write and preview instantly, no sign-up needed</div>
+        </div>
+        <span class="aff-cta">Try Now &rarr;</span>
       </a>
     </div>
   </section>
+
 </BaseLayout>
