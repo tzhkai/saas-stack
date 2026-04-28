@@ -1,5 +1,4 @@
----
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import rss from '@astrojs/rss';
 
 const posts = [
   {
@@ -83,50 +82,19 @@ const posts = [
     readTime: '7 min',
   },
 ];
----
 
-<BaseLayout
-  title="Blog - MarkdownMaster | Tutorials, Tips & Guides"
-  description="Learn Markdown with tutorials, tips, and guides. From beginner syntax to advanced formatting, master Markdown with MarkdownMaster."
-  canonical="https://markdownmaster.site/blog/"
->
-  <style>
-    .blog-page { max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem; }
-    .blog-page h1 { font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; }
-    .blog-page .subtitle { color: var(--text-dim); margin-bottom: 2.5rem; }
-    .blog-card {
-      display: block; text-decoration: none; color: inherit;
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem;
-      transition: all 0.15s;
-    }
-    .blog-card:hover { border-color: var(--accent); transform: translateY(-2px); }
-    .blog-card .meta {
-      font-size: 0.8rem; color: var(--text-muted);
-      display: flex; gap: 0.75rem; margin-bottom: 0.5rem;
-    }
-    .blog-card .category {
-      background: rgba(14,165,233,0.12); color: var(--accent);
-      padding: 1px 8px; border-radius: 3px;
-    }
-    .blog-card h2 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.4rem; }
-    .blog-card p { font-size: 0.9rem; color: var(--text-dim); line-height: 1.6; }
-  </style>
-
-  <div class="blog-page">
-    <h1>MarkdownMaster Blog</h1>
-    <p class="subtitle">Tutorials, tips, and guides to help you master Markdown.</p>
-
-    {posts.map(post => (
-      <a href={`/blog/${post.slug}/`} class="blog-card">
-        <div class="meta">
-          <time>{post.date}</time>
-          <span class="category">{post.category}</span>
-          <span>{post.readTime} read</span>
-        </div>
-        <h2>{post.title}</h2>
-        <p>{post.description}</p>
-      </a>
-    ))}
-  </div>
-</BaseLayout>
+export async function GET(context: any) {
+  return rss({
+    title: 'MarkdownMaster Blog',
+    description: 'Tutorials, tips, and guides to help you master Markdown.',
+    site: context.site,
+    items: posts.map(post => ({
+      title: post.title,
+      pubDate: new Date(post.date),
+      description: post.description,
+      link: `/blog/${post.slug}/`,
+      categories: [post.category],
+    })),
+    customData: '<language>en-us</language>',
+  });
+}

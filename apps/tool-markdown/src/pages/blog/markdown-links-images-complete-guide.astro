@@ -1,0 +1,194 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const codeInline = 'This is an [inline link](https://markdownmaster.site/editor/) to our editor.';
+const codeRef = 'Check out [MarkdownMaster][mm] for a free editor.\n\n[mm]: https://markdownmaster.site/editor/';
+const codeAuto = '<https://markdownmaster.site>\n<contact@markdownmaster.site>';
+const codeImage = '![MarkdownMaster Logo](/og-image.svg "MarkdownMaster - Free Online Editor")';
+const codeSize = '<img src="/og-image.svg" alt="Logo" width="200" height="60" />';
+const codeLinkImg = '[![MarkdownMaster](/og-image.svg)](https://markdownmaster.site/editor/)';
+const codeFootnote = 'Here is a statement.[^1]\n\n[^1]: This is the footnote content.';
+
+const jsonld = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Markdown Links & Images: The Complete Guide to Adding Links, Images, and References",
+  "description": "Master Markdown links and images with this complete guide. Learn inline links, reference-style links, auto-links, image syntax, image sizing, clickable images, and footnotes.",
+  "author": { "@type": "Organization", "name": "MarkdownMaster" },
+  "publisher": { "@type": "Organization", "name": "MarkdownMaster", "url": "https://markdownmaster.site" },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://markdownmaster.site/blog/markdown-links-images-complete-guide/" },
+  "datePublished": "2026-04-29",
+  "dateModified": "2026-04-29"
+};
+---
+
+<BlogLayout
+  title="Markdown Links & Images: The Complete Guide to Adding Links, Images, and References"
+  description="Master Markdown links and images with this complete guide. Learn inline links, reference-style links, auto-links, image syntax, image sizing, clickable images, and footnotes."
+  canonical="https://markdownmaster.site/blog/markdown-links-images-complete-guide/"
+  publishedDate="2026-04-29"
+  category="Markdown Tutorial"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonld)}></script>
+
+  <div class="toc">
+    <p>Table of Contents</p>
+    <a href="#links">Links in Markdown</a>
+    <a href="#inline" class="l2">Inline Links</a>
+    <a href="#reference" class="l2">Reference-Style Links</a>
+    <a href="#auto" class="l2">Auto-Links</a>
+    <a href="#images">Images in Markdown</a>
+    <a href="#basic-img" class="l2">Basic Image Syntax</a>
+    <a href="#sizing" class="l2">Image Sizing</a>
+    <a href="#clickable" class="l2">Clickable Images</a>
+    <a href="#advanced">Advanced Techniques</a>
+    <a href="#footnotes" class="l2">Footnotes</a>
+    <a href="#relative" class="l2">Relative Links</a>
+    <a href="#pitfalls">Common Pitfalls</a>
+    <a href="#faq">FAQ</a>
+  </div>
+
+  <p>Links and images are the building blocks that turn plain text into <strong>rich, navigable content</strong>. Without links, your document is an island. Without images, it is a wall of text. Together, they make Markdown documents interactive and visually engaging.</p>
+
+  <p>This guide covers <strong>every</strong> way to add links and images in Markdown — from the basics to advanced techniques like reference-style links, clickable images, and footnotes.</p>
+
+  <h2 id="links">Links in Markdown</h2>
+
+  <p>Markdown supports three types of links: <strong>inline</strong>, <strong>reference-style</strong>, and <strong>auto-links</strong>. Each has its use case.</p>
+
+  <h3 id="inline">Inline Links</h3>
+
+  <p>The most common link format. Wrap the link text in square brackets, then the URL in parentheses:</p>
+
+<pre><code set:html={codeInline}></code></pre>
+
+  <p>Rendered: This is an <a href="https://markdownmaster.site/editor/">inline link</a> to our editor.</p>
+
+  <p>You can also add a <strong>title</strong> (shown on hover) by adding a quoted string after the URL:</p>
+
+<pre><code>[MarkdownMaster](https://markdownmaster.site "Free Markdown Editor")</code></pre>
+
+  <h3 id="reference">Reference-Style Links</h3>
+
+  <p>Reference-style links keep your text clean by separating the link text from the URL. This is especially useful for long documents where the same URL appears multiple times:</p>
+
+<pre><code set:html={codeRef}></code></pre>
+
+  <p>The <code>[mm]</code> reference can be defined <strong>anywhere</strong> in the document — typically at the bottom. This keeps your paragraphs readable without long URLs interrupting the flow.</p>
+
+  <p>Reference definitions are case-insensitive and can contain letters, numbers, spaces, and hyphens. These are all equivalent:</p>
+
+<pre><code>[link text][1]
+[link text] [1]
+[link text][A1]
+[link text][a1]</code></pre>
+
+  <h3 id="auto">Auto-Links</h3>
+
+  <p>For URLs and email addresses that you want to display as-is (and make clickable), wrap them in angle brackets:</p>
+
+<pre><code set:html={codeAuto}></code></pre>
+
+  <p>Most renderers will turn these into clickable links automatically. Some renderers also auto-link bare URLs without angle brackets, but using angle brackets is the safe, portable approach.</p>
+
+  <h2 id="images">Images in Markdown</h2>
+
+  <p>Image syntax is almost identical to link syntax — just add an exclamation mark <code>!</code> before the square brackets.</p>
+
+  <h3 id="basic-img">Basic Image Syntax</h3>
+
+<pre><code set:html={codeImage}></code></pre>
+
+  <p>The parts:</p>
+
+  <ul>
+    <li><code>!</code> — tells Markdown this is an image (not a link)</li>
+    <li><code>[alt text]</code> — alternative text displayed when the image cannot load (important for accessibility and SEO)</li>
+    <code>(url "optional title")</code> — the image URL and an optional hover title
+  </ul>
+
+  <blockquote>
+    <p><strong>SEO tip:</strong> Always write descriptive alt text. Search engines use it to understand image content, and screen readers rely on it for accessibility. A good alt text describes what the image shows, not what it is — write "Chart showing user growth from 100 to 5,000" not "image of chart".</p>
+  </blockquote>
+
+  <h3 id="sizing">Image Sizing</h3>
+
+  <p>Standard Markdown does <strong>not</strong> support image resizing. To control the size, use an HTML <code>&lt;img&gt;</code> tag:</p>
+
+<pre><code set:html={codeSize}></code></pre>
+
+  <p>This is widely supported in GitHub Flavored Markdown and most modern renderers.</p>
+
+  <h3 id="clickable">Clickable Images</h3>
+
+  <p>To make an image link to another page, wrap the image syntax in a link:</p>
+
+<pre><code set:html={codeLinkImg}></code></pre>
+
+  <p>The entire image becomes a clickable link. This is commonly used for badges, logos, and thumbnail galleries.</p>
+
+  <h2 id="advanced">Advanced Techniques</h2>
+
+  <h3 id="footnotes">Footnotes</h3>
+
+  <p>Footnotes let you add supplementary information without cluttering the main text. They are supported in GFM and many Markdown extensions:</p>
+
+<pre><code set:html={codeFootnote}></code></pre>
+
+  <p>Rendered output will show a superscript number in the text (<code>[^1]</code> becomes a clickable <sup>1</sup>) and a numbered footnote section at the bottom of the document.</p>
+
+  <h3 id="relative">Relative Links</h3>
+
+  <p>In project documentation (README files, wikis, etc.), you often link to other files in the same repository. Use relative paths:</p>
+
+<pre><code>[Contributing Guide](./CONTRIBUTING.md)
+[API Docs](/docs/api.md)
+[Parent Directory](../README.md)</code></pre>
+
+  <p>On GitHub, these links work both in the rendered Markdown and in the repository file browser.</p>
+
+  <h2 id="pitfalls">Common Pitfalls</h2>
+
+  <h3>1. Spaces in URLs</h3>
+
+  <p>If your URL contains spaces, you must encode them as <code>%20</code> or the link will break:</p>
+
+<pre><code>| Wrong | [My Page](https://example.com/my page) |
+| Right | [My Page](https://example.com/my%20page) |</code></pre>
+
+  <h3>2. Missing Alt Text</h3>
+
+  <p>Leaving the alt text empty (<code>![](url)</code>) works technically but hurts accessibility and SEO. Always include descriptive alt text.</p>
+
+  <h3>3. Parentheses in Link Text</h3>
+
+  <p>If your link URL itself contains parentheses (common in Wikipedia links), use URL-encoded <code>%29</code> for closing parentheses, or use reference-style links to avoid the ambiguity.</p>
+
+  <h3>4. Image Paths in Static Sites</h3>
+
+  <p>In static site generators (like Astro, Hugo, or Jekyll), image paths are relative to the output directory, not the source file. Always test your image paths after building.</p>
+
+  <h2 id="faq">FAQ</h2>
+
+  <h3>Can I use Markdown links inside table cells?</h3>
+
+  <p>Yes. Inline links work perfectly inside table cells. Reference-style links also work, but the reference definition must be somewhere in the same document.</p>
+
+  <h3>How do I open a link in a new tab?</h3>
+
+  <p>Standard Markdown does not support the <code>target="_blank"</code> attribute. You need to use raw HTML: <code>&lt;a href="url" target="_blank"&gt;text&lt;/a&gt;</code></p>
+
+  <h3>Can I embed videos in Markdown?</h3>
+
+  <p>Standard Markdown does not support video embedding. Some platforms (like GitHub) support embedding via raw HTML <code>&lt;video&gt;</code> tags or by pasting a YouTube link on its own line. Check your specific platform's documentation.</p>
+
+  <h3>What is the difference between <code>!</code> and no <code>!</code> before brackets?</h3>
+
+  <p>The <code>!</code> prefix distinguishes images from links. <code>[text](url)</code> creates a clickable link. <code>![alt](url)</code> displays an image. This is the only difference in syntax between the two.</p>
+
+  <hr />
+
+  <p>Links and images transform static text into interactive, visual content. Master the inline syntax for quick writing, use reference-style links for long documents, and remember that HTML is your escape hatch when standard Markdown falls short.</p>
+
+  <p>Practice right now in our <a href="/editor/">free Markdown editor</a> — paste any of the examples above and see the live preview instantly.</p>
+</BlogLayout>
