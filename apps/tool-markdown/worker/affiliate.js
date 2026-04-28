@@ -3,6 +3,9 @@
  * Route: markdownmaster.site/*
  * Adds a fixed-position button (bottom-right) that opens a popup on click.
  * Zero layout impact — does not modify any DOM element.
+ * 
+ * IMPORTANT: Only injects into HTML responses (content-type: text/html).
+ * Static assets (JS, CSS, images, fonts) are passed through untouched.
  */
 export default {
   async fetch(request, env) {
@@ -10,17 +13,29 @@ export default {
     const url = new URL(request.url);
     const proxyUrl = origin + url.pathname + url.search;
 
+    // For non-HTML requests (JS, CSS, images, fonts, etc.), pass through directly
+    // without any injection to avoid corrupting static assets
     const accept = request.headers.get("accept") || "";
-    if (!(accept.includes("text/html") || accept.includes("*/*") || accept === ""))
+    const ext = url.pathname.split(".").pop().toLowerCase();
+    const staticExts = ["js", "css", "png", "jpg", "jpeg", "gif", "svg", "ico", "woff", "woff2", "ttf", "eot", "otf", "webp", "avif", "json", "xml", "txt", "map", "webmanifest"];
+    
+    if (staticExts.includes(ext)) {
       return fetch(proxyUrl);
+    }
 
     let response;
     try {
-      response = await fetch(proxyUrl, { headers: { "accept": "text/html" } });
+      response = await fetch(proxyUrl);
     } catch (e) {
       return new Response("Origin error: " + e.message, { status: 502 });
     }
     if (!response.ok) return response;
+
+    // Check response content-type — only inject into HTML
+    const contentType = response.headers.get("content-type") || "";
+    if (!contentType.includes("text/html")) {
+      return response;
+    }
 
     let html = await response.text();
     if (!html.includes("</body>"))
