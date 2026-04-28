@@ -37,10 +37,14 @@ export default {
       console.error("D1 error:", e.message);
     }
 
+    // No links to show — skip injection entirely
+    if (!links || links.length === 0) {
+      return new Response(html, { status: response.status, headers: { "content-type": "text/html; charset=utf-8" } });
+    }
+
     const script = `<script>
 !function(){
 var l=${JSON.stringify(links)};
-if(!l||!l.length)return;
 var d=document.createElement("div");
 d.id="afw";
 d.innerHTML='<button id="afb" style="position:fixed;bottom:20px;right:20px;z-index:9999;width:48px;height:48px;border-radius:50%;background:#0ea5e9;color:#fff;border:none;cursor:pointer;font-size:1.3rem;box-shadow:0 4px 12px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center">\\u{1F517}</button><div id="afp" style="display:none;position:fixed;bottom:76px;right:20px;z-index:9998;background:#1e293b;border:1px solid #334155;border-radius:12px;padding:8px;min-width:240px;box-shadow:0 8px 24px rgba(0,0,0,0.4)"></div>';
