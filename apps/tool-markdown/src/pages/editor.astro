@@ -108,23 +108,23 @@
 
 <div class="toolbar">
   <div class="tb-group">
-    <button class="tb-btn" onclick="f('**','**')" title="Bold"><b>B</b></button>
-    <button class="tb-btn" onclick="f('*','*')" title="Italic"><i>I</i></button>
-    <button class="tb-btn" onclick="f('~~','~~')" title="Strikethrough"><s>S</s></button>
+    <button class="tb-btn" data-format="bold" title="Bold"><b>B</b></button>
+    <button class="tb-btn" data-format="italic" title="Italic"><i>I</i></button>
+    <button class="tb-btn" data-format="strike" title="Strikethrough"><s>S</s></button>
   </div><div class="tb-sep"></div>
   <div class="tb-group">
-    <button class="tb-btn" onclick="l('- ')">List</button>
-    <button class="tb-btn" onclick="l('1. ')">1.List</button>
-    <button class="tb-btn" onclick="f('`','`')">Code</button>
+    <button class="tb-btn" data-format="ul">List</button>
+    <button class="tb-btn" data-format="ol">1.List</button>
+    <button class="tb-btn" data-format="inline-code">Code</button>
   </div><div class="tb-sep"></div>
   <div class="tb-group">
-    <button class="tb-btn" onclick="l('## ')"># H2</button>
-    <button class="tb-btn" onclick="l('> ')">Quote</button>
-    <button class="tb-btn" onclick="cb()">&lt;/&gt; Block</button>
+    <button class="tb-btn" data-format="h2"># H2</button>
+    <button class="tb-btn" data-format="quote">Quote</button>
+    <button class="tb-btn" data-format="code-block">&lt;/&gt; Block</button>
   </div><div class="tb-sep"></div>
   <div class="tb-group">
-    <button class="tb-btn" onclick="l('- [ ] ')">Task</button>
-    <button class="tb-btn" onclick="l('\n---\n')">Line</button>
+    <button class="tb-btn" data-format="task">Task</button>
+    <button class="tb-btn" data-format="hr">Line</button>
   </div><div class="tb-sep"></div>
   <div class="tb-group">
     <button class="tb-btn" data-action="copy" title="Copy Markdown">&larr; Copy</button>
