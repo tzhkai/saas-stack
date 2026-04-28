@@ -8,6 +8,17 @@ export interface Props {
 
 const { title, description, canonical, jsonld } = Astro.props;
 const ogImage = 'https://markdownmaster.site/og-image.svg';
+
+// Google Analytics 4 - set your Measurement ID (e.g. 'G-XXXXXXXXXX') after creating GA4 property
+const GA_MEASUREMENT_ID = 'G-C9YBSZ3YDN';
+// Google Search Console - set verification code after verifying domain ownership
+const GOOGLE_SITE_VERIFICATION = '';
+const gaInitScript = GA_MEASUREMENT_ID ? `
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', '${GA_MEASUREMENT_ID}');
+` : '';
 ---
 
 <!DOCTYPE html>
@@ -19,6 +30,13 @@ const ogImage = 'https://markdownmaster.site/og-image.svg';
   <meta name="description" content={description} />
   <meta name="robots" content="index, follow" />
   {canonical && <link rel="canonical" href={canonical} />}
+
+  {GOOGLE_SITE_VERIFICATION && <meta name="google-site-verification" content={GOOGLE_SITE_VERIFICATION} />}
+
+  <!-- Google Analytics 4 -->
+  <!-- Google Analytics 4 -->
+  {GA_MEASUREMENT_ID && <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}></script>}
+  {GA_MEASUREMENT_ID && <script is:inline set:html={gaInitScript}></script>}
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content={title} />
