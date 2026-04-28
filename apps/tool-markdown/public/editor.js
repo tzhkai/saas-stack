@@ -1,7 +1,8 @@
-(function () {
+(function() {
   'use strict';
 
-  if (typeof marked === 'undefined') { setTimeout(arguments.callee, 50); return; }
+  function boot() {
+    if (typeof marked === 'undefined') { setTimeout(boot, 50); return; }
   marked.setOptions({ breaks: true, gfm: true });
 
   /* ── DOM refs ── */
@@ -25,9 +26,13 @@
 
   function rerender() {
     var v = input.value.trim();
-    preview.innerHTML = v
-      ? marked.parse(v)
-      : '<div class="empty-hint"><p>Write Markdown on the left, see the result here</p><p>Try: <code># Hello World</code></p></div>';
+    try {
+      preview.innerHTML = v
+        ? marked.parse(v)
+        : '<div class="empty-hint"><p>Write Markdown on the left, see the result here</p><p>Try: <code># Hello World</code></p></div>';
+    } catch(e) {
+      preview.innerHTML = '<pre style="white-space:pre-wrap;color:#94a3b8">' + v.replace(/</g,'&lt;') + '</pre>';
+    }
   }
 
   function flash(el, msg) {
@@ -196,4 +201,7 @@
     ''
   ].join('\n');
   rerender();
+}
+
+  boot();
 })();
