@@ -6,6 +6,37 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   title="Free Online Markdown Editor - Live Preview, No Sign-up | MarkdownMaster"
   description="Free online Markdown editor with real-time live preview, GitHub Flavored Markdown, syntax highlighting, and code blocks. Zero sign-up. Write, preview, and export your content instantly."
   canonical="https://markdownmaster.site/"
+  jsonld={{
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "name": "MarkdownMaster",
+        "url": "https://markdownmaster.site",
+        "logo": "https://markdownmaster.site/og-image.svg",
+        "description": "Free online Markdown editor with real-time live preview."
+      },
+      {
+        "@type": "WebSite",
+        "name": "MarkdownMaster",
+        "url": "https://markdownmaster.site",
+        "description": "Free online Markdown editor with real-time live preview."
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "MarkdownMaster Editor",
+        "url": "https://markdownmaster.site/editor/",
+        "operatingSystem": "Web",
+        "applicationCategory": "WebApplication",
+        "description": "Free online Markdown editor with real-time live preview, GitHub Flavored Markdown, and syntax highlighting.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    ]
+  }}
 >
   <style>
     /* ── Hero ── */

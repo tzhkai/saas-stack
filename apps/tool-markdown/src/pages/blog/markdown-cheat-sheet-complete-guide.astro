@@ -1,0 +1,251 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const jsCode = "```javascript\nfunction greet(name) {\n  return `Hello, ${name}!`;\n}\nconsole.log(greet(\"Markdown\"));\n```";
+
+const jsonld = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Markdown Cheat Sheet: The Complete Guide for Beginners (Free Online Editor)",
+  "description": "A complete Markdown cheat sheet covering headings, bold, italic, lists, code blocks, tables, links, images, and more. Includes a free online editor to practice live.",
+  "datePublished": "2026-04-28",
+  "dateModified": "2026-04-28",
+  "author": { "@type": "Organization", "name": "MarkdownMaster" },
+  "publisher": { "@type": "Organization", "name": "MarkdownMaster", "url": "https://markdownmaster.site" },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://markdownmaster.site/blog/markdown-cheat-sheet-complete-guide/" }
+};
+---
+
+<BlogLayout
+  title="Markdown Cheat Sheet: The Complete Guide for Beginners (Free Online Editor)"
+  description="Master Markdown with our complete cheat sheet and guide. Covers all syntax: headings, bold, italic, lists, code blocks, tables, links, images. Try it live in our free online editor."
+  canonical="https://markdownmaster.site/blog/markdown-cheat-sheet-complete-guide/"
+  publishedDate="2026-04-28"
+  category="Markdown Tutorial"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonld)}></script>
+
+  <div class="toc">
+    <p>Table of Contents</p>
+    <a href="#what-is-markdown">What is Markdown?</a>
+    <a href="#headings" class="l2">1. Headings</a>
+    <a href="#text-formatting" class="l2">2. Text Formatting</a>
+    <a href="#lists" class="l2">3. Lists</a>
+    <a href="#links-images" class="l2">4. Links &amp; Images</a>
+    <a href="#code-blocks" class="l2">5. Code Blocks</a>
+    <a href="#blockquotes" class="l2">6. Blockquotes</a>
+    <a href="#tables" class="l2">7. Tables</a>
+    <a href="#task-lists" class="l2">8. Task Lists</a>
+    <a href="#advanced" class="l2">9. Advanced Syntax</a>
+    <a href="#tips" class="l2">10. Pro Tips</a>
+  </div>
+
+  <!-- 1. What is Markdown -->
+  <section id="what-is-markdown">
+    <h2>What is Markdown?</h2>
+    <p>Markdown is a lightweight markup language created by John Gruber in 2004. It lets you write formatted text using plain text syntax — no clunky toolbar buttons, no complex HTML tags. When you write in Markdown, your content stays readable as plain text while also being convertible to clean, structured HTML.</p>
+    <p>Think of it as the sweet spot between plain text and HTML. You get formatting (bold, italic, headings, lists) without ever touching angle brackets.</p>
+    <p>Ready to start? <a href="/editor/">Open MarkdownMaster Editor</a> and follow along — everything you type will preview in real time.</p>
+    <blockquote>All examples in this guide are live-ready. Copy them into our <a href="/editor/">free online Markdown editor</a> to see the rendered output instantly.</blockquote>
+  </section>
+
+  <hr />
+
+  <!-- 2. Headings -->
+  <section id="headings">
+    <h2>1. Headings</h2>
+    <p>Use the <code>#</code> symbol to create headings. One <code>#</code> for the top-level heading, up to six for the smallest.</p>
+    <pre><code># Heading 1 (largest)
+## Heading 2
+### Heading 3
+#### Heading 4
+##### Heading 5
+###### Heading 6 (smallest)</code></pre>
+    <p><strong>Best practices:</strong></p>
+    <ul>
+      <li>Always put a space between <code>#</code> and the heading text</li>
+      <li>Use only one <code># Heading 1</code> per page (it is the title)</li>
+      <li>Headings automatically create anchor links for easier navigation</li>
+      <li>Do not skip levels (e.g., going from <code>##</code> straight to <code>####</code>)</li>
+    </ul>
+  </section>
+
+  <!-- 3. Text Formatting -->
+  <section id="text-formatting">
+    <h2>2. Text Formatting</h2>
+    <p>Markdown makes text formatting intuitive. Here is the complete reference:</p>
+    <table>
+      <thead><tr><th>Style</th><th>Syntax</th><th>Example Output</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Bold</strong></td><td><code>**text**</code></td><td><strong>bold text</strong></td></tr>
+        <tr><td><em>Italic</em></td><td><code>*text*</code></td><td><em>italic text</em></td></tr>
+        <tr><td><strong>Bold + Italic</strong></td><td><code>***text***</code></td><td><strong><em>bold italic</em></strong></td></tr>
+        <tr><td><s>Strikethrough</s></td><td><code>~~text~~</code></td><td><s>strikethrough text</s></td></tr>
+        <tr><td><code>Inline code</code></td><td><code>`code`</code></td><td>Inline <code>code snippet</code></td></tr>
+      </tbody>
+    </table>
+    <p><strong>Pro tip:</strong> Use asterisks (<code>*</code>) instead of underscores (<code>_</code>) — they are more readable in plain text and avoid conflicts with filenames.</p>
+  </section>
+
+  <!-- 4. Lists -->
+  <section id="lists">
+    <h2>3. Lists</h2>
+    <h3>Unordered Lists</h3>
+    <p>Use <code>-</code>, <code>*</code>, or <code>+</code> followed by a space:</p>
+    <pre><code>- Apples
+- Bananas
+- Oranges
+  - Nested item (indent with 2 spaces)
+  - Another nested item</code></pre>
+    <p>Rendered:</p>
+    <ul>
+      <li>Apples</li>
+      <li>Bananas</li>
+      <li>Oranges
+        <ul><li>Nested item</li><li>Another nested item</li></ul>
+      </li>
+    </ul>
+    <h3>Ordered Lists</h3>
+    <pre><code>1. First item
+2. Second item
+3. Third item</code></pre>
+    <p><strong>Tip:</strong> You can use <code>1.</code> for every item — Markdown auto-numbers them correctly, making re-ordering much easier.</p>
+    <pre><code>1. First item
+1. Second item
+1. Third item</code></pre>
+    <p>Both produce the same result.</p>
+  </section>
+
+  <!-- 5. Links & Images -->
+  <section id="links-images">
+    <h2>4. Links &amp; Images</h2>
+    <h3>Links</h3>
+    <pre><code>[Visit MarkdownMaster](https://markdownmaster.site)
+[Link with title](https://example.com "Optional Title")</code></pre>
+    <p><strong>Reference-style links</strong> (great for keeping text readable):</p>
+    <pre><code>[MarkdownMaster][1]
+[GitHub][2]
+
+[1]: https://markdownmaster.site
+[2]: https://github.com</code></pre>
+    <h3>Images</h3>
+    <pre><code>![Alt text](https://example.com/image.jpg)
+![Alt with title](image.jpg "Photo title")</code></pre>
+    <p>The syntax is identical to links but prefixed with <code>!</code>. The alt text is important for accessibility and SEO.</p>
+  </section>
+
+  <!-- 6. Code Blocks -->
+  <section id="code-blocks">
+    <h2>5. Code Blocks</h2>
+    <p>For inline code, use single backticks: <code>`variableName`</code></p>
+    <p>For code blocks, use triple backticks with an optional language identifier:</p>
+    <pre><code set:html={jsCode}></code></pre>
+    <p>Supported languages include: <code>javascript</code>, <code>python</code>, <code>html</code>, <code>css</code>, <code>bash</code>, <code>sql</code>, <code>json</code>, <code>yaml</code>, and 100+ more.</p>
+    <p><strong>Indented code blocks</strong> (alternative syntax):</p>
+    <pre><code>    // Indent 4 spaces or 1 tab
+    const x = 42;
+    console.log(x);</code></pre>
+    <p>But fenced code blocks (triple backticks) are preferred because they support syntax highlighting.</p>
+  </section>
+
+  <!-- 7. Blockquotes -->
+  <section id="blockquotes">
+    <h2>6. Blockquotes</h2>
+    <pre><code>&gt; This is a blockquote.
+&gt; It can span multiple lines.
+
+&gt; Nested blockquotes work too:
+&gt;
+&gt; &gt; Like this one</code></pre>
+    <p>Rendered:</p>
+    <blockquote>
+      <p>This is a blockquote. It can span multiple lines.</p>
+      <p>Nested blockquotes work too:</p>
+      <blockquote>Like this one</blockquote>
+    </blockquote>
+    <p>Blockquotes can contain other Markdown elements like lists, code, and headings.</p>
+  </section>
+
+  <!-- 8. Tables -->
+  <section id="tables">
+    <h2>7. Tables</h2>
+    <p>Tables are one of Markdown's most useful features, especially for documentation. Use pipes (<code>|</code>) and dashes (<code>-</code>):</p>
+    <pre><code>| Feature     | Shortcut     | Description          |
+|-------------|-------------|----------------------|
+| Bold        | Ctrl+B      | Toggle bold text     |
+| Italic      | Ctrl+I      | Toggle italic text   |
+| Code        | Ctrl+E      | Inline code block    |</code></pre>
+    <p><strong>Alignment:</strong> Use colons in the separator row:</p>
+    <ul>
+      <li><code>:---</code> — left-aligned (default)</li>
+      <li><code>:--:</code> — center-aligned</li>
+      <li><code>---:</code> — right-aligned</li>
+    </ul>
+    <pre><code>| Left | Center | Right |
+|:-----|:------:|------:|
+| a    | b      | c     |</code></pre>
+  </section>
+
+  <!-- 9. Task Lists -->
+  <section id="task-lists">
+    <h2>8. Task Lists</h2>
+    <p>Perfect for to-do lists and project tracking:</p>
+    <pre><code>- [x] Learn Markdown syntax
+- [x] Write a blog post
+- [ ] Publish to production
+- [ ] Share on social media</code></pre>
+    <p>Rendered:</p>
+    <ul>
+      <li><input type="checkbox" checked disabled /> Learn Markdown syntax</li>
+      <li><input type="checkbox" checked disabled /> Write a blog post</li>
+      <li><input type="checkbox" disabled /> Publish to production</li>
+      <li><input type="checkbox" disabled /> Share on social media</li>
+    </ul>
+    <p><strong>Note:</strong> Task lists are part of GitHub Flavored Markdown (GFM). Our <a href="/editor/">MarkdownMaster Editor</a> fully supports them.</p>
+  </section>
+
+  <!-- 10. Advanced -->
+  <section id="advanced">
+    <h2>9. Advanced Syntax</h2>
+    <h3>Horizontal Rules</h3>
+    <p>Use three or more dashes, asterisks, or underscores:</p>
+    <pre><code>---
+***
+___</code></pre>
+    <h3>Emoji</h3>
+    <p>Many Markdown renderers support emoji shortcodes: <code>:smile:</code> becomes smile emoji, <code>:rocket:</code> becomes rocket emoji</p>
+    <h3>Subscript &amp; Superscript</h3>
+    <pre><code>H~2~O  (subscript)
+X^2^   (superscript)</code></pre>
+    <h3>Definition Lists</h3>
+    <pre><code>Term
+: Definition goes here
+: Another definition</code></pre>
+    <h3>Footnotes</h3>
+    <pre><code>Here is a sentence with a footnote.[^1]
+
+[^1]: This is the footnote content.</code></pre>
+  </section>
+
+  <!-- 11. Pro Tips -->
+  <section id="tips">
+    <h2>10. Pro Tips for Better Markdown</h2>
+    <ol>
+      <li><strong>Always preview your work.</strong> Use a real-time preview editor like <a href="/editor/">MarkdownMaster</a> to catch formatting issues immediately.</li>
+      <li><strong>Use blank lines between block elements.</strong> Headings, paragraphs, lists, and code blocks should be separated by blank lines for reliability.</li>
+      <li><strong>Escape special characters</strong> with a backslash: <code>\*not italic\*</code> renders as literal asterisks.</li>
+      <li><strong>Keep tables simple.</strong> Complex tables are easier to build in HTML than Markdown.</li>
+      <li><strong>Use reference links for reusability.</strong> If you link to the same URL multiple times, define it once and reference it.</li>
+      <li><strong>Do not over-nest.</strong> Deeply nested lists or blockquotes become hard to read in source form.</li>
+    </ol>
+    <blockquote>The best way to learn Markdown is to use it. <a href="/editor/">Open MarkdownMaster Editor</a> and start writing — your preview updates in real time as you type.</blockquote>
+
+    <hr />
+
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:2rem;margin-top:2rem;text-align:center">
+      <h3 style="font-size:1.2rem;margin-bottom:0.75rem">Try It Yourself</h3>
+      <p style="color:var(--text-dim);max-width:400px;margin:0 auto 1rem">No sign-up. No install. Open the editor and start writing Markdown instantly.</p>
+      <a href="/editor/" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.8rem 2rem;background:var(--accent);color:#fff;text-decoration:none;border-radius:10px;font-weight:600">Open Free Markdown Editor &rarr;</a>
+    </div>
+  </section>
+</BlogLayout>

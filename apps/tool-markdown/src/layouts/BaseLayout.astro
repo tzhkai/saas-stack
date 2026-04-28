@@ -3,9 +3,10 @@ export interface Props {
   title: string;
   description: string;
   canonical?: string;
+  jsonld?: Record<string, any>;
 }
 
-const { title, description, canonical } = Astro.props;
+const { title, description, canonical, jsonld } = Astro.props;
 const ogImage = 'https://markdownmaster.site/og-image.svg';
 ---
 
@@ -30,6 +31,8 @@ const ogImage = 'https://markdownmaster.site/og-image.svg';
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
   <meta name="twitter:image" content={ogImage} />
+
+  {jsonld && <script type="application/ld+json" set:html={JSON.stringify(jsonld)}></script>}
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -82,6 +85,7 @@ const ogImage = 'https://markdownmaster.site/og-image.svg';
       <a href="/editor/">Editor</a>
       <a href="/docs/">Docs</a>
       <a href="/pricing/">Pricing</a>
+      <a href="/blog/">Blog</a>
     </nav>
   </header>
   <main class="site-main">

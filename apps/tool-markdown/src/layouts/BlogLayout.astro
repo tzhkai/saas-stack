@@ -1,0 +1,103 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+  canonical: string;
+  publishedDate: string;
+  author?: string;
+  category?: string;
+}
+
+const { title, description, canonical, publishedDate, author = 'MarkdownMaster Team', category = 'Markdown Tutorial' } = Astro.props;
+---
+
+<BaseLayout {title} {description} {canonical}>
+  <style>
+    .blog-article {
+      max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem;
+    }
+    .blog-article .meta {
+      font-size: 0.85rem; color: var(--text-muted);
+      margin-bottom: 1rem; display: flex; gap: 1rem; align-items: center;
+    }
+    .blog-article .meta .category {
+      background: rgba(14,165,233,0.12); color: var(--accent);
+      padding: 2px 10px; border-radius: 4px; font-size: 0.8rem;
+    }
+    .blog-article h1 {
+      font-size: 2rem; font-weight: 800; letter-spacing: -0.02em;
+      line-height: 1.25; margin-bottom: 1.5rem;
+    }
+    .blog-article h2 {
+      font-size: 1.5rem; font-weight: 700; margin-top: 2.5rem;
+      margin-bottom: 0.75rem; color: var(--accent);
+    }
+    .blog-article h3 {
+      font-size: 1.2rem; font-weight: 600; margin-top: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .blog-article p {
+      color: #cbd5e1; margin-bottom: 1rem; line-height: 1.8;
+    }
+    .blog-article p code {
+      background: #1e293b; padding: 2px 6px; border-radius: 4px;
+      color: #f8b4b4; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+    }
+    .blog-article ul, .blog-article ol {
+      color: #cbd5e1; margin-bottom: 1rem; padding-left: 1.5rem; line-height: 1.8;
+    }
+    .blog-article li { margin-bottom: 0.3rem; }
+    .blog-article pre {
+      background: #0f172a; padding: 1rem; border-radius: 8px;
+      overflow-x: auto; margin: 1rem 0;
+    }
+    .blog-article pre code { background: none; padding: 0; color: #a5f3fc; }
+    .blog-article blockquote {
+      border-left: 3px solid var(--accent); padding: 0.75rem 1rem;
+      margin: 1rem 0; background: rgba(14,165,233,0.06);
+      color: #94a3b8; border-radius: 0 8px 8px 0;
+    }
+    .blog-article table {
+      width: 100%; border-collapse: collapse; margin: 1rem 0;
+    }
+    .blog-article th, .blog-article td {
+      border: 1px solid var(--border); padding: 8px 12px; text-align: left;
+    }
+    .blog-article th { background: var(--bg-card); color: var(--text); }
+    .blog-article td { color: #cbd5e1; }
+    .blog-article img {
+      max-width: 100%; border-radius: 8px; margin: 1rem 0;
+      border: 1px solid var(--border);
+    }
+    .blog-article hr {
+      border: none; border-top: 1px solid var(--border);
+      margin: 2rem 0;
+    }
+    .blog-article .toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 8px; padding: 1.25rem; margin: 1.5rem 0;
+    }
+    .blog-article .toc p {
+      font-weight: 600; font-size: 0.9rem; color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .blog-article .toc a {
+      display: block; color: var(--text-dim); text-decoration: none;
+      font-size: 0.85rem; padding: 0.2rem 0; transition: color 0.15s;
+    }
+    .blog-article .toc a:hover { color: var(--accent); }
+    .blog-article .toc .l2 { padding-left: 1rem; }
+  </style>
+
+  <article class="blog-article" itemscope itemtype="https://schema.org/Article">
+    <div class="meta">
+      <time datetime={publishedDate}>{publishedDate}</time>
+      <span class="category">{category}</span>
+      <span>{author}</span>
+    </div>
+    <h1 itemprop="headline">{title}</h1>
+    <slot />
+  </article>
+</BaseLayout>
