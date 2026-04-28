@@ -267,11 +267,22 @@
   }
 
   function hlHtml(s) {
-    return escHtml(s)
-      .replace(/(&lt;\!--[\s\S]*?--&gt;)/g,'<span class="cmt">$1</span>')
-      .replace(/(&lt;\/?)(\w+)/g,'$1<span class="tag">$2</span>')
-      .replace(/(\s)(\w[-\w]*)(=)(&quot;)/g,'$1<span class="attr">$2</span>$3<span class="str">$4')
-      .replace(/(&quot;)([\s&gt;])/g,'</span><span class="str">$1</span>$2');
+    // Step 1: escape all HTML special chars
+    var r = s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    // Step 2: highlight HTML tags
+    r = r.replace(/(&lt;)(\/?)([a-zA-Z][\w-]*)/g, '<span class="tag">&lt;$2$3</span>');
+    // Step 3: highlight attributes with values
+    r = r.replace(/(<\/span>)(\s+)([a-zA-Z][\w-]*)(=)(&quot;)/g, '$1$2<span class="attr">$3</span>$4<span class="str">$5');
+    // Step 4: close string spans
+    r = r.replace(/(&quot;)(\s*)([&<])/g, '</span><span class="str">$1</span>$2$3');
+    r = r.replace(/(&quot;)/g, '</span><span class="str">$1</span>');
+    // Step 5: highlight standalone attributes (no value)
+    r = r.replace(/(<\/span>)(\s+)([a-zA-Z][\w-]*)/g, '$1$2<span class="attr">$3</span>');
+    // Step 6: highlight comments
+    r = r.replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="cmt">$1</span>');
+    // Step 7: highlight HTML entities
+    r = r.replace(/&amp;[#a-zA-Z]\w+;/g, '<span class="ent">$&</span>');
+    return r;
   }
 
   window.cl = function() {
