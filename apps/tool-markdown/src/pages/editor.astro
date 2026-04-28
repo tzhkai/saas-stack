@@ -97,21 +97,6 @@
       transition:background 0.15s;
     }
     .divider:hover { background:var(--accent); }
-    .ptab {
-      font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;
-      color:var(--text-dim); padding:0 0 2px; border-bottom:2px solid transparent; transition:all 0.15s;
-    }
-    .ptab-active { color:var(--accent); border-bottom-color:var(--accent); }
-    .ptab:hover { color:var(--text); }
-    #source-content {
-      font-family:'JetBrains Mono',monospace; font-size:0.8rem; line-height:1.6;
-      white-space:pre-wrap; word-break:break-all; color:#a5f3fc;
-    }
-    #source-content .tag { color:#f8b4b4; }
-    #source-content .attr { color:#fbbf24; }
-    #source-content .str { color:#86efac; }
-    #source-content .cmt { color:#64748b; font-style:italic; }
-    #source-content .ent { color:#a78bfa; }
 
     @media (max-width:768px) {
       .editor-wrap { flex-direction:column; }
@@ -144,10 +129,9 @@
   <div class="tb-group">
     <button class="tb-btn" onclick="cp()" title="Copy Markdown">&larr; Copy</button>
     <button class="tb-btn" onclick="xh()" title="Export as HTML" style="color:#a78bfa">⇓ HTML</button>
-    <button class="tb-btn" onclick="hpr()" id="hp-btn" title="Toggle HTML Source View" style="color:#34d399">&lt;/&gt; Source</button>
     <button class="tb-btn" onclick="cl()" title="Clear all content" style="color:#f87171">Clear</button>
   </div>
-  <div class="tb-title"><span class="tb-dot" id="live-dot"></span> <span id="live-label">Live Preview</span></div>
+  <div class="tb-title"><span class="tb-dot"></span> Live Preview</div>
 </div>
 
 <div class="editor-wrap">
@@ -159,13 +143,9 @@
   </div>
   <div class="divider" id="divider"></div>
   <div id="preview-pane" class="pane">
-    <div class="pane-label" style="display:flex;gap:12px;align-items:center;">
-      <span id="preview-tab-preview" class="ptab ptab-active" onclick="swpv('preview')" style="cursor:pointer">Preview</span>
-      <span id="preview-tab-source" class="ptab" onclick="swpv('source')" style="cursor:pointer">HTML Source</span>
-    </div>
+    <div class="pane-label">Preview</div>
     <div class="pane-scroll" id="preview-scroll">
       <div id="preview-content"></div>
-      <div id="source-content" style="display:none"></div>
     </div>
   </div>
 </div>
@@ -179,17 +159,11 @@
   var input = document.getElementById('md-input');
   var preview = document.getElementById('preview-content');
 
-  var srcPane = document.getElementById('source-content');
-
   function up() {
     var v = input.value.trim();
-    var html = v ? marked.parse(v) : '';
-    preview.innerHTML = html || '<div class="empty-hint"><p>Write Markdown on the left, see the result here</p><p>Try: <code># Hello World</code></p></div>';
-    if (html) {
-      srcPane.innerHTML = hlHtml(html);
-    } else {
-      srcPane.innerHTML = '';
-    }
+    preview.innerHTML = v
+      ? marked.parse(v)
+      : '<div class="empty-hint"><p>Write Markdown on the left, see the result here</p><p>Try: <code># Hello World</code></p></div>';
   }
 
   input.addEventListener('input', up);
@@ -244,36 +218,6 @@
     var btn = document.querySelector('.tb-btn[onclick*="xh()"]');
     if (btn) { var t=btn.textContent; btn.textContent='Done!'; setTimeout(function(){btn.textContent=t;},1200); }
   };
-  var pvMode = 'preview';
-
-  window.swpv = function(m) {
-    pvMode = m;
-    document.getElementById('preview-content').style.display = m === 'preview' ? '' : 'none';
-    document.getElementById('source-content').style.display = m === 'source' ? '' : 'none';
-    document.getElementById('preview-tab-preview').className = 'ptab' + (m === 'preview' ? ' ptab-active' : '');
-    document.getElementById('preview-tab-source').className = 'ptab' + (m === 'source' ? ' ptab-active' : '');
-    document.getElementById('live-label').textContent = m === 'preview' ? 'Live Preview' : 'HTML Source';
-    document.getElementById('live-dot').style.background = m === 'preview' ? '#22c55e' : '#a78bfa';
-    var btn = document.getElementById('hp-btn');
-    if (m === 'source') btn.style.background = 'rgba(52,211,153,0.2)';
-    else btn.style.background = '';
-    if (m === 'source') up();
-  };
-  window.hpr = function() { swpv(pvMode === 'preview' ? 'source' : 'preview'); };
-
-  function escHtml(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-            .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-  }
-
-  function hlHtml(s) {
-    return escHtml(s)
-      .replace(/(&lt;\!--[\s\S]*?--&gt;)/g,'<span class="cmt">$1</span>')
-      .replace(/(&lt;\/?)(\w+)/g,'$1<span class="tag">$2</span>')
-      .replace(/(\s)(\w[-\w]*)(=)(&quot;)/g,'$1<span class="attr">$2</span>$3<span class="str">$4')
-      .replace(/(&quot;)([\s&gt;])/g,'</span><span class="str">$1</span>$2');
-  }
-
   window.cl = function() {
     if (!input.value.trim()) return;
     if (!confirm('Clear all content?')) return;
