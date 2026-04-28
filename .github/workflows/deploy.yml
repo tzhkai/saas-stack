@@ -21,12 +21,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
 
       - name: Build
         run: |
           cd apps/tool-markdown
-          pnpm install --frozen-lockfile
+          pnpm install --no-frozen-lockfile
           npx astro build
 
       - name: Deploy Pages
