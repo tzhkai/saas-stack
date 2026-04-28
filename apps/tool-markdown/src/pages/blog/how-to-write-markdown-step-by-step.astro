@@ -1,0 +1,261 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const jsonld = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "How to Write Markdown: A Step-by-Step Guide for Beginners",
+  "description": "Learn how to write Markdown from scratch. This step-by-step guide covers the basics of headings, bold, italic, lists, links, images, and code blocks. Perfect for beginners.",
+  "datePublished": "2026-04-28",
+  "dateModified": "2026-04-28",
+  "author": { "@type": "Organization", "name": "MarkdownMaster" },
+  "publisher": { "@type": "Organization", "name": "MarkdownMaster", "url": "https://markdownmaster.site" },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://markdownmaster.site/blog/how-to-write-markdown-step-by-step/" }
+};
+---
+
+<BlogLayout
+  title="How to Write Markdown: A Step-by-Step Guide for Beginners"
+  description="New to Markdown? This step-by-step guide teaches you how to write Markdown from scratch. Covers headings, formatting, lists, links, images, and code blocks with real examples."
+  canonical="https://markdownmaster.site/blog/how-to-write-markdown-step-by-step/"
+  publishedDate="2026-04-28"
+  category="Markdown Tutorial"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonld)}></script>
+
+  <div class="toc">
+    <p>Table of Contents</p>
+    <a href="#what-you-need">What You Need</a>
+    <a href="#step1" class="l2">Step 1: Open a Markdown Editor</a>
+    <a href="#step2" class="l2">Step 2: Write a Heading</a>
+    <a href="#step3" class="l2">Step 3: Add a Paragraph</a>
+    <a href="#step4" class="l2">Step 4: Make Text Bold and Italic</a>
+    <a href="#step5" class="l2">Step 5: Create a List</a>
+    <a href="#step6" class="l2">Step 6: Add a Link</a>
+    <a href="#step7" class="l2">Step 7: Insert an Image</a>
+    <a href="#step8" class="l2">Step 8: Write a Code Block</a>
+    <a href="#step9" class="l2">Step 9: Add a Blockquote</a>
+    <a href="#step10" class="l2">Step 10: Create a Table</a>
+    <a href="#full-example" class="l2">Full Example: Putting It All Together</a>
+    <a href="#next-steps" class="l2">Next Steps</a>
+  </div>
+
+  <!-- Intro -->
+  <section id="what-you-need">
+    <h2>What You Need</h2>
+    <p>To follow this guide, you only need two things:</p>
+    <ol>
+      <li>A web browser (Chrome, Safari, Firefox, or Edge)</li>
+      <li>5 minutes of your time</li>
+    </ol>
+    <p>No software to install. No account to create. Just open a Markdown editor and start typing.</p>
+    <blockquote>Open our <a href="/editor/">free online Markdown editor</a> in a new tab and follow along. The preview updates instantly as you type.</blockquote>
+  </section>
+
+  <hr />
+
+  <!-- Step 1 -->
+  <section id="step1">
+    <h2>Step 1: Open a Markdown Editor</h2>
+    <p>Before you can write Markdown, you need somewhere to write it. A Markdown editor is a tool that shows you both the raw text and the formatted result.</p>
+    <p>For this guide, we recommend:</p>
+    <ol>
+      <li>Visit <a href="/editor/">MarkdownMaster Editor</a></li>
+      <li>You will see a split screen: the left side is the editor (where you type), and the right side is the preview (where you see the result)</li>
+      <li>Clear the example content and you are ready to go</li>
+    </ol>
+    <p><strong>Pro tip:</strong> If you prefer a distraction-free experience, you can resize the panels by dragging the divider in the middle.</p>
+  </section>
+
+  <!-- Step 2 -->
+  <section id="step2">
+    <h2>Step 2: Write a Heading</h2>
+    <p>In Markdown, headings are created with the <code>#</code> symbol. The more <code>#</code> symbols you add, the smaller the heading.</p>
+    <p><strong>Try it now:</strong> In the editor, type:</p>
+    <pre><code># My First Markdown Document</code></pre>
+    <p>You should see a large heading appear in the preview panel. This is an H1 tag in HTML terms — the main title of your document.</p>
+    <p>Now try adding a section with a smaller heading:</p>
+    <pre><code>## Introduction</code></pre>
+    <p>This creates an H2 — a section-level heading. You can go all the way down to six <code>#</code> symbols for the smallest heading.</p>
+  </section>
+
+  <!-- Step 3 -->
+  <section id="step3">
+    <h2>Step 3: Add a Paragraph</h2>
+    <p>This is the easiest part. In Markdown, plain text is already a paragraph. Just write normally:</p>
+    <pre><code>This is a paragraph. It contains several sentences
+but as long as there is no blank line, it stays as
+one paragraph.</code></pre>
+    <p>To start a new paragraph, add a blank line:</p>
+    <pre><code>This is the first paragraph.
+
+This is a separate paragraph.</code></pre>
+    <p><strong>Key rule:</strong> A blank line (press Enter twice) creates a new paragraph. A single line break within a paragraph is ignored by most Markdown renderers — unless you end the line with two spaces.</p>
+  </section>
+
+  <!-- Step 4 -->
+  <section id="step4">
+    <h2>Step 4: Make Text Bold and Italic</h2>
+    <p>Markdown uses simple punctuation marks to add emphasis:</p>
+
+    <p><strong>Bold text:</strong> Wrap your text in <code>**</code> (two asterisks):</p>
+    <pre><code>This is **important** information.</code></pre>
+    <p>Preview: This is <strong>important</strong> information.</p>
+
+    <p><strong>Italic text:</strong> Wrap your text in <code>*</code> (one asterisk):</p>
+    <pre><code>She *really* meant it.</code></pre>
+    <p>Preview: She <em>really</em> meant it.</p>
+
+    <p><strong>Bold + Italic:</strong> Use <code>***</code> (three asterisks):</p>
+    <pre><code>This is ***very important***.</code></pre>
+    <p>Preview: This is <strong><em>very important</em></strong>.</p>
+
+    <p><strong>Memory trick:</strong> Think of it like volume levels — one asterisk for emphasis (<em>italic</em>), two for strong emphasis (<strong>bold</strong>), three for screaming (<strong><em>bold italic</em></strong>).</p>
+  </section>
+
+  <!-- Step 5 -->
+  <section id="step5">
+    <h2>Step 5: Create a List</h2>
+    <p>Lists are where Markdown really shines — they are incredibly easy to write.</p>
+
+    <p><strong>Unordered list:</strong> Start each line with <code>-</code> and a space:</p>
+    <pre><code>- First item
+- Second item
+- Third item</code></pre>
+
+    <p><strong>Ordered list:</strong> Start each line with a number and a period:</p>
+    <pre><code>1. Step one
+2. Step two
+3. Step three</code></pre>
+
+    <p><strong>Nested list:</strong> Indent with two spaces:</p>
+    <pre><code>- Main item
+  - Sub-item one
+  - Sub-item two
+- Another main item</code></pre>
+  </section>
+
+  <!-- Step 6 -->
+  <section id="step6">
+    <h2>Step 6: Add a Link</h2>
+    <p>Links in Markdown use a simple pattern: <code>[text](url)</code>.</p>
+    <pre><code>Check out [MarkdownMaster](https://markdownmaster.site).</code></pre>
+    <p>Preview: Check out <a href="https://markdownmaster.site">MarkdownMaster</a>.</p>
+    <p>You can also add a title attribute that shows up on hover:</p>
+    <pre><code>[Visit us](https://markdownmaster.site "MarkdownMaster Home")</code></pre>
+    <p><strong>Pro tip:</strong> If you link to the same URL multiple times, use reference-style links:</p>
+    <pre><code>I use [MarkdownMaster][mm] every day.
+Have you tried [MarkdownMaster][mm]?
+
+[mm]: https://markdownmaster.site</code></pre>
+  </section>
+
+  <!-- Step 7 -->
+  <section id="step7">
+    <h2>Step 7: Insert an Image</h2>
+    <p>Images use the same syntax as links, but with an exclamation mark (<code>!</code>):</p>
+    <pre><code>![Alt text](https://example.com/image.jpg)</code></pre>
+    <p>The text inside the square brackets is called "alt text" — it is displayed when the image cannot load and is used by screen readers for accessibility.</p>
+    <p>You can also add title text:</p>
+    <pre><code>![Markdown logo](https://example.com/markdown-logo.png "The Markdown Logo")</code></pre>
+    <p><strong>Pro tip:</strong> Always include descriptive alt text. It helps both SEO and accessibility.</p>
+  </section>
+
+  <!-- Step 8 -->
+  <section id="step8">
+    <h2>Step 8: Write a Code Block</h2>
+    <p>To write code inside a sentence, wrap it in single backticks:</p>
+    <pre><code>Use the `printf()` function to print text.</code></pre>
+    <p>Preview: Use the <code>printf()</code> function to print text.</p>
+    <p>For multi-line code blocks, use triple backticks with a language name:</p>
+    <pre><code>```python
+def hello():
+    print("Hello, Markdown!")
+
+hello()
+```</code></pre>
+    <p>The language name after the opening backticks tells the renderer which syntax highlighting rules to apply. Common options: <code>javascript</code>, <code>python</code>, <code>html</code>, <code>css</code>, <code>bash</code>, <code>sql</code>.</p>
+  </section>
+
+  <!-- Step 9 -->
+  <section id="step9">
+    <h2>Step 9: Add a Blockquote</h2>
+    <p>Blockquotes are used to highlight quotes, notes, or callouts. Use the <code>&gt;</code> symbol:</p>
+    <pre><code>&gt; This is a blockquote.
+&gt; It can span multiple lines.</code></pre>
+    <p>Preview:</p>
+    <blockquote>This is a blockquote. It can span multiple lines.</blockquote>
+    <p>For nested blockquotes, add additional <code>&gt;</code> symbols:</p>
+    <pre><code>&gt; Main quote
+&gt;
+&gt; &gt; Nested quote</code></pre>
+  </section>
+
+  <!-- Step 10 -->
+  <section id="step10">
+    <h2>Step 10: Create a Table</h2>
+    <p>Tables are slightly more complex but still easy once you know the pattern. Use pipes (<code>|</code>) for columns and dashes (<code>-</code>) for the header separator:</p>
+    <pre><code>| Feature | Description |
+|---------|-------------|
+| Speed   | Instant preview |
+| Price   | Free          |
+| Sign-up | Not required  |</code></pre>
+    <p>The preview will render this as a neatly aligned table.</p>
+    <p>For alignment control, add colons in the separator row:</p>
+    <pre><code>| Left | Center | Right |
+|:-----|:------:|------:|
+| a    | b      | c     |</code></pre>
+  </section>
+
+  <!-- Full Example -->
+  <section id="full-example">
+    <h2>Full Example: Putting It All Together</h2>
+    <p>Here is a complete Markdown document that uses everything you learned:</p>
+    <pre><code># My Recipe Book
+
+A collection of my favorite recipes.
+
+## Pasta Carbonara
+
+This is a classic Italian dish. **Quick, easy, and delicious.**
+
+### Ingredients
+
+- 200g spaghetti
+- 100g pancetta
+- 2 eggs
+- Parmesan cheese
+
+### Instructions
+
+1. Boil the pasta in salted water.
+2. Fry the pancetta until crispy.
+3. Mix eggs with grated Parmesan.
+4. Combine everything *off the heat*.
+
+> Pro tip: Never add cream to carbonara.
+> Traditional recipes use only eggs and cheese.
+
+Enjoy your meal!</code></pre>
+    <p>Try copying this into the <a href="/editor/">MarkdownMaster Editor</a> and see how it looks!</p>
+  </section>
+
+  <!-- Next Steps -->
+  <section id="next-steps">
+    <h2>Next Steps</h2>
+    <p>Congratulations! You now know the basics of Markdown. Here is what to do next:</p>
+    <ol>
+      <li><strong>Practice</strong> — Open the <a href="/editor/">free online editor</a> and experiment with different syntax</li>
+      <li><strong>Read the full cheat sheet</strong> — Check out our <a href="/blog/markdown-cheat-sheet-complete-guide/">complete Markdown cheat sheet</a> for advanced syntax like footnotes, task lists, and definition lists</li>
+      <li><strong>Use it daily</strong> — Markdown is used everywhere: GitHub, Reddit, Notion, Discord, and most documentation tools</li>
+    </ol>
+
+    <hr />
+
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:2rem;margin-top:2rem;text-align:center">
+      <h3 style="font-size:1.2rem;margin-bottom:0.75rem">Start Writing Now</h3>
+      <p style="color:var(--text-dim);max-width:400px;margin:0 auto 1rem">Open the editor in a new tab and practice what you just learned.</p>
+      <a href="/editor/" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.8rem 2rem;background:var(--accent);color:#fff;text-decoration:none;border-radius:10px;font-weight:600">Try the Live Editor &rarr;</a>
+    </div>
+  </section>
+</BlogLayout>
