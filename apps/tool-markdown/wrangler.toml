@@ -1,0 +1,9 @@
+name = "tool-markdown"
+compatibility_date = "2026-04-01"
+
+pages_build_output_dir = "./dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "saas-sites-db"
+database_id = "c1ed6f24-5da9-4507-9e59-f618d98efd8a"

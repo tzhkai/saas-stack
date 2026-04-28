@@ -1,0 +1,311 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Online Markdown Editor - MarkdownMaster</title>
+  <meta name="description" content="Free online Markdown editor with real-time preview, syntax highlighting, and GFM support. No sign-up required." />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Free Online Markdown Editor - MarkdownMaster" />
+  <meta property="og:description" content="Free online Markdown editor with real-time preview, syntax highlighting, and GFM support." />
+  <meta property="og:image" content="https://markdownmaster.site/og-image.svg" />
+  <meta property="og:url" content="https://markdownmaster.site/editor/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://markdownmaster.site/og-image.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --bg:#0f172a; --bg2:#1e293b; --border:#334155;
+      --text:#e2e8f0; --text-dim:#94a3b8;
+      --accent:#0ea5e9; --accent-hover:#38bdf8;
+    }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      font-family:'Inter',sans-serif; background:var(--bg); color:var(--text);
+      display:flex; flex-direction:column;
+    }
+
+    /* ── Toolbar ── */
+    .toolbar {
+      flex-shrink:0; background:var(--bg2); border-bottom:1px solid var(--border);
+      padding:0.4rem 0.75rem; display:flex; align-items:center; gap:0.25rem; flex-wrap:wrap;
+    }
+    .tb-group { display:flex; align-items:center; gap:2px; }
+    .tb-sep { width:1px; height:22px; background:var(--border); margin:0 0.25rem; }
+    .tb-btn {
+      font:inherit; background:transparent; border:none; color:var(--text-dim);
+      padding:5px 8px; border-radius:4px; cursor:pointer; font-size:0.8rem; transition:all 0.1s;
+    }
+    .tb-btn:hover { background:var(--border); color:var(--text); }
+    .tb-title {
+      margin-left:auto; font-size:0.8rem; font-weight:600; color:var(--text-dim);
+      display:flex; align-items:center; gap:6px;
+    }
+    .tb-dot { width:7px; height:7px; border-radius:50%; background:#22c55e; }
+
+    /* ── Editor area ── */
+    .editor-wrap {
+      flex:1; display:flex; overflow:hidden;
+    }
+    .pane {
+      flex:1; display:flex; flex-direction:column; min-width:0; overflow:hidden;
+    }
+    .pane-label {
+      flex-shrink:0; font-size:0.7rem; font-weight:600; text-transform:uppercase;
+      letter-spacing:0.05em; color:var(--text-dim); padding:0.5rem 1rem 0;
+    }
+    .pane-scroll {
+      flex:1; overflow-y:auto; padding:0.5rem 1rem 1rem;
+    }
+    #editor-pane { border-right:1px solid var(--border); }
+    #md-input {
+      width:100%; height:100%; background:transparent; border:none; outline:none;
+      color:var(--text); font-family:'JetBrains Mono',monospace; font-size:0.85rem;
+      line-height:1.7; resize:none; padding:0;
+    }
+    #preview-pane { background:var(--bg2); }
+    #preview-content { font-size:0.9rem; line-height:1.8; }
+    #preview-content h1,#preview-content h2,#preview-content h3 { color:#f1f5f9; margin:1.2em 0 0.4em; }
+    #preview-content h1 { font-size:1.8rem; border-bottom:1px solid var(--border); padding-bottom:0.4rem; }
+    #preview-content h2 { font-size:1.4rem; }
+    #preview-content p { margin:0.8em 0; color:#cbd5e1; }
+    #preview-content code { background:var(--bg); padding:2px 6px; border-radius:4px; font-family:'JetBrains Mono',monospace; font-size:0.85em; color:#f8b4b4; }
+    #preview-content pre { background:var(--bg); padding:1rem; border-radius:8px; overflow-x:auto; margin:0.8em 0; }
+    #preview-content pre code { background:none; padding:0; color:#a5f3fc; }
+    #preview-content blockquote { border-left:4px solid var(--accent); padding-left:1rem; margin:0.8em 0; color:var(--text-dim); font-style:italic; }
+    #preview-content ul,#preview-content ol { padding-left:1.5rem; margin:0.6em 0; color:#cbd5e1; }
+    #preview-content li { margin:0.2em 0; }
+    #preview-content a { color:var(--accent); text-decoration:none; }
+    #preview-content a:hover { text-decoration:underline; }
+    #preview-content table { border-collapse:collapse; width:100%; margin:0.8em 0; font-size:0.85rem; }
+    #preview-content th,#preview-content td { border:1px solid var(--border); padding:6px 10px; text-align:left; }
+    #preview-content th { background:var(--border); color:#f1f5f9; }
+    #preview-content hr { border:none; border-top:1px solid var(--border); margin:1.2em 0; }
+    #preview-content img { max-width:100%; border-radius:8px; }
+    #preview-content input[type="checkbox"] { margin-right:6px; }
+    .empty-hint { color:var(--text-dim); text-align:center; margin-top:3rem; }
+    .divider {
+      width:4px; flex-shrink:0; background:var(--border); cursor:col-resize;
+      transition:background 0.15s;
+    }
+    .divider:hover { background:var(--accent); }
+
+    /* ── Affiliate section inside preview pane ── */
+    .aff-box {
+      margin-top:2rem; padding-top:1rem; border-top:1px solid var(--border);
+    }
+    .aff-box h4 { font-size:0.75rem; color:var(--text-dim); margin-bottom:0.75rem; }
+    .aff-item {
+      display:flex; align-items:center; gap:0.75rem; padding:0.75rem;
+      border-radius:8px; text-decoration:none; color:var(--text);
+      transition:background 0.15s;
+    }
+    .aff-item:hover { background:var(--bg); }
+    .aff-item .icon {
+      width:36px; height:36px; background:var(--accent); border-radius:8px;
+      display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0;
+    }
+    .aff-item .info { flex:1; }
+    .aff-item .info .name { font-weight:600; color:var(--accent); font-size:0.85rem; }
+    .aff-item .info .desc { font-size:0.8rem; color:var(--text-dim); }
+    .aff-item .cta { color:var(--accent); font-size:0.8rem; font-weight:500; white-space:nowrap; }
+
+    @media (max-width:768px) {
+      .editor-wrap { flex-direction:column; }
+      #editor-pane { border-right:none; border-bottom:1px solid var(--border); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="tb-group">
+    <button class="tb-btn" onclick="f('**','**')" title="Bold"><b>B</b></button>
+    <button class="tb-btn" onclick="f('*','*')" title="Italic"><i>I</i></button>
+    <button class="tb-btn" onclick="f('~~','~~')" title="Strikethrough"><s>S</s></button>
+  </div><div class="tb-sep"></div>
+  <div class="tb-group">
+    <button class="tb-btn" onclick="l('- ')">List</button>
+    <button class="tb-btn" onclick="l('1. ')">1.List</button>
+    <button class="tb-btn" onclick="f('`','`')">Code</button>
+  </div><div class="tb-sep"></div>
+  <div class="tb-group">
+    <button class="tb-btn" onclick="l('## ')"># H2</button>
+    <button class="tb-btn" onclick="l('> ')">Quote</button>
+    <button class="tb-btn" onclick="cb()">&lt;/&gt; Block</button>
+  </div><div class="tb-sep"></div>
+  <div class="tb-group">
+    <button class="tb-btn" onclick="l('- [ ] ')">Task</button>
+    <button class="tb-btn" onclick="l('\n---\n')">Line</button>
+  </div>
+  <div class="tb-title"><span class="tb-dot"></span> Live Preview</div>
+</div>
+
+<div class="editor-wrap">
+  <div id="editor-pane" class="pane">
+    <div class="pane-label">Markdown</div>
+    <div class="pane-scroll">
+      <textarea id="md-input" placeholder="Start writing..."></textarea>
+    </div>
+  </div>
+  <div class="divider" id="divider"></div>
+  <div id="preview-pane" class="pane">
+    <div class="pane-label">Preview</div>
+    <div class="pane-scroll" id="preview-scroll">
+      <div id="preview-content"></div>
+      <!-- Affiliate links built-in at build time -->
+      <div class="aff-box">
+        <h4>Recommended Tools</h4>
+        <a class="aff-item" href="https://markdownmaster.site" target="_blank" rel="sponsored">
+          <div class="icon">&#x1F4DD;</div>
+          <div class="info"><div class="name">MarkdownMaster</div><div class="desc">Write Markdown beautifully</div></div>
+          <span class="cta">Learn More &rarr;</span>
+        </a>
+        <a class="aff-item" href="https://markdownmaster.site/editor/" target="_blank" rel="sponsored">
+          <div class="icon" style="background:var(--bg)">&#x1F4DD;</div>
+          <div class="info"><div class="name">Free Markdown Editor</div><div class="desc">Real-time preview, no signup</div></div>
+          <span class="cta">Learn More &rarr;</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  if (typeof marked === 'undefined') { setTimeout(arguments.callee, 50); return; }
+  marked.setOptions({ breaks:true, gfm:true });
+
+  var input = document.getElementById('md-input');
+  var preview = document.getElementById('preview-content');
+
+  function up() {
+    var v = input.value.trim();
+    preview.innerHTML = v
+      ? marked.parse(v)
+      : '<div class="empty-hint"><p>Write Markdown on the left, see the result here</p><p>Try: <code># Hello World</code></p></div>';
+  }
+
+  input.addEventListener('input', up);
+
+  window.f = function(b, a) {
+    var s = input.selectionStart, e = input.selectionEnd, v = input.value;
+    var t = v.slice(s,e) || 'text';
+    input.setRangeText(b + t + a, s, e, 'select');
+    input.focus(); up();
+  };
+  window.l = function(p) {
+    var s = input.selectionStart, v = input.value;
+    var ls = v.lastIndexOf('\n', s-1) + 1;
+    input.setRangeText(p, ls, ls, 'select');
+    input.focus(); up();
+  };
+  window.cb = function() {
+    var s = input.selectionStart, e = input.selectionEnd, v = input.value;
+    var t = v.slice(s,e) || 'code here';
+    input.setRangeText('\n```\n' + t + '\n```\n', s, e, 'select');
+    input.focus(); up();
+  };
+
+  // Divider drag
+  var dv = document.getElementById('divider');
+  var dd = false;
+  dv.addEventListener('mousedown', function(){ dd = true; });
+  document.addEventListener('mouseup', function(){ dd = false; });
+  document.addEventListener('mousemove', function(e){
+    if (!dd) return;
+    var w = document.querySelector('.editor-wrap');
+    var r = (e.clientX - w.getBoundingClientRect().left) / w.offsetWidth;
+    document.getElementById('editor-pane').style.flex = r;
+    document.getElementById('preview-pane').style.flex = 1 - r;
+  });
+
+  // Default content
+  input.value = [
+    '# Markdown Cheat Sheet',
+    '',
+    'A quick reference guide to Markdown syntax. Start typing on the left to edit.',
+    '',
+    '---',
+    '',
+    '## 1. Headings',
+    '',
+    'Use `#` symbols for headings (1-6 levels):',
+    '',
+    '```markdown',
+    '# Heading 1',
+    '## Heading 2',
+    '### Heading 3',
+    '```',
+    '',
+    '## 2. Text Formatting',
+    '',
+    '| Syntax | Output | Syntax | Output |',
+    '| ------ | ------ | ------ | ------ |',
+    '| `**bold**` | **bold** | `*italic*` | *italic* |',
+    '| `~~strike~~` | ~~strike~~ | `` `code` `` | `code` |',
+    '',
+    '## 3. Lists',
+    '',
+    '- Apples',
+    '- Bananas',
+    '- Oranges',
+    '',
+    '### Nested',
+    '',
+    '- Frontend',
+    '  - HTML',
+    '  - CSS',
+    '  - JavaScript',
+    '- Backend',
+    '  - Node.js',
+    '  - Python',
+    '',
+    '## 4. Code Blocks',
+    '',
+    '```javascript',
+    'function greet(name) {',
+    '  return `Hello, ${name}!`;',
+    '}',
+    'console.log(greet("Markdown"));',
+    '```',
+    '',
+    '## 5. Blockquotes',
+    '',
+    '> Great tools let you focus on content creation, not formatting.',
+    '',
+    '## 6. Links & Images',
+    '',
+    '[Visit GitHub](https://github.com)',
+    '',
+    '## 7. Tables',
+    '',
+    '| Feature | Shortcut | Description |',
+    '| ------- | -------- | ----------- |',
+    '| Bold | Ctrl+B | **Bold** |',
+    '| Italic | Ctrl+I | *Italic* |',
+    '| Code | Ctrl+E | `Code` |',
+    '',
+    '## 8. Task Lists',
+    '',
+    '- [x] Learn Markdown',
+    '- [ ] Write a blog post',
+    '',
+    '---',
+    '',
+    '> Tip: Click anywhere on the left. Preview updates in real time.',
+    ''
+  ].join('\n');
+  up();
+})();
+</script>
+
+</body>
+</html>

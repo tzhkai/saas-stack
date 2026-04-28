@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect fill="#0f172a" width="1200" height="630"/>
+  <rect fill="#1e293b" x="50" y="50" width="1100" height="530" rx="20"/>
+  <text x="600" y="280" font-family="system-ui,sans-serif" font-size="76" fill="#fff" text-anchor="middle" font-weight="bold">Markdown Editor</text>
+  <text x="600" y="380" font-family="system-ui,sans-serif" font-size="34" fill="#0ea5e9" text-anchor="middle">Free Online Tool &bull; Live Preview</text>
+  <rect fill="#0ea5e9" x="510" y="420" width="180" height="8" rx="4"/>
+</svg>

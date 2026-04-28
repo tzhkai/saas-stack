@@ -1,0 +1,8 @@
+{
+  "name": "saas-stack",
+  "private": true,
+  "scripts": {
+    "dev": "cd apps/tool-markdown && npx astro dev",
+    "build": "cd apps/tool-markdown && npx astro build"
+  }
+}

@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Markdown Documentation & Tutorial | MarkdownMaster"
+  description="Learn Markdown syntax: headings, bold, italic, lists, code blocks, tables, and more. Complete reference with examples."
+  canonical="https://markdownmaster.site/docs/"
+>
+  <style>
+    .page-wrap { max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .page-wrap h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    .page-wrap .subtitle { color: var(--text-dim); margin-bottom: 2rem; }
+    .page-wrap section { margin-bottom: 2rem; }
+    .page-wrap h2 { font-size: 1.4rem; margin-bottom: 0.75rem; color: var(--accent); }
+    .page-wrap h3 { font-size: 1.1rem; margin-bottom: 0.5rem; margin-top: 1.5rem; }
+    .page-wrap p { color: #cbd5e1; margin-bottom: 0.75rem; line-height: 1.8; }
+    .page-wrap pre { background: #0f172a; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.75rem 0; }
+    .page-wrap p code { background: #1e293b; padding: 2px 6px; border-radius: 4px; color: #f8b4b4; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }
+    .page-wrap table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; }
+    .page-wrap th, .page-wrap td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
+    .page-wrap th { background: var(--bg-card); color: var(--text); }
+    .page-wrap td { color: #cbd5e1; }
+  </style>
+
+  <div class="page-wrap">
+    <h1>Markdown Documentation</h1>
+    <p class="subtitle">A complete reference guide to Markdown syntax with examples.</p>
+
+    <section>
+      <h2>Headings</h2>
+      <p>Use <code>#</code> symbols to create headings. One <code>#</code> for the largest heading, up to six for the smallest.</p>
+      <pre><code>{`# Heading 1
+## Heading 2
+### Heading 3
+#### Heading 4
+##### Heading 5
+###### Heading 6`}</code></pre>
+    </section>
+
+    <section>
+      <h2>Text Formatting</h2>
+      <table>
+        <tr><th>Style</th><th>Syntax</th><th>Output</th></tr>
+        <tr><td>Bold</td><td><code>**text**</code></td><td><strong>text</strong></td></tr>
+        <tr><td>Italic</td><td><code>*text*</code></td><td><em>text</em></td></tr>
+        <tr><td>Strikethrough</td><td><code>~~text~~</code></td><td><s>text</s></td></tr>
+        <tr><td>Inline Code</td><td><code>`code`</code></td><td><code>code</code></td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>Lists</h2>
+      <p>Unordered lists use <code>-</code>, <code>*</code>, or <code>+</code>.</p>
+      <pre><code>{`- Item 1
+- Item 2
+  - Nested item`}</code></pre>
+      <p>Ordered lists use numbers:</p>
+      <pre><code>{`1. First
+2. Second
+3. Third`}</code></pre>
+    </section>
+
+    <section>
+      <h2>Code Blocks</h2>
+      <p>Wrap code in triple backticks with an optional language identifier for syntax highlighting:</p>
+      <pre><code>{`\`\`\`javascript
+function hello() {
+  console.log('Hello!');
+}
+\`\`\``}</code></pre>
+    </section>
+
+    <section>
+      <h2>Links &amp; Images</h2>
+      <pre><code>{`[Link text](https://example.com)
+![Alt text](image-url.jpg)`}</code></pre>
+    </section>
+
+    <section>
+      <h2>Blockquotes</h2>
+      <pre><code>{`> This is a blockquote
+> Multiple lines`}</code></pre>
+    </section>
+
+    <section>
+      <h2>Tables</h2>
+      <pre><code>{`| Header 1 | Header 2 |
+| -------- | -------- |
+| Cell 1   | Cell 2   |`}</code></pre>
+    </section>
+
+    <section>
+      <h2>Task Lists</h2>
+      <pre><code>{`- [x] Completed task
+- [ ] Uncompleted task`}</code></pre>
+    </section>
+  </div>
+</BaseLayout>

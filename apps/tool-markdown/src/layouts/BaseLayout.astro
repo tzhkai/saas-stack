@@ -1,0 +1,97 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+}
+
+const { title, description, canonical } = Astro.props;
+const ogImage = 'https://markdownmaster.site/og-image.svg';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="robots" content="index, follow" />
+  {canonical && <link rel="canonical" href={canonical} />}
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:site_name" content="MarkdownMaster" />
+  <meta property="og:url" content={canonical || 'https://markdownmaster.site'} />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImage} />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0f172a; --bg-card: #1e293b; --bg-card-alt: #1e293b;
+      --text: #e2e8f0; --text-dim: #94a3b8; --text-muted: #64748b;
+      --border: #334155; --accent: #0ea5e9; --accent-hover: #38bdf8;
+      --font: 'Inter', sans-serif; --font-mono: 'JetBrains Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font); background: var(--bg); color: var(--text);
+      line-height: 1.6; min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+    .site-header {
+      background: var(--bg-card); border-bottom: 1px solid var(--border);
+      padding: 0.75rem 1.5rem; display: flex;
+      align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .site-logo {
+      font-size: 1.25rem; font-weight: 700; color: var(--accent);
+      text-decoration: none; display: flex; align-items: center; gap: 0.5rem;
+    }
+    .site-nav { display: flex; align-items: center; gap: 0.25rem; }
+    .site-nav a {
+      text-decoration: none; color: var(--text-dim);
+      padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.9rem;
+      font-weight: 500; transition: all 0.15s;
+    }
+    .site-nav a:hover { color: var(--accent); background: rgba(14,165,233,0.08); }
+    .site-main { flex: 1; display: flex; flex-direction: column; }
+    .site-footer {
+      flex-shrink: 0; text-align: center; padding: 1.5rem;
+      color: var(--text-muted); font-size: 0.85rem;
+      border-top: 1px solid var(--border);
+    }
+    .site-footer a { color: var(--text-dim); text-decoration: none; margin: 0 0.5rem; }
+    .site-footer a:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a href="/" class="site-logo">&#x1F4DD; MarkdownMaster</a>
+    <nav class="site-nav">
+      <a href="/editor/">Editor</a>
+      <a href="/docs/">Docs</a>
+      <a href="/pricing/">Pricing</a>
+    </nav>
+  </header>
+  <main class="site-main">
+    <slot />
+  </main>
+  <footer class="site-footer">
+    <p>&copy; 2026 MarkdownMaster &middot;
+      <a href="/privacy/">Privacy</a> &middot;
+      <a href="/terms/">Terms</a>
+    </p>
+  </footer>
+</body>
+</html>

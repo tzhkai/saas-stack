@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Privacy Policy - MarkdownMaster"
+  description="MarkdownMaster privacy policy. We do not collect personal data. Read about how we protect your privacy."
+  canonical="https://markdownmaster.site/privacy/"
+>
+  <style>
+    .page-wrap { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .page-wrap h1 { font-size: 2rem; margin-bottom: 1.5rem; }
+    .page-wrap h2 { font-size: 1.2rem; margin: 1.5rem 0 0.5rem; color: var(--accent); }
+    .page-wrap p { color: #cbd5e1; line-height: 1.8; margin-bottom: 0.75rem; }
+    .page-wrap ul { padding-left: 1.5rem; color: #cbd5e1; margin-bottom: 0.75rem; }
+    .page-wrap li { margin: 0.3rem 0; }
+  </style>
+
+  <div class="page-wrap">
+    <h1>Privacy Policy</h1>
+    <p><em>Last updated: April 2026</em></p>
+
+    <h2>Information We Collect</h2>
+    <p>MarkdownMaster is a client-side application. Your documents and content are never sent to our servers. All processing happens entirely in your browser.</p>
+    <p>We do not collect, store, or transmit any personal information.</p>
+
+    <h2>Third-Party Services</h2>
+    <p>We use the following third-party services:</p>
+    <ul>
+      <li><strong>Google Fonts</strong> - for typography. Google may collect usage data as described in their privacy policy.</li>
+      <li><strong>jsDelivr CDN</strong> - to serve the marked.js library. jsDelivr may log standard HTTP request data.</li>
+      <li><strong>Cloudflare</strong> - as our hosting and CDN provider. Cloudflare may collect standard web server logs.</li>
+    </ul>
+
+    <h2>Cookies</h2>
+    <p>MarkdownMaster does not use cookies. No tracking, analytics, or advertising cookies are employed.</p>
+
+    <h2>Data Security</h2>
+    <p>Since all data processing happens client-side in your browser, there is no data transmission or storage risk related to your document content.</p>
+
+    <h2>Changes to This Policy</h2>
+    <p>We may update this privacy policy from time to time. Changes will be posted on this page.</p>
+
+    <h2>Contact</h2>
+    <p>If you have questions about this privacy policy, please reach out via our GitHub repository.</p>
+  </div>
+</BaseLayout>
