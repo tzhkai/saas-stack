@@ -124,6 +124,10 @@
   <div class="tb-group">
     <button class="tb-btn" onclick="l('- [ ] ')">Task</button>
     <button class="tb-btn" onclick="l('\n---\n')">Line</button>
+  </div><div class="tb-sep"></div>
+  <div class="tb-group">
+    <button class="tb-btn" onclick="cp()" title="Copy Markdown">&larr; Copy</button>
+    <button class="tb-btn" onclick="cl()" title="Clear all content" style="color:#f87171">Clear</button>
   </div>
   <div class="tb-title"><span class="tb-dot"></span> Live Preview</div>
 </div>
@@ -179,6 +183,20 @@
     var t = v.slice(s,e) || 'code here';
     input.setRangeText('\n```\n' + t + '\n```\n', s, e, 'select');
     input.focus(); up();
+  };
+  window.cp = function() {
+    var v = input.value;
+    if (!v.trim()) return;
+    navigator.clipboard.writeText(v).then(function(){
+      var b = event && event.target || document.querySelector('.tb-btn[onclick*="cp()"]');
+      if (b) { var t = b.textContent; b.textContent = 'Copied!'; setTimeout(function(){ b.textContent = t; }, 1200); }
+    }).catch(function(){});
+  };
+  window.cl = function() {
+    if (!input.value.trim()) return;
+    if (!confirm('Clear all content?')) return;
+    input.value = '';
+    up();
   };
 
   // Divider drag
