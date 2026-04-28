@@ -1,8 +1,8 @@
 /**
- * Cloudflare Worker: affiliate link injection
+ * Cloudflare Worker: floating affiliate button
  * Route: markdownmaster.site/*
- * Injects a fixed-position floating badge (bottom-right) via JS.
- * Does not modify any existing DOM element or layout.
+ * Adds a fixed-position button (bottom-right) that opens a popup on click.
+ * Zero layout impact — does not modify any DOM element.
  */
 export default {
   async fetch(request, env) {
@@ -37,25 +37,23 @@ export default {
       console.error("D1 error:", e.message);
     }
 
-    // Floating badge: fixed position at bottom-right
-    const script = '<script>' +
-    '!function(){' +
-    'var l=' + JSON.stringify(links) + ';' +
-    'if(!l||!l.length)return;' +
-    'var c=document.createElement("div");' +
-    'c.innerHTML=\'' +
-    '<button id="afb" style="position:fixed;bottom:20px;right:20px;z-index:9999;padding:10px 16px;background:#0ea5e9;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:0.85rem;font-family:Inter,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,0.3)">\\u{1F517}</button>' +
-    '<div id="afp" style="display:none;position:fixed;bottom:70px;right:20px;z-index:9998;background:#1e293b;border:1px solid #334155;border-radius:12px;padding:16px;min-width:260px;max-width:320px;box-shadow:0 8px 24px rgba(0,0,0,0.4)"></div>' +
-    '\';' +
-    'var b=c.querySelector("#afb"),p=c.querySelector("#afp");' +
-    'p.innerHTML=l.map(function(x){' +
-    'var t=x.title||x.text||"Tool",d=x.description||"",u=x.url||"#",ct=x.cta||"Learn More";' +
-    'return\'<a href="\'+u+\'" target="_blank" rel="noopener sponsored" style="display:flex;padding:10px;border-bottom:1px solid #334155;text-decoration:none;color:#e2e8f0"><div><div style="font-weight:600;color:#60a5fa">\'+t+\'</div><div style="font-size:0.8rem;color:#94a3b8">\'+d+\'</div><div style="font-size:0.8rem;color:#0ea5e9;margin-top:4px">\'+ct+\' \\u2192</div></div></a>\'' +
-    '}).join("");' +
-    'b.onclick=function(e){e.stopPropagation();p.style.display=p.style.display!="block"?"block":"none"};' +
-    'document.onclick=function(e){if(!c.contains(e.target))p.style.display="none"};' +
-    'document.body.appendChild(c);' +
-    '}();</script>';
+    const script = `<script>
+!function(){
+var l=${JSON.stringify(links)};
+if(!l||!l.length)return;
+var d=document.createElement("div");
+d.id="afw";
+d.innerHTML='<button id="afb" style="position:fixed;bottom:20px;right:20px;z-index:9999;width:48px;height:48px;border-radius:50%;background:#0ea5e9;color:#fff;border:none;cursor:pointer;font-size:1.3rem;box-shadow:0 4px 12px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center">\\u{1F517}</button><div id="afp" style="display:none;position:fixed;bottom:76px;right:20px;z-index:9998;background:#1e293b;border:1px solid #334155;border-radius:12px;padding:8px;min-width:240px;box-shadow:0 8px 24px rgba(0,0,0,0.4)"></div>';
+var b=d.querySelector("#afb"),p=d.querySelector("#afp");
+p.innerHTML=l.map(function(x){
+var t=x.title||x.text||"Tool",d=x.description||"",u=x.url||"#",c=x.cta||"Learn More";
+return '<a href="'+u+'" target="_blank" rel="noopener sponsored" style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#e2e8f0;transition:background .15s" onmouseover="this.style.background=\\"#334155\\"" onmouseout="this.style.background=\\"transparent\\""><div style="flex:1"><div style="font-weight:600;color:#60a5fa;font-size:.85rem">'+t+'</div><div style="font-size:.8rem;color:#94a3b8">'+d+'</div></div><span style="color:#0ea5e9;font-size:.8rem;white-space:nowrap">'+c+' \\u2192</span></a>'
+}).join('<div style="height:1px;background:#334155;margin:4px 0"></div>');
+b.onclick=function(e){e.stopPropagation();var s=p.style.display;p.style.display=s!="block"?"block":"none"};
+document.onclick=function(e){if(!d.contains(e.target))p.style.display="none"};
+document.body.appendChild(d);
+}();
+</script>`;
 
     html = html.replace("</body>", script + "</body>");
     return new Response(html, { status: response.status, headers: { "content-type": "text/html; charset=utf-8" } });

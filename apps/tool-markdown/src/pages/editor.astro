@@ -18,7 +18,7 @@
   <meta name="twitter:image" content="https://markdownmaster.site/og-image.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" is:inline></script>
   <style>
     *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
     :root {
@@ -97,26 +97,6 @@
     }
     .divider:hover { background:var(--accent); }
 
-    /* ── Affiliate section inside preview pane ── */
-    .aff-box {
-      margin-top:2rem; padding-top:1rem; border-top:1px solid var(--border);
-    }
-    .aff-box h4 { font-size:0.75rem; color:var(--text-dim); margin-bottom:0.75rem; }
-    .aff-item {
-      display:flex; align-items:center; gap:0.75rem; padding:0.75rem;
-      border-radius:8px; text-decoration:none; color:var(--text);
-      transition:background 0.15s;
-    }
-    .aff-item:hover { background:var(--bg); }
-    .aff-item .icon {
-      width:36px; height:36px; background:var(--accent); border-radius:8px;
-      display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0;
-    }
-    .aff-item .info { flex:1; }
-    .aff-item .info .name { font-weight:600; color:var(--accent); font-size:0.85rem; }
-    .aff-item .info .desc { font-size:0.8rem; color:var(--text-dim); }
-    .aff-item .cta { color:var(--accent); font-size:0.8rem; font-weight:500; white-space:nowrap; }
-
     @media (max-width:768px) {
       .editor-wrap { flex-direction:column; }
       #editor-pane { border-right:none; border-bottom:1px solid var(--border); }
@@ -160,26 +140,13 @@
     <div class="pane-label">Preview</div>
     <div class="pane-scroll" id="preview-scroll">
       <div id="preview-content"></div>
-      <!-- Affiliate links built-in at build time -->
-      <div class="aff-box">
-        <h4>Recommended Tools</h4>
-        <a class="aff-item" href="https://markdownmaster.site" target="_blank" rel="sponsored">
-          <div class="icon">&#x1F4DD;</div>
-          <div class="info"><div class="name">MarkdownMaster</div><div class="desc">Write Markdown beautifully</div></div>
-          <span class="cta">Learn More &rarr;</span>
-        </a>
-        <a class="aff-item" href="https://markdownmaster.site/editor/" target="_blank" rel="sponsored">
-          <div class="icon" style="background:var(--bg)">&#x1F4DD;</div>
-          <div class="info"><div class="name">Free Markdown Editor</div><div class="desc">Real-time preview, no signup</div></div>
-          <span class="cta">Learn More &rarr;</span>
-        </a>
-      </div>
     </div>
   </div>
 </div>
 
-<script>
+<script is:inline>
 (function(){
+
   if (typeof marked === 'undefined') { setTimeout(arguments.callee, 50); return; }
   marked.setOptions({ breaks:true, gfm:true });
 
