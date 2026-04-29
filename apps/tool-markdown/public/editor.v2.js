@@ -167,6 +167,64 @@
     /* ── input listener ── */
     input.addEventListener('input', rerender);
 
+    /* ── keyboard shortcuts ── */
+    input.addEventListener('keydown', function(e) {
+      // 只处理 Ctrl (Windows/Linux) 或 Cmd (Mac) 组合键
+      if (!e.ctrlKey && !e.metaKey) return;
+
+      var key = e.key.toLowerCase();
+      var shift = e.shiftKey;
+      var handled = false;
+
+      // 快捷键映射
+      if (key === 'b' && !shift) {
+        // Ctrl/Cmd + B → 加粗
+        FORMATS['bold']();
+        handled = true;
+      } else if (key === 'i' && !shift) {
+        // Ctrl/Cmd + I → 斜体
+        FORMATS['italic']();
+        handled = true;
+      } else if (key === 'e' && !shift) {
+        // Ctrl/Cmd + E → 行内代码
+        FORMATS['inline-code']();
+        handled = true;
+      } else if (key === 'u' && shift) {
+        // Ctrl/Cmd + Shift + U → 无序列表
+        FORMATS['ul']();
+        handled = true;
+      } else if (key === 'o' && shift) {
+        // Ctrl/Cmd + Shift + O → 有序列表
+        FORMATS['ol']();
+        handled = true;
+      } else if (key === 'h' && !shift) {
+        // Ctrl/Cmd + H → 二级标题
+        FORMATS['h2']();
+        handled = true;
+      } else if (key === 'h' && shift) {
+        // Ctrl/Cmd + Shift + H → 水平线
+        FORMATS['hr']();
+        handled = true;
+      } else if (key === 'q' && shift) {
+        // Ctrl/Cmd + Shift + Q → 引用
+        FORMATS['quote']();
+        handled = true;
+      } else if (key === 'c' && shift) {
+        // Ctrl/Cmd + Shift + C → 代码块
+        FORMATS['code-block']();
+        handled = true;
+      } else if (key === 't' && shift) {
+        // Ctrl/Cmd + Shift + T → 任务列表
+        FORMATS['task']();
+        handled = true;
+      }
+
+      if (handled) {
+        e.preventDefault(); // 阻止浏览器默认行为
+        input.focus(); // 保持焦点
+      }
+    });
+
     /* ── initial content ── */
     input.value = [
       '# Markdown Cheat Sheet',
