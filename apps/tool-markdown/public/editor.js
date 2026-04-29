@@ -100,6 +100,18 @@
         if (!v) { alert('Nothing to print — write some Markdown first.'); return; }
         window.print();
       },
+      'download-md': function (btn) {
+        var v = input.value;
+        if (!v.trim()) { alert('Nothing to download — write some Markdown first.'); return; }
+        var slug = v.trim().slice(0, 50).replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-') || 'document';
+        var blob = new Blob([v], { type: 'text/markdown;charset=utf-8' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url; a.download = slug + '.md';
+        document.body.appendChild(a); a.click();
+        document.body.removeChild(a); URL.revokeObjectURL(url);
+        flash(btn, 'Done!');
+      },
       'clear': function () {
         if (!input.value.trim()) return;
         if (!confirm('Clear all content?')) return;
