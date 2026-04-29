@@ -1,0 +1,215 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const yamlFront = "---\ntitle: 'My First Post'\ndate: 2026-04-29\ntags: [markdown, astro, blog]\n---\n\nWelcome to my blog!";
+const configCode = "import { defineConfig } from 'astro/config';\nimport mdx from '@astrojs/mdx';\nimport sitemap from '@astrojs/sitemap';\n\nexport default defineConfig({\n  site: 'https://myblog.com',\n  integrations: [mdx(), sitemap()],\n  markdown: {\n    shikiConfig: {\n      theme: 'github-dark',\n      wrap: true,\n    },\n  },\n});";
+const layoutCode = "---\n// src/layouts/BlogLayout.astro\nexport interface Props {\n  title: string;\n  description: string;\n  publishedDate: string;\n  tags?: string[];\n}\n\nconst { title, description, publishedDate, tags } = Astro.props;\n---\n\n<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <title>{title}</title>\n    <meta name=\"description\" content={description} />\n  </head>\n  <body>\n    <nav><a href=\"/\">Home</a> › <a href=\"/blog\">Blog</a></nav>\n    <article>\n      <h1>{title}</h1>\n      <p class=\"meta\">Published {publishedDate}</p>\n      <slot />\n    </article>\n  </body>\n</html>";
+const listPageCode = "---\nimport { getCollection } from 'astro:content';\n\nconst posts = await getCollection('blog');\nconst sortedPosts = posts\n  .filter(post => !post.data.draft)\n  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());\n---\n\n<h1>Blog</h1>\n{posts.map(post => (\n  <article>\n    <h2><a href={`/blog/${post.slug}/`}>{post.data.title}</a></h2>\n    <p>{post.data.description}</p>\n    <small>{post.data.date.toLocaleDateString()}</small>\n  </article>\n))}";
+const schemaCode = "<pre><code>import { defineCollection, z } from 'astro:content';\n\nexport const collections &plus; {\n  blog: defineCollection({\n    type: 'content',\n    schema: z.object({\n      title: z.string(),\n      date: z.date(),\n      tags: z.array(z.string()).optional(),\n      draft: z.boolean().optional(),\n    }),\n  }),\n};\n</code></pre>";
+const slugRouteCode = "<pre><code>---\nimport type { GetStaticPaths } from 'astro';\nimport { getCollection } from 'astro:content';\n\nexport const getStaticPaths &plus; (async () => {\n  const blogPosts &plus; await getCollection('blog');\n  return blogPosts.map((post) => ({\n    params: { slug: post.slug },\n    props: { post },\n  }));\n}) satisfies GetStaticPaths;\n---\n\n&lt;!-- Astro renders the Markdown content inline here. --&gt;\n&lt;!-- The page template wraps your content with layout and styles. --&gt;\n</code></pre>";
+
+const jsonld = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "How to Build a Blog with Markdown & Astro: Complete Step-by-Step Guide",
+  "description": "Learn how to build a lightning-fast blog using Markdown and Astro. Step-by-step setup, content collections, dynamic routes, and deployment with real code examples.",
+  "author": { "@type": "Organization", "name": "MarkdownMaster" },
+  "publisher": { "@type": "Organization", "name": "MarkdownMaster", "url": "https://markdownmaster.site" },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://markdownmaster.site/blog/build-blog-with-markdown-astro/" },
+  "datePublished": "2026-04-29",
+  "dateModified": "2026-04-29"
+};
+---
+
+<BlogLayout
+  title="How to Build a Blog with Markdown & Astro: Complete Step-by-Step Guide"
+  description="Learn how to build a lightning-fast blog using Markdown and Astro. Step-by-step setup, content collections, dynamic routes, and deployment with real code examples."
+  canonical="https://markdownmaster.site/blog/build-blog-with-markdown-astro/"
+  publishedDate="2026-04-29"
+  category="Markdown Tips"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonld)}></script>
+
+  <div class="toc">
+    <p>Table of Contents</p>
+    <a href="#why">Why Astro for a Markdown Blog?</a>
+    <a href="#setup">Project Setup</a>
+    <a href="#config" class="l2">Astro Configuration</a>
+    <a href="#content">Writing Content with Markdown</a>
+    <a href="#collections" class="l2">Content Collections</a>
+    <a href="#frontmatter" class="l2">Frontmatter & Schema</a>
+    <a href="#routing">Dynamic Routes</a>
+    <a href="#layout" class="l2">Blog Layout Component</a>
+    <a href="#slug" class="l2">The [...slug].astro Route</a>
+    <a href="#list-page">Creating the Blog List Page</a>
+    <a href="#deploy">Deployment</a>
+    <a href="#workflow">The Complete Workflow</a>
+    <a href="#faq">FAQ</a>
+  </div>
+
+  <p>You have been writing Markdown. You have a collection of articles. Now you need a blog that is fast, flexible, and enjoyable to maintain.</p>
+
+  <p><strong>Astro</strong> is the perfect companion for Markdown-powered sites. It treats Markdown files as first-class content sources, generates static HTML (no JavaScript runtime), and supports MDX for interactive components inside your articles. This is the exact stack powering MarkdownMaster's blog.</p>
+
+  <p>This guide walks you through <strong>every step</strong> — from zero to a deployed blog with Markdown content, automatic sitemaps, tag pages, and RSS feeds.</p>
+
+  <blockquote>
+    <p><strong>Before you start:</strong> Draft your articles in the <a href="/editor/">MarkdownMaster online editor</a> — live preview helps you get the formatting right before committing to your content files.</p>
+  </blockquote>
+
+  <h2 id="why">Why Astro for a Markdown Blog?</h2>
+
+  <p>Astro is not the only static site generator, but it has three advantages that make it the best choice for Markdown blogs:</p>
+
+  <ul>
+    <li><strong>Zero JavaScript by default.</strong> Astro renders everything to static HTML at build time. Your blog loads instantly, no React hydration, no client-side rendering, no wait times.</li>
+    <li><strong>Markdown as a first-class citizen.</strong> You can place <code>.md</code> files directly in your <code>src/pages/</code> directory, and Astro turns them into pages automatically. No configuration needed for basic use.</li>
+    <li><strong>Content Collections.</strong> Astro provides a structured way to manage blog posts with frontmatter validation, type-safe queries, and automatic sorting. This makes adding a new post as simple as creating a <code>.md</code> file with the right frontmatter fields.</li>
+  </ul>
+
+  <p>Other generators like Hugo or Jekyll are also good, but they require learning a templating language (Go templates or Liquid). Astro uses JavaScript or TypeScript throughout, which feels natural if you already work in the JS ecosystem.</p>
+
+  <h2 id="setup">Project Setup</h2>
+
+  <p>Start a new Astro project with the blog template, or add blog support to an existing project:</p>
+
+<pre><code># Create a new project
+npm create astro@latest my-blog -- --template blog
+
+# Or add to an existing project
+npm install astro @astrojs/mdx @astrojs/rss @astrojs/sitemap
+</code></pre>
+
+  <p>This installs Astro, MDX support (for interactive components inside Markdown), RSS generation, and automatic sitemap creation.</p>
+
+  <h3 id="config">Astro Configuration</h3>
+
+  <p>Configure <code>astro.config.mjs</code> to enable Markdown and the integrations you installed:</p>
+
+<pre><code set:html={configCode}></code></pre>
+
+  <p>The <code>site</code> property is required for sitemap generation. The <code>shikiConfig</code> enables syntax highlighting in your code blocks.</p>
+
+  <h2 id="content">Writing Content with Markdown</h2>
+
+  <p>With Astro, you have two options for writing blog content:</p>
+
+  <ol>
+    <li><strong>Plain <code>.md</code> files</strong> — simple, no components inside articles, works with any Markdown editor</li>
+    <li><strong><code>.mdx</code> files</strong> — allows importing and using Astro or React components inside your Markdown content</li>
+  </ol>
+
+  <p>Plain Markdown is sufficient for most blogs. Start with <code>.md</code> and only switch to MDX when you need interactive elements inside articles.</p>
+
+  <h3 id="collections">Content Collections</h3>
+
+  <p>Instead of scattering <code>.md</code> files across your pages directory, Astro's Content Collections keep posts organized:</p>
+
+  <pre><code>src/content/
+  blog/
+    my-first-post.md
+    how-to-use-astro.md
+    markdown-tips.md
+    post-with-code-examples.md
+</code></pre>
+
+  <p>Each file is a standard Markdown document with frontmatter:</p>
+
+<pre><code set:html={yamlFront}></code></pre>
+
+  <p>To query these posts, you define a collection in your content configuration.</p>
+
+  <h3 id="frontmatter">Frontmatter and Schema</h3>
+
+  <p>Define the expected frontmatter fields in <code>src/content/config.ts</code>. This gives you type safety and validation:</p>
+
+<pre><code set:html={schemaCode}></code></pre>
+
+  <p>With this schema, Astro will validate every <code>.md</code> file against the schema and throw a build error if a post is missing required fields.</p>
+
+  <blockquote>
+    <p><strong>Pro tip:</strong> Add a <code>draft: true</code> field to your schema and filter drafts out in production builds. This lets you work on posts locally without publishing them.</p>
+  </blockquote>
+
+  <h2 id="routing">Dynamic Routes</h2>
+
+  <p>Instead of creating a separate page file for each blog post, use Astro's dynamic routing with a single <code>[...slug].astro</code> file.</p>
+
+  <h3 id="layout">Blog Layout Component</h3>
+
+  <p>Create a layout that wraps each blog post. This handles the header, navigation, and footer consistently:</p>
+
+<pre><code set:html={layoutCode}></code></pre>
+
+  <p>The <code>Astro.props</code> brings in frontmatter data from each Markdown file. The <code>&lt;slot /&gt;</code> is where the rendered Markdown content appears.</p>
+
+  <h3 id="slug">The [...slug].astro Route</h3>
+
+  <p>This single file handles all individual blog post pages:</p>
+
+<pre><code set:html={slugRouteCode}></code></pre>
+
+  <p>Astro generates a static HTML page for each post at build time. The <code>slug</code> from the filename becomes the URL.</p>
+
+  <h2 id="list-page">Creating the Blog List Page</h2>
+
+  <p>Create <code>src/pages/blog/index.astro</code> to list all posts with links:</p>
+
+<pre><code set:html={listPageCode}></code></pre>
+
+  <p>This gives you a dynamic index that automatically updates when you add new posts.</p>
+
+  <h2 id="deploy">Deployment</h2>
+
+  <p>Astro builds to static HTML. Deploy anywhere that serves static files:</p>
+
+  <table>
+    <thead>
+      <tr><th>Platform</th><th>Deploy Method</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Cloudflare Pages</td><td>Git push + wrangler</td><td>Free tier, global CDN</td></tr>
+      <tr><td>Netlify</td><td>Git push to main</td><td>Auto-detects Astro</td></tr>
+      <tr><td>Vercel</td><td>Git push to main</td><td>Best for serverless API</td></tr>
+      <tr><td>GitHub Pages</td><td>Actions + gh-pages</td><td>Free, needs CI setup</td></tr>
+    </tbody>
+  </table>
+
+  <p>For Cloudflare Pages, set the build command to <code>npm run build</code>, output directory to <code>dist</code>, and connect your Git repository.</p>
+
+  <h2 id="workflow">The Complete Workflow</h2>
+
+  <p>Here is the end-to-end workflow for maintaining an Astro Markdown blog:</p>
+
+  <ol>
+    <li><strong>Draft</strong> new articles in a Markdown editor like <a href="/editor/">MarkdownMaster</a> with live preview</li>
+    <li><strong>Create</strong> a new <code>.md</code> file in <code>src/content/blog/</code> with proper frontmatter</li>
+    <li><strong>Preview</strong> locally with <code>npm run dev</code> — hot reload shows changes instantly</li>
+    <li><strong>Format</strong> code blocks using triple backticks with language tags</li>
+    <li><strong>Link</strong> between posts using relative Markdown links. <a href="/blog/markdown-links-images-complete-guide/">Learn more about Markdown links</a></li>
+    <li><strong>Deploy</strong> — push to Git, your CI handles the rest</li>
+  </ol>
+
+  <p>Once the infrastructure is set up, publishing a new post is just: write, commit, push.</p>
+
+  <h2 id="faq">FAQ</h2>
+
+  <h3>Can I use other static site generators with Markdown?</h3>
+  <p>Yes — Hugo, Jekyll, Next.js, and Eleventy all support Markdown. Astro is the best choice if you want zero-JS output and native Markdown support without a complex pipeline.</p>
+
+  <h3>Should I use .md or .mdx files?</h3>
+  <p>Start with <code>.md</code>. Only switch to <code>.mdx</code> when you need interactive components inside your articles. Most blogs never need MDX.</p>
+
+  <h3>How do I add an RSS feed?</h3>
+  <p>Use the <code>@astrojs/rss</code> integration. Create a <code>src/pages/rss.xml.js</code> file that generates RSS from your content collection.</p>
+
+  <h3>Does Astro support tags and categories?</h3>
+  <p>Yes. Add a <code>tags</code> field to your frontmatter schema, then create a dynamic route like <code>/blog/tag/[tag].astro</code> that queries posts by tag.</p>
+
+  <h3>How many blog posts can Astro handle?</h3>
+  <p>Astro builds static HTML. Sites with thousands of posts build in under a minute. Performance is flat regardless of content volume.</p>
+
+  <h3>What about images in blog posts?</h3>
+  <p>Store images in <code>src/assets/</code> or <code>public/</code> and reference them with relative Markdown image syntax.</p>
+
+</BlogLayout>
