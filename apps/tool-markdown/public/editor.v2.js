@@ -95,6 +95,11 @@
         document.body.removeChild(a); URL.revokeObjectURL(url);
         flash(btn, 'Done!');
       },
+      'print': function (btn) {
+        var v = input.value.trim();
+        if (!v) { alert('Nothing to print — write some Markdown first.'); return; }
+        window.print();
+      },
       'clear': function () {
         if (!input.value.trim()) return;
         if (!confirm('Clear all content?')) return;
