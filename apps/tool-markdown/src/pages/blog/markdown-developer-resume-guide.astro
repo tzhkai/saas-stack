@@ -1,0 +1,259 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const c1 = `# Jane Doe
+**Full-Stack Developer** | jane@example.com | github.com/janedoe | linkedin.com/in/janedoe
+
+---
+
+## Summary
+
+Full-stack developer with 5+ years building React and Node.js applications. Passionate about clean code, developer tooling, and open-source. Built tools used by 10K+ developers.
+
+## Skills
+
+- **Languages:** TypeScript, JavaScript, Python, SQL
+- **Frontend:** React, Next.js, Tailwind CSS, Astro
+- **Backend:** Node.js, Express, PostgreSQL, Redis
+- **Tools:** Docker, AWS, GitHub Actions, CI/CD
+
+## Experience
+
+### Senior Developer | TechCorp | 2022 – Present
+- Led migration of legacy monolith to microservices (40% performance improvement)
+- Built internal CLI tool adopted by entire engineering team
+- Mentored 3 junior developers through onboarding program
+
+### Full-Stack Developer | StartupXYZ | 2020 – 2022
+- Developed real-time analytics dashboard (React + WebSockets)
+- Reduced CI pipeline time from 15min to 3min
+- Wrote automated test suite achieving 90% coverage
+
+## Education
+
+**B.S. Computer Science** — University of Technology (2016 – 2020)
+
+## Projects
+
+**DevMetrics** — Open-source developer productivity dashboard. 2K GitHub stars.
+**CLI Boilerplate** — Starter template for CLI tools. Used by 500+ developers.`;
+
+const c2 = `- [x] Migrate services to Docker (Q1 2026)
+- [ ] Set up monitoring with Grafana (Q2 2026)
+- [x] Write API documentation for all endpoints
+- [ ] Performance audit and optimization`;
+
+const jsonld = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "How to Create a Developer Resume with Markdown: Complete Guide with Template",
+  "description": "Learn how to write a developer resume in Markdown. Includes a ready-to-use template, tips for formatting in GitHub Gist, converting to PDF, and using Markdown for job applications.",
+  "author": {"@type": "Organization", "name": "MarkdownMaster"},
+  "publisher": {"@type": "Organization", "name": "MarkdownMaster", "url": "https://markdownmaster.site"},
+  "mainEntityOfPage": {"@id": "https://markdownmaster.site/blog/markdown-developer-resume-guide/"},
+  "datePublished": "2026-04-29",
+  "dateModified": "2026-04-29"
+};
+---
+
+<BlogLayout
+  title="How to Create a Developer Resume with Markdown: Complete Guide with Template"
+  description="Learn how to write a developer resume in Markdown. Includes a ready-to-use template, tips for formatting in GitHub Gist, converting to PDF, and using Markdown for job applications."
+  canonical="https://markdownmaster.site/blog/markdown-developer-resume-guide/"
+  publishedDate="2026-04-29"
+  category="Career & Productivity"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonld)}></script>
+
+  <div class="toc">
+    <p>Table of Contents</p>
+    <a href="#why">Why Write Your Resume in Markdown?</a>
+    <a href="#template">Complete Resume Template</a>
+    <a href="#formatting">Formatting Tips for Maximum Impact</a>
+    <a href="#gist">Using GitHub Gist for Your Resume</a>
+    <a href="#pdf">Converting Markdown Resume to PDF</a>
+    <a href="#ats">ATS Compatibility</a>
+    <a href="#share">How to Share Your Markdown Resume</a>
+    <a href="#faq">FAQ</a>
+  </div>
+
+  <p>A developer resume written in Markdown is <strong>version-controllable, portable, and recruiter-friendly</strong>. It eliminates the pain of proprietary formats (Word, Pages, Google Docs), works beautifully with Git, and looks professional when rendered on GitHub or converted to PDF.</p>
+
+  <p>This guide shows you how to write a stand-out developer resume using Markdown, with a ready-to-use template, formatting tips, and workflows for Git(Hub) integration, PDF export, and ATS optimization.</p>
+
+  <h2 id="why">Why Write Your Resume in Markdown?</h2>
+
+  <p>Here is why Markdown resumes are increasingly popular among developers:</p>
+
+  <ul>
+    <li><strong>Git version control</strong> — Track every change. Branch for different roles. Roll back if you delete something important. No more "resume_v3_final_reallyfinal.docx"</li>
+    <li><strong>No lock-in</strong> — A Markdown file works in every editor on every operating system. It will still be readable in 10 years</li>
+    <li><strong>GitHub portfolio</strong> — Host your resume as a GitHub Gist or in your profile repository. Employers see the content immediately without downloading a file</li>
+    <li><strong>Quick iteration</strong> — Edit and preview in seconds using the <a href="/editor/">MarkdownMaster online editor</a>. No waiting for Word/Pages to load</li>
+    <li><strong>PDF is one export away</strong> — Convert to beautifully formatted PDF using the Print to PDF feature or Pandoc + a CSS theme</li>
+  </ul>
+
+  <h2 id="template">Complete Resume Template</h2>
+
+  <p>Here is a complete Markdown resume template. Copy it, paste it into the <a href="/editor/">MarkdownMaster editor</a>, and replace the content with your own.</p>
+
+  <pre><code set:html={c1}></code></pre>
+
+  <p><strong>Structure breakdown:</strong></p>
+  <ul>
+    <li><strong>Header (H1)</strong> — Your name as the primary heading. Contact info below in plain text</li>
+    <li><strong>Horizontal rule</strong> (<code>---</code>) — Visually separates the header from the body</li>
+    <li><strong>Summary</strong> — 2-3 sentences. This is the first thing recruiters read. Make it count</li>
+    <li><strong>Skills</strong> — Grouped by category. Bold for category names, lists for individual skills</li>
+    <li><strong>Experience</strong> — Reverse chronological. Company, role, dates. Bullet points for achievements</li>
+    <li><strong>Education</strong> — Simple: degree, school, years</li>
+    <li><strong>Projects</strong> — Optional but recommended for developers. Links are encouraged</li>
+  </ul>
+
+  <p><strong>Important:</strong> Use <strong>quantified achievements</strong> in your bullet points. "Reduced build time by 40%" is far more impactful than "Worked on build pipeline." Numbers catch the eye in a stack of resumes.</p>
+
+  <h2 id="formatting">Formatting Tips for Maximum Impact</h2>
+
+  <p>These techniques make your Markdown resume stand out:</p>
+
+  <p><strong>1. Use bold for emphasis, not for everything</strong></p>
+  <p>Bold (<code>**text**</code>) should be reserved for company names, job titles, and section headings within a section. Overusing bold creates visual noise.</p>
+
+  <p><strong>2. Horizontal rules for major sections</strong></p>
+  <p>Three dashes (<code>---</code>) create a clean visual separator between major sections. Use them sparingly — one between header and body, optionally between experience and education.</p>
+
+  <p><strong>3. Blockquotes for testimonials or endorsements</strong></p>
+
+  <pre><code>&gt; "Jane is one of the best engineers I have worked with. Her code is clean,
+&gt; her communication is clear, and she ships consistently."
+&gt; — Engineering Manager, TechCorp</code></pre>
+
+  <p><strong>4. Links for portfolios and projects</strong></p>
+  <p>GitHub profile, LinkedIn, personal website, project repos — include these as clickable links. Recruiters will click them if the resume is presented in HTML or PDF format.</p>
+
+  <p><strong>5. Keep it to one page</strong></p>
+  <p>Most tech recruiters recommend a one-page resume for candidates with less than 10 years of experience. Markdown makes it easy to trim because you see the content structure without formatting distractions.</p>
+
+  <h2 id="gist">Using GitHub Gist for Your Resume</h2>
+
+  <p>GitHub Gist is an excellent platform for hosting your Markdown resume. Here is the workflow:</p>
+
+  <ol>
+    <li>Create a <strong>secret gist</strong> (not public, to avoid showing private contact info to everyone) with your resume content</li>
+    <li>Name it <code>resume.md</code> — GitHub renders it beautifully</li>
+    <li>Share the gist URL in job applications or on your LinkedIn profile</li>
+  </ol>
+
+  <p>Alternatively, create a <strong>public gist</strong> named <code>README.md</code> at <code>github.com/yourusername</code> — this becomes your GitHub profile README, and many developers include a link to their Markdown resume there.</p>
+
+  <p><strong>Pro tip:</strong> Create a GitHub repository called <code>resume</code> with a <code>README.md</code>. The repository page renders the Markdown automatically, and you get the benefits of full Git version control (branches, commits, PRs).</p>
+
+  <h2 id="pdf">Converting Markdown Resume to PDF</h2>
+
+  <p>Many job applications still require PDF. Here are the best ways to convert:</p>
+
+  <p><strong>Method 1: Browser Print (Recommended)</strong></p>
+  <ol>
+    <li>Paste your Markdown into the <a href="/editor/">MarkdownMaster editor</a></li>
+    <li>Use the <strong>Export PDF</strong> button (or <code>Ctrl+P</code> → "Save as PDF")</li>
+    <li>The editor renders clean HTML with proper margins and typography</li>
+  </ol>
+
+  <p><strong>Method 2: Pandoc</strong></p>
+
+  <pre><code>pandoc resume.md -o resume.pdf --pdf-engine=wkhtmltopdf</code></pre>
+
+  <p>Pandoc gives you control over the styling via CSS templates. You can create a branded resume design while keeping the source in pure Markdown.</p>
+
+  <p><strong>Method 3: VS Code with Markdown PDF extension</strong></p>
+  <p>The <code>yzhang.markdown-all-in-one</code> extension includes PDF export with syntax highlighting for code blocks. Useful if you include code samples in your resume.</p>
+
+  <p><strong>Important:</strong> When converting to PDF, test the output. Check that:</p>
+  <ul>
+    <li>Tables render correctly and fit within page width</li>
+    <li>Code blocks use monospace font with proper indentation</li>
+    <li>Links are either clickable or shown as footnotes</li>
+    <li>Page breaks do not cut content awkwardly</li>
+  </ul>
+
+  <h2 id="ats">ATS Compatibility</h2>
+
+  <p>Applicant Tracking Systems (ATS) parse resumes to extract structured data — skills, experience, education, contact info. Here is the reality of ATS and Markdown resumes:</p>
+
+  <ul>
+    <li><strong>PDF from Markdown</strong> — Works well with most modern ATS. The text is clean, no complex tables or graphics to confuse parsers</li>
+    <li><strong>Pure Markdown (.md files)</strong> — Most ATS do not support <code>.md</code> files directly. Always submit as PDF for applications</li>
+    <li><strong>ATS parsing quality</strong> — ATS prefers simple structures. Avoid tables for layout (use them only for data), avoid multi-column layouts, and keep formatting minimal</li>
+  </ul>
+
+  <p><strong>ATS-friendly tips:</strong></p>
+  <ul>
+    <li>Use standard section headings: "Experience," "Education," "Skills" — not creative alternatives</li>
+    <li>Avoid icons, images, or emoji — ATS parsers cannot read them reliably</li>
+    <li>List skills as comma-separated plain text rather than in tables or columns</li>
+    <li>Include industry-standard job titles that match what recruiters search for</li>
+  </ul>
+
+  <p>The beauty of Markdown is that it naturally produces simple, semantic structure — which is exactly what ATS parsers handle best. A Word document with complex tables and text boxes is far more likely to be misparsed.</p>
+
+  <h2 id="share">How to Share Your Markdown Resume</h2>
+
+  <p>A Markdown resume gives you multiple sharing options:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Platform</th>
+        <th>How to Share</th>
+        <th>Best For</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>GitHub Gist</td>
+        <td>Secret gist of your <code>resume.md</code></td>
+        <td>Quick link to share with recruiters</td>
+      </tr>
+      <tr>
+        <td>GitHub Repo</td>
+        <td>Public repo named <code>resume</code> with <code>README.md</code></td>
+        <td>Version-controlled, commit history visible</td>
+      </tr>
+      <tr>
+        <td>Personal Website</td>
+        <td>Convert to HTML/PDF and host on your site</td>
+        <td>Professional portfolio + resume in one place</td>
+      </tr>
+      <tr>
+        <td>LinkedIn PDF</td>
+        <td>Export to PDF, upload to Featured section</td>
+        <td>Visible on your LinkedIn profile</td>
+      </tr>
+      <tr>
+        <td>Job Applications</td>
+        <td>Upload the PDF export</td>
+        <td>Required format for most applications</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Keep your Markdown source as the single source of truth. Generate PDF and HTML from it as needed. This way, you make changes once and update all formats.</p>
+
+  <h2 id="faq">FAQ</h2>
+
+  <h3>Can I use emoji in my Markdown resume?</h3>
+  <p>Yes, but only if the output format supports it. HTML and most PDF renderers handle emoji correctly. ATS parsers may not. If you are applying through an ATS-heavy process, avoid emoji. For startups and tech companies that read resumes directly, a few well-placed emoji (🚀, ⚡, ✅) can add visual personality.</p>
+
+  <h3>Should I include a photo in my Markdown resume?</h3>
+  <p>In the US, no — photos are discouraged to avoid bias. In some countries (Germany, China, parts of Europe), photos are standard. Check the norms for your target market. If you do include a photo, use a Markdown image: <code>![Photo](headshot.jpg)</code>.</p>
+
+  <h3>Does a Markdown resume look professional?</h3>
+  <p>Yes, when properly converted to PDF with good typography. The content quality matters far more than the file format. A well-written Markdown resume converted to clean PDF looks every bit as professional as one designed in InDesign.</p>
+
+  <h3>Can I design a custom layout in Markdown?</h3>
+  <p>Markdown controls structure, not layout. For custom layouts (color, columns, icons), convert to HTML and apply CSS. Many developers maintain their resume in HTML with CSS, with the content in Markdown that gets piped into the HTML template.</p>
+
+  <h3>Is it okay to send a .md file to a recruiter?</h3>
+  <p>Only if requested. Most recruiters expect PDF or Word documents. Keep the <code>.md</code> as your source file, and always send the <strong>PDF export</strong> for applications. The Markdown file is for your workflow, not for submission.</p>
+
+</BlogLayout>

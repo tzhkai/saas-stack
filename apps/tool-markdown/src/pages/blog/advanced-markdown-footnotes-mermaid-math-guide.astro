@@ -1,0 +1,399 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const c1 = `Here's a statement that needs a footnote.[^1]
+
+More text here.
+
+[^1]: This is the footnote content. It appears at the bottom of the document.`;
+
+const c2 = `Markdown is great for formatting[^formatting]. It also supports tables[^tables].
+
+[^formatting]: Bold, italic, strikethrough, and inline code.
+[^tables]: GitHub-flavored Markdown includes table syntax.`;
+
+const c3 = `\`\`\`mermaid
+graph TD
+    A[Start] --> B{Is it Markdown?};
+    B -->|Yes| C[Use MarkdownMaster];
+    B -->|No| D[Convert to Markdown];
+    C --> E[Export HTML/PDF/MD];
+    D --> E;
+    E --> F[✅ Done];
+\`\`\``;
+
+const c4 = `\`\`\`mermaid
+sequenceDiagram
+    participant User
+    participant Editor
+    participant Preview
+
+    User->>Editor: Type Markdown
+    Editor->>Preview: Parse & Render
+    Preview-->>User: Show live preview
+    User->>Editor: Click Export
+    Editor->>User: Download HTML/MD file
+\`\`\``;
+
+const c5 = `\`\`\`mermaid
+gantt
+    title Project Timeline
+    dateFormat  YYYY-MM-DD
+    section Planning
+    Requirements    :done, 2026-01-01, 14d
+    Design          :active, 2026-01-15, 21d
+    section Development
+    Frontend        :2026-02-05, 30d
+    Backend         :2026-02-05, 30d
+    section Release
+    Testing         :2026-03-07, 14d
+    Launch          :2026-03-21, 3d
+\`\`\``;
+
+const c6 = `The quadratic formula: $$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$`;
+
+const c7 = `Inline math: $E = mc^2$
+
+Block math:
+
+$$
+\\sum_{i=1}^{n} i = \\frac{n(n+1)}{2}
+$$`;
+
+const c8 = `\\[
+\\begin{bmatrix}
+1 & 0 & 0 \\\\
+0 & 1 & 0 \\\\
+0 & 0 & 1
+\\end{bmatrix}
+\\]`;
+
+const c9 = `\\[
+f(x) = \\begin{cases}
+x^2 & \\text{if } x \\geq 0 \\\\
+-x^2 & \\text{if } x < 0
+\\end{cases}
+\\]`;
+
+const jsonld = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Advanced Markdown: Footnotes, Mermaid Diagrams, Math Formulas, and More",
+  "description": "Go beyond basic Markdown with footnotes, flowcharts, sequence diagrams, Gantt charts, LaTeX math equations, callouts, and custom containers. Full syntax guide with real examples.",
+  "author": {"@type": "Organization", "name": "MarkdownMaster"},
+  "publisher": {"@type": "Organization", "name": "MarkdownMaster", "url": "https://markdownmaster.site"},
+  "mainEntityOfPage": {"@id": "https://markdownmaster.site/blog/advanced-markdown-footnotes-mermaid-math-guide/"},
+  "datePublished": "2026-04-29",
+  "dateModified": "2026-04-29"
+};
+---
+
+<BlogLayout
+  title="Advanced Markdown: Footnotes, Mermaid Diagrams, Math Formulas, and More"
+  description="Go beyond basic Markdown with footnotes, flowcharts, sequence diagrams, Gantt charts, LaTeX math equations, callouts, and custom containers. Full syntax guide with real examples."
+  canonical="https://markdownmaster.site/blog/advanced-markdown-footnotes-mermaid-math-guide/"
+  publishedDate="2026-04-29"
+  category="Markdown Tutorial"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonld)}></script>
+
+  <div class="toc">
+    <p>Table of Contents</p>
+    <a href="#footnotes">Footnotes</a>
+    <a href="#mermaid">Mermaid Diagrams</a>
+    <a href="#flow" class="l2">Flowcharts</a>
+    <a href="#sequence" class="l2">Sequence Diagrams</a>
+    <a href="#gantt" class="l2">Gantt Charts</a>
+    <a href="#math">LaTeX Math Equations</a>
+    <a href="#callouts">Callouts & Alerts</a>
+    <a href="#containers">Custom Containers</a>
+    <a href="#definitions">Definition Lists</a>
+    <a href="#highlights">Highlight & Mark Text</a>
+    <a href="#emoji">Emoji Shortcodes</a>
+    <a href="#where">Where Each Feature Works</a>
+    <a href="#faq">FAQ</a>
+  </div>
+
+  <p>Basic Markdown gets you 80% of the way there. But the remaining 20% — footnotes, diagrams, math formulas, and interactive elements — is what separates a <em>good</em> document from a <em>great</em> one.</p>
+
+  <p>This guide covers the <strong>advanced Markdown features</strong> that most tutorials skip. Not all of them work everywhere (we will show you exactly where each one is supported), but mastering these will make your documentation, blog posts, and technical writing stand out.</p>
+
+  <p>To test any of these features in real time, use the <a href="/editor/">MarkdownMaster online editor</a> with live preview.</p>
+
+  <h2 id="footnotes">Footnotes</h2>
+
+  <p>Footnotes let you add citations, clarifications, or asides without cluttering the main text. They are supported by most Markdown renderers, including GitHub, Pandoc, and many static site generators.</p>
+
+  <p><strong>Syntax:</strong></p>
+
+  <pre><code set:html={c1}></code></pre>
+
+  <p><strong>How it renders:</strong> The <code>[^1]</code> in the text becomes a superscript link. Clicking it jumps to the footnote definition at the bottom of the document. Clicking the footnote's ↑ link jumps back to the reference point.</p>
+
+  <p>You can have multiple footnotes in a single document:</p>
+
+  <pre><code set:html={c2}></code></pre>
+
+  <p><strong>Tips:</strong></p>
+  <ul>
+    <li>Use descriptive labels like <code>[^security-note]</code> instead of numbers — easier to manage in long documents</li>
+    <li>Footnotes can contain multiple paragraphs. Indent the second paragraph with two spaces</li>
+    <li>Footnote references can appear anywhere in the text — mid-sentence, in tables, even inside blockquotes</li>
+    <li>GitHub renders footnotes correctly in Markdown files (README, wiki) but not in comments or issues</li>
+  </ul>
+
+  <h2 id="mermaid">Mermaid Diagrams</h2>
+
+  <p>Mermaid is a JavaScript-based diagramming tool that renders <strong>text definitions</strong> into diagrams. Write the diagram in plain text inside a code block with the <code>mermaid</code> language identifier, and compatible renderers turn it into a chart.</p>
+
+  <p>GitHub, GitLab, Notion, Obsidian, and many documentation tools support Mermaid natively. <strong>Note:</strong> The MarkdownMaster editor does not render Mermaid in the preview pane yet, but the exported HTML can include a Mermaid renderer.</p>
+
+  <h3 id="flow">Flowcharts</h3>
+
+  <p>Flowcharts show processes, workflows, or decision trees. They are one of the most common diagram types in technical documentation.</p>
+
+  <pre><code set:html={c3}></code></pre>
+
+  <p><strong>Key syntax elements:</strong></p>
+  <ul>
+    <li><code>graph TD</code> — Top-down direction. Use <code>LR</code> for left-to-right</li>
+    <li><code>[]</code> — Rectangle (process step)</li>
+    <li><code>{}</code> — Diamond (decision)</li>
+    <li><code>()</code> — Rounded rectangle (start/end)</li>
+    <li><code>--></code> — Arrow (solid)</li>
+    <li><code>-.-></code> — Dotted arrow</li>
+    <li><code>==></code> — Thick arrow</li>
+    <li>Text on arrows: <code>--Label text--></code></li>
+  </ul>
+
+  <h3 id="sequence">Sequence Diagrams</h3>
+
+  <p>Sequence diagrams show interactions between components over time. They are essential for documenting API flows, authentication workflows, and multi-service architectures.</p>
+
+  <pre><code set:html={c4}></code></pre>
+
+  <p><strong>Key syntax elements:</strong></p>
+  <ul>
+    <li><code>participant</code> — Declares an actor or system component</li>
+    <li><code>->></code> — Solid arrow (synchronous call)</li>
+    <li><code>-->></code> — Dotted arrow (async response)</li>
+    <li><code>--x</code> — Loss/error arrow</li>
+    <li><code>Note right/left of</code> — Side notes on the diagram</li>
+    <li><code>activate/deactivate</code> — Show lifetime bars for actors</li>
+  </ul>
+
+  <h3 id="gantt">Gantt Charts</h3>
+
+  <p>Gantt charts visualize project timelines and task dependencies. Useful for README roadmaps, project planning documents, and status updates.</p>
+
+  <pre><code set:html={c5}></code></pre>
+
+  <p><strong>Key syntax elements:</strong></p>
+  <ul>
+    <li><code>dateFormat</code> — Define the date format used in your tasks</li>
+    <li><code>section</code> — Group related tasks under a heading</li>
+    <li><code>:done</code> — Mark a task as completed</li>
+    <li><code>:active</code> — Mark task as currently in progress</li>
+    <li><code>:crit</code> — Mark as critical path</li>
+    <li>Duration format: <code>start, duration</code> (e.g., <code>2026-01-01, 14d</code>)</li>
+  </ul>
+
+  <h2 id="math">LaTeX Math Equations</h2>
+
+  <p>Mathematical notation in Markdown uses <strong>LaTeX syntax</strong>, rendered by libraries like MathJax or KaTeX. GitHub, Jupyter Notebooks, Obsidian, and many academic platforms support this.</p>
+
+  <p><strong>Inline math</strong> uses single dollar signs:</p>
+
+  <pre><code set:html={c6}></code></pre>
+
+  <p><strong>Display math</strong> uses double dollar signs or <code>\\[ ... \\]</code>:</p>
+
+  <pre><code set:html={c7}></code></pre>
+
+  <p><strong>Matrices:</strong></p>
+
+  <pre><code set:html={c8}></code></pre>
+
+  <p><strong>Piecewise functions:</strong></p>
+
+  <pre><code set:html={c9}></code></pre>
+
+  <p><strong>Common LaTeX math commands:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Symbol</th>
+        <th>Command</th>
+        <th>Symbol</th>
+        <th>Command</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>α</td><td><code>\\alpha</code></td><td>β</td><td><code>\\beta</code></td></tr>
+      <tr><td>∑</td><td><code>\\sum</code></td><td>∫</td><td><code>\\int</code></td></tr>
+      <tr><td>√</td><td><code>\\sqrt{}</code></td><td>π</td><td><code>\\pi</code></td></tr>
+      <tr><td>∞</td><td><code>\\infty</code></td><td>≠</td><td><code>\\neq</code></td></tr>
+      <tr><td>→</td><td><code>\\rightarrow</code></td><td>≈</td><td><code>\\approx</code></td></tr>
+      <tr><td>∂</td><td><code>\\partial</code></td><td>∇</td><td><code>\\nabla</code></td></tr>
+    </tbody>
+  </table>
+
+  <p><strong>Note:</strong> LaTeX math requires a rendering library. The MarkdownMaster editor does not render math in preview, but you can paste the output into a GitHub README or Jupyter notebook for rendering.</p>
+
+  <h2 id="callouts">Callouts & Alerts</h2>
+
+  <p>Callouts (also called admonitions or alerts) draw attention to important information. Different platforms support different syntaxes:</p>
+
+  <p><strong>GitHub Alerts (2024+):</strong></p>
+
+  <pre><code>&gt; [!NOTE]
+&gt; Useful information that users should know.
+
+&gt; [!TIP]
+&gt; Helpful advice for doing things better.
+
+&gt; [!IMPORTANT]
+&gt; Crucial information that users must follow.
+
+&gt; [!WARNING]
+&gt; Content that could lead to problems if ignored.
+
+&gt; [!CAUTION]
+&gt; Potentially dangerous or destructive actions.</code></pre>
+
+  <p><strong>Obsidian callouts:</strong></p>
+
+  <pre><code>&gt; [!note] Title
+&gt; Content here.
+
+&gt; [!warning] Security Warning
+&gt; Do not expose API keys in client-side code.</code></pre>
+
+  <p>Obsidian also supports: <code>[!info]</code>, <code>[!todo]</code>, <code>[!tip]</code>, <code>[!success]</code>, <code>[!question]</code>, <code>[!failure]</code>, <code>[!danger]</code>, <code>[!bug]</code>, <code>[!example]</code>, <code>[!quote]</code>.</p>
+
+  <p><strong>Pandoc / MkDocs admonitions:</strong></p>
+
+  <pre><code>::: note
+This is a note.
+:::
+
+::: warning
+This is a warning.
+:::</code></pre>
+
+  <p>Callouts are a great way to break up long walls of text and make important information visually distinct. Use them sparingly — if everything is a callout, nothing is.</p>
+
+  <h2 id="containers">Custom Containers (Markdown Extended)</h2>
+
+  <p>Some Markdown processors (VuePress, Docusaurus, MkDocs) support custom containers — styled divs with labels. They extend the callout concept to arbitrary content:</p>
+
+  <pre><code>::: tip
+**Pro tip:** You can nest Markdown inside containers, including code blocks and lists.
+:::</code></pre>
+
+  <p>These are not standard Markdown — they require a specific processor. But if you control your toolchain (e.g., building a documentation site with VuePress), custom containers are an extremely useful pattern for structured content.</p>
+
+  <h2 id="definitions">Definition Lists</h2>
+
+  <p>Definition lists are supported by Pandoc, Kramdown (used by GitHub Pages with Jekyll), and some other processors. Standard Markdown does not include them, but they are useful for glossaries and metadata.</p>
+
+  <pre><code>Term One
+: Definition of term one
+
+Term Two
+: Definition of term two
+: Second definition for the same term</code></pre>
+
+  <p>If your Markdown processor does not support definition lists natively, you can simulate them with tables or bold text followed by indented paragraphs:</p>
+
+  <pre><code>**Term**<br>
+&nbsp;&nbsp;Definition here.</code></pre>
+
+  <p>This is not as clean, but it works everywhere.</p>
+
+  <h2 id="highlights">Highlight & Mark Text</h2>
+
+  <p>Standard Markdown has no <code>&lt;mark&gt;</code> element for highlighting text. Some extensions add this:</p>
+
+  <p><strong>Pandoc / Multimarkdown:</strong></p>
+
+  <pre><code>This text is ==highlighted== in yellow.</code></pre>
+
+  <p><strong>GitHub does not support</strong> <code>==highlight==</code> syntax in README files. You can use HTML <code>&lt;mark&gt;</code> instead:</p>
+
+  <pre><code>This text is &lt;mark&gt;highlighted&lt;/mark&gt; in HTML.</code></pre>
+
+  <p>GitHub renders basic HTML tags, so <code>&lt;mark&gt;</code> works. Some themes may not show the highlight color distinctly, so test it before relying on it.</p>
+
+  <h2 id="emoji">Emoji Shortcodes</h2>
+
+  <p>GitHub and many other platforms support emoji shortcodes. Type a colon followed by the emoji name:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Shortcode</th>
+        <th>Result</th>
+        <th>Shortcode</th>
+        <th>Result</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>:rocket:</code></td><td>🚀</td><td><code>:zap:</code></td><td>⚡</td></tr>
+      <tr><td><code>:tada:</code></td><td>🎉</td><td><code>:bug:</code></td><td>🐛</td></tr>
+      <tr><td><code>:white_check_mark:</code></td><td>✅</td><td><code>:warning:</code></td><td>⚠️</td></tr>
+      <tr><td><code>:sparkles:</code></td><td>✨</td><td><code>:fire:</code></td><td>🔥</td></tr>
+      <tr><td><code>:book:</code></td><td>📖</td><td><code>:wrench:</code></td><td>🔧</td></tr>
+      <tr><td><code>:checkered_flag:</code></td><td>🏁</td><td><code>:x:</code></td><td>❌</td></tr>
+    </tbody>
+  </table>
+
+  <p>Emoji <code>:shortcodes:</code> only work on platforms that support them. On plain Markdown renderers, they will show as literal text. As a fallback, copy the actual emoji character (use emojipedia.org).</p>
+
+  <h2 id="where">Where Each Feature Works</h2>
+
+  <p>Not all Markdown renderers are created equal. Here is a compatibility matrix:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th>GitHub</th>
+        <th>GitLab</th>
+        <th>Obsidian</th>
+        <th>Notion</th>
+        <th>Pandoc</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Footnotes</td><td>✅</td><td>✅</td><td>✅</td><td>❌</td><td>✅</td></tr>
+      <tr><td>Mermaid diagrams</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>⚠️ Plugin</td></tr>
+      <tr><td>LaTeX math</td><td>⚠️ Limited</td><td>✅</td><td>✅</td><td>⚠️ Block only</td><td>✅</td></tr>
+      <tr><td>GitHub Alerts</td><td>✅</td><td>⚠️ Partial</td><td>⚠️ Similar</td><td>❌</td><td>❌</td></tr>
+      <tr><td>Definition lists</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td></tr>
+      <tr><td>Emoji shortcodes</td><td>✅</td><td>✅</td><td>❌</td><td>⚠️ Partial</td><td>❌</td></tr>
+      <tr><td>Highlight ==text==</td><td>❌</td><td>❌</td><td>✅</td><td>❌</td><td>✅</td></tr>
+      <tr><td>Custom containers</td><td>❌</td><td>❌</td><td>⚠️ CSS</td><td>❌</td><td>✅</td></tr>
+    </tbody>
+  </table>
+
+  <p>The golden rule: if you are writing for a specific platform (e.g., a GitHub README), use only the features that platform supports. If you are writing portable Markdown that might be rendered anywhere, stick to the basic syntax — everything in this article beyond footnotes and basic tables is an extension.</p>
+
+  <h2 id="faq">FAQ</h2>
+
+  <h3>Do footnotes work in all Markdown editors?</h3>
+  <p>No. Footnotes are an extension, not part of the original Markdown spec. They work in GitHub, Pandoc, and most static site generators, but not in basic Markdown previewers. The <a href="/editor/">MarkdownMaster editor</a> processes standard Markdown; footnotes require a compatible renderer.</p>
+
+  <h3>Can I use Mermaid in any Markdown file?</h3>
+  <p>Mermaid requires a compatible renderer. GitHub renders Mermaid natively in <code>.md</code> files since 2022. For other platforms, you may need to install a plugin or use a Mermaid-based editor to generate static images.</p>
+
+  <h3>Does Google Search support LaTeX math in Markdown?</h3>
+  <p>Google indexes LaTeX math if it is rendered as an image or if the page uses MathJax/KaTeX with proper server-side rendering. Plain raw LaTeX in Markdown may not be indexed as mathematical content.</p>
+
+  <h3>What is the most universally supported advanced Markdown feature?</h3>
+  <p>Tables (GitHub-flavored Markdown) are the most widely supported advanced feature. They work on virtually every platform that renders Markdown, including GitHub, GitLab, Bitbucket, Notion, Obsidian, and most static site generators.</p>
+
+  <h3>Should I use HTML or Markdown extensions for complex layouts?</h3>
+  <p>It depends on your platform. GitHub supports a limited subset of HTML (<code>&lt;p&gt;</code>, <code>&lt;img&gt;</code>, <code>&lt;details&gt;</code>, <code>&lt;br&gt;</code>) in README files. For most use cases, Markdown extensions are more portable than raw HTML. If you need complex layouts that neither HTML nor Markdown handles well, consider generating documentation with a dedicated tool like Docusaurus or MkDocs.</p>
+
+</BlogLayout>

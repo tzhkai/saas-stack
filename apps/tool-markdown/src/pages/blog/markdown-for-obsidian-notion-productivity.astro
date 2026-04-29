@@ -1,0 +1,283 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const c1 = `## Project Notes
+
+Here is the architecture for the new API. Key decisions:
+
+| Area | Decision | Rationale |
+|------|----------|-----------|
+| Framework | Hono + Bun | Minimal overhead, ESM-native |
+| Auth | JWT with refresh tokens | Stateless, easy to scale |
+| Database | PostgreSQL via Drizzle | Type-safe queries |
+| Cache | Redis | Session storage + rate limiting |
+
+**Links:** [API Spec](./api-spec.md) | [DB Schema](./db-schema.md)
+
+**Next actions:**
+- [x] Set up project scaffolding
+- [ ] Implement auth middleware
+- [ ] Write integration tests
+- [ ] Deploy staging environment`;
+
+const c2 = `# Fleet of Footnotes
+
+A tool for writing about Kafka infrastructure.
+
+> [!NOTE] Works best with Obsidian's graph view enabled.
+
+The system processes log streams via a **DAG of transformations**:
+
+\`\`\`mermaid
+graph LR
+    Source --> Parse
+    Parse --> Filter
+    Filter --> Enrich
+    Enrich --> Sink
+\`\`\``;
+
+const jsonld = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Markdown for Obsidian, Notion, and Note-Taking: Boost Your Productivity",
+  "description": "Learn how to use Markdown effectively in Obsidian and Notion. Covers formatting shortcuts, linking strategies, templates, checklists, and workflows that save hours every week.",
+  "author": {"@type": "Organization", "name": "MarkdownMaster"},
+  "publisher": {"@type": "Organization", "name": "MarkdownMaster", "url": "https://markdownmaster.site"},
+  "mainEntityOfPage": {"@id": "https://markdownmaster.site/blog/markdown-for-obsidian-notion-productivity/"},
+  "datePublished": "2026-04-29",
+  "dateModified": "2026-04-29"
+};
+
+const c3 = '---\ndate: ' + '{{date}}' + '\ntags: [meeting]\nattendees:\n---\n\n# ' + '{{title}}' + '\n\n## Agenda\n\n1.\n\n## Notes\n\n## Action Items\n\n- [ ]';
+
+const c4 = '---\ndate: ' + '{{date:YYYY-MM-DD}}' + '\n---\n\n# Today\'s Focus\n\n## Log\n\n## Tomorrow\n\n- [ ]';
+---
+
+<BlogLayout
+  title="Markdown for Obsidian, Notion, and Note-Taking: Boost Your Productivity"
+  description="Learn how to use Markdown effectively in Obsidian and Notion. Covers formatting shortcuts, linking strategies, templates, checklists, and workflows that save hours every week."
+  canonical="https://markdownmaster.site/blog/markdown-for-obsidian-notion-productivity/"
+  publishedDate="2026-04-29"
+  category="Productivity"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonld)}></script>
+
+  <div class="toc">
+    <p>Table of Contents</p>
+    <a href="#obsidian">Markdown in Obsidian</a>
+    <a href="#linking" class="l2">Linking & Backlinks</a>
+    <a href="#graph" class="l2">Using the Graph View</a>
+    <a href="#templates" class="l2">Templates for Speed</a>
+    <a href="#plugins" class="l2">Markdown-Enhancing Plugins</a>
+    <a href="#notion">Markdown in Notion</a>
+    <a href="#paste" class="l2">Pasting Markdown</a>
+    <a href="#shortcuts" class="l2">Keyboard Shortcuts</a>
+    <a href="#databases" class="l2">Combining Markdown with Databases</a>
+    <a href="#workflows">Practical Workflows</a>
+    <a href="#research" class="l2">Research & Knowledge Management</a>
+    <a href="#project" class="l2">Project Management</a>
+    <a href="#writing" class="l2">Writing & Drafting</a>
+    <a href="#macros">Power User Tips</a>
+    <a href="#faq">FAQ</a>
+  </div>
+
+  <p>Obsidian and Notion are two of the most popular note-taking tools among developers and technical writers. Both are built on Markdown — but they use it in very different ways. Understanding these differences (and how to exploit them) can significantly improve your note-taking speed and organization.</p>
+
+  <p>This guide covers Markdown best practices for both platforms, including formatting shortcuts, linking strategies, templates, and the workflow patterns that experienced users rely on.</p>
+
+  <p>You can use the <a href="/editor/">MarkdownMaster editor</a> to write or clean up Markdown content before moving it into your Obsidian vault or Notion workspace.</p>
+
+  <h2 id="obsidian">Markdown in Obsidian</h2>
+
+  <p>Obsidian is a <strong>plain-text-first</strong> Markdown editor. It stores all notes as <code>.md</code> files on your local filesystem. This means any Markdown you can write works in Obsidian, and your notes remain accessible even if you stop using Obsidian.</p>
+
+  <h3 id="linking">Linking & Backlinks</h3>
+
+  <p>Obsidian's killer feature is its linking system. Unlike standard Markdown, which uses <code>[text](url)</code> for links, Obsidian adds <strong>internal links</strong> using wiki-style syntax:</p>
+
+  <pre><code>[[Note Name]]          -- Link to another note
+[[Note Name|Alias]]     -- Link with display text
+[[Note Name#Heading]]   -- Link to specific heading
+[[Note Name^block-id]]  -- Link to specific block</code></pre>
+
+  <p>These internal links power Obsidian's <strong>graph view</strong>, which visualizes connections between notes. The more you link, the more useful the graph becomes.</p>
+
+  <p><strong>Practical linking strategies:</strong></p>
+  <ul>
+    <li><strong>Hub notes</strong> — Create index notes for major topics. For example, a "Project Alpha" note links to all related meeting notes, specs, and research</li>
+    <li><strong>Atomic notes</strong> — One concept per note. A note about "Rate Limiting" links to "API Design," "Redis," "Nginx Config," and "Best Practices." This creates rich connections in the graph</li>
+    <li><strong>MoC (Map of Content)</strong> — A top-level note that links to other index notes. Think of it as a table of contents for your entire vault</li>
+  </ul>
+
+  <h3 id="graph">Using the Graph View</h3>
+
+  <p>Obsidian's graph view shows how your notes connect. It reveals patterns:</p>
+  <ul>
+    <li>Which topics have the most references (knowledge hubs)</li>
+    <li>Which notes are orphaned (no links — review whether they are still relevant)</li>
+    <li>Which clusters are disconnected (potential to combine or cross-reference)</li>
+  </ul>
+
+  <p>To make the graph useful, develop the habit of adding at least one internal link in every note. Even a simple <code>[[index]]</code> link at the bottom creates connectivity.</p>
+
+  <h3 id="templates">Templates for Speed</h3>
+
+  <p>Obsidian's <strong>Templates</strong> core plugin lets you insert pre-written Markdown with a shortcut <code>Ctrl/Cmd + T</code>. Templates can include frontmatter, structure, and placeholders.</p>
+
+  <p><strong>Meeting notes template:</strong></p>
+
+  <pre><code set:html={c3}></code></pre>
+
+  <p><strong>Daily note template:</strong></p>
+
+  <pre><code set:html={c4}></code></pre>
+
+  <p>Obsidian fills in the <code set:html="'{{date}}'"></code> and <code set:html="'{{time}}'"></code> placeholders when you insert a template. You can also use the <strong>Templater</strong> community plugin for more advanced automation (e.g., auto-creating linked notes, prompting for input, executing JavaScript).</p>
+
+  <h3 id="plugins">Markdown-Enhancing Plugins</h3>
+
+  <p>These community plugins extend Obsidian's Markdown capabilities:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Plugin</th>
+        <th>What It Does</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Dataview</td><td>Treats Markdown as a queryable database. Write SQL-like queries over your notes' frontmatter and inline fields</td></tr>
+      <tr><td>Templater</td><td>Advanced template engine with scripting, file creation, and system command support</td></tr>
+      <tr><td>Kanban</td><td>Renders Markdown checklists as Kanban boards using a special Markdown format</td></tr>
+      <tr><td>Excalidraw</td><td>Embed hand-drawn-style diagrams in notes, stored as Markdown files with SVG data</td></tr>
+      <tr><td>Obsidian Git</td><td>Auto-commit and sync your vault to a Git repository — version control for notes</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="notion">Markdown in Notion</h2>
+
+  <p>Notion is not a Markdown editor — it is a <strong>block-based editor</strong> that <em>supports Markdown-style shortcuts</em> for creating and formatting blocks. The underlying data is stored in Notion's proprietary format, not as <code>.md</code> files.</p>
+
+  <h3 id="paste">Pasting Markdown into Notion</h3>
+
+  <p>Notion automatically converts most Markdown syntax into its native block format when you paste. This is useful for importing content written elsewhere:</p>
+
+  <ul>
+    <li><code># Heading</code> → Heading block</li>
+    <li><code>- List item</code> → Bulleted list block</li>
+    <li><code>1. Item</code> → Numbered list block</li>
+    <li><code>**Bold**</code> → Bold formatting</li>
+    <li><code>[Link](url)</code> → Hyperlink</li>
+    <li><code>```code```</code> → Code block</li>
+    <li><code>> Quote</code> → Blockquote</li>
+    <li><code>---</code> → Divider</li>
+  </ul>
+
+  <p><strong>What does NOT work when pasting Markdown into Notion:</strong></p>
+  <ul>
+    <li><strong>Tables</strong> — Notion does not convert Markdown tables. You must create Notion database tables or use paste-as-table separately</li>
+    <li><strong>Multi-line code blocks</strong> — Only the first line gets the code block formatting in some cases. Test after pasting</li>
+    <li><strong>Task lists</strong> — <code>- [x]</code> syntax does not auto-convert to Notion checkboxes</li>
+    <li><strong>HTML</strong> — Notion strips most inline HTML tags</li>
+  </ul>
+
+  <p><strong>Workaround:</strong> Write Markdown in the <a href="/editor/">MarkdownMaster editor</a>, then use the "Copy" button to copy the rendered HTML. Paste that HTML into Notion — it handles HTML import better than raw Markdown.</p>
+
+  <h3 id="shortcuts">Keyboard Shortcuts in Notion</h3>
+
+  <p>Notion supports Markdown-inspired keyboard shortcuts. These are <strong>the fastest way</strong> to format content without leaving the keyboard:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Shortcut</th>
+        <th>Result</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>Cmd/Ctrl + B</code></td><td>Bold</td></tr>
+      <tr><td><code>Cmd/Ctrl + I</code></td><td>Italic</td></tr>
+      <tr><td><code>Cmd/Ctrl + Shift + S</code></td><td>Strikethrough</td></tr>
+      <tr><td><code>Cmd/Ctrl + K</code></td><td>Add link</td></tr>
+      <tr><td><code>Cmd/Ctrl + E</code></td><td>Inline code</td></tr>
+      <tr><td><code>Cmd/Ctrl + Shift + 0-6</code></td><td>Toggle heading levels</td></tr>
+      <tr><td><code>/table</code></td><td>Create table block</td></tr>
+      <tr><td><code>/code</code></td><td>Create code block</td></tr>
+      <tr><td><code>/quote</code></td><td>Create blockquote</td></tr>
+      <tr><td><code>/todo</code></td><td>Create checkbox list</td></tr>
+    </tbody>
+  </table>
+
+  <p>The <code>/</code> command menu is the fastest way to create any block type. After a few days of practice, you will use it without thinking.</p>
+
+  <h3 id="databases">Combining Markdown with Databases</h3>
+
+  <p>Notion's unique strength is combining Markdown-rich content with structured databases. Here is how to use both effectively:</p>
+
+  <ul>
+    <li><strong>Database properties</strong> — Use columns for structured data (Status, Priority, Due Date, Tags). Use the Notes/Description page for Markdown-formatted long-form content</li>
+    <li><strong>Rollups and formulas</strong> — Reference Markdown content from related database entries. For example, a Project database can roll up notes from a linked Meeting Notes database</li>
+    <li><strong>Templates in databases</strong> — Each new item in a Notion database can use a template that includes pre-written Markdown content</li>
+  </ul>
+
+  <p>This hybrid approach is Notion's superpower: structured data lives in database columns (queryable, sortable, filterable), while rich content lives in Markdown-formatted pages attached to each entry.</p>
+
+  <h2 id="workflows">Practical Workflows</h2>
+
+  <h3 id="research">Research & Knowledge Management</h3>
+
+  <p><strong>In Obsidian:</strong> Use the linking system to build a personal knowledge base. Write atomic notes for each concept, link them together, and use the Graph View to discover connections. The Dataview plugin turns your notes into a queryable database — list all notes tagged with "rust" that were created in the last week, or show todos sorted by priority.</p>
+
+  <p><strong>In Notion:</strong> Create a Knowledge Base database with properties for Topic, Source, Tags, and Status. The Markdown page for each entry holds the full content. Use filtered views to show entries by topic, or create a "Recently Added" view sorted by creation date.</p>
+
+  <h3 id="project">Project Management</h3>
+
+  <p>Markdown checklists combined with structured properties create a lightweight project management system:</p>
+
+  <pre><code set:html={c1}></code></pre>
+
+  <p><strong>In Obsidian:</strong> Use the Kanban plugin to turn this checklist into a visual board. Use Dataview to aggregate todos across all notes into a single "Master Task List" view.</p>
+
+  <p><strong>In Notion:</strong> Create a Projects database with Status, Priority, Timeline properties. Use the Timeline view for Gantt-style planning. Each project page contains Markdown notes, meeting logs, and decision records.</p>
+
+  <h3 id="writing">Writing & Drafting</h3>
+
+  <p>Both tools are excellent for drafting blog posts, documentation, and technical articles:</p>
+
+  <p><strong>In Obsidian:</strong> Write in distraction-free mode (<code>Ctrl/Cmd + P</code> → "Toggle source mode"). Use the template plugin for post structure. Publish directly to GitHub or a static site generator because the files are plain Markdown.</p>
+
+  <p><strong>In Notion:</strong> Write with the convenience of slash commands and drag-and-drop blocks. Use the Comments feature for editing feedback. Export as Markdown or PDF when ready, or use Notion's share feature for collaborative editing.</p>
+
+  <h2 id="macros">Power User Tips</h2>
+
+  <p>These tips save experienced users hours each week:</p>
+
+  <ul>
+    <li><strong>Quick capture in Obsidian:</strong> <code>Ctrl/Cmd + Shift + V</code> pastes plain text without formatting. Essential for copying web content into notes without HTML clutter</li>
+    <li><strong>Notion AI:</strong> Use AI to summarize long Markdown notes, generate bullet points from paragraphs, or rewrite content in a different tone. This works directly on the Markdown content in your pages</li>
+    <li><strong>Obsidian daily notes:</strong> Enable the Daily Notes core plugin. Each day starts with a blank Markdown file. Add a link to the next day's note (<code>[[2026-04-30]]</code>) to create a chronological chain</li>
+    <li><strong>Notion web clipper:</strong> Save web pages as Notion pages. The clipper converts the page content to Notion's block format, preserving headings, lists, and links</li>
+    <li><strong>Cross-platform sync:</strong> Use Obsidian Sync or iCloud for mobile access. Notion's web and mobile apps work seamlessly across devices</li>
+  </ul>
+
+  <h2 id="faq">FAQ</h2>
+
+  <h3>Can I use the same Markdown file in both Obsidian and Notion?</h3>
+  <p>Not directly. Notion does not import <code>.md</code> files natively. You can paste Markdown content into Notion (it converts most syntax), but the reverse is harder — Notion exports to Markdown with some data loss (databases, images, and complex blocks may not translate cleanly).</p>
+
+  <h3>Which is better for Markdown: Obsidian or Notion?</h3>
+  <p>Obsidian is better if you want full Markdown control, local file storage, and plain-text portability. Notion is better if you need databases, collaboration, and rich block types. Many power users use both: Obsidian for personal notes, Notion for team projects.</p>
+
+  <h3>Does Obsidian support GitHub-flavored Markdown?</p>
+  <p>Obsidian supports most GFM features: tables, task lists, strikethrough, autolinks, and fenced code blocks. Mermaid diagrams and LaTeX math are supported via plugins. GitHub Alert syntax (<code>[!NOTE]</code>) is supported in Obsidian's latest versions.</p>
+
+  <h3>Does Notion support Markdown tables?</h3>
+  <p>Notion does not support Markdown table syntax when typing directly. You must use the <code>/table</code> command or create a database table. However, pasting a Markdown table from another tool may convert it — results depend on the source format.</p>
+
+  <h3>What happens to my Markdown files if I stop using Obsidian?</h3>
+  <p>Nothing. They are plain <code>.md</code> files on your computer. Open them in any text editor, convert to HTML, or import into another tool. This is Obsidian's biggest advantage: zero lock-in.</p>
+
+  <h3>Can I use the MarkdownMaster editor with Obsidian or Notion?</h3>
+  <p>Yes. Use the <a href="/editor/">online editor</a> to write or clean up Markdown content, then copy it into Obsidian (as a new note) or Notion (paste into a page). The editor's live preview helps you catch formatting issues before importing.</p>
+
+</BlogLayout>
