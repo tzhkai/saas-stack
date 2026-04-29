@@ -116,6 +116,14 @@
         if (!input.value.trim()) return;
         if (!confirm('Clear all content?')) return;
         input.value = ''; rerender();
+      },
+      'theme': function (btn) {
+        var root = document.documentElement;
+        var current = root.getAttribute('data-theme');
+        var next = current === 'light' ? 'dark' : 'light';
+        root.setAttribute('data-theme', next);
+        localStorage.setItem('mdm-theme', next);
+        btn.textContent = next === 'light' ? '\u263E' : '\u2600';
       }
     };
 
@@ -130,6 +138,15 @@
       var action = btn.getAttribute('data-action');
       if (action && ACTIONS[action]) { ACTIONS[action](btn); return; }
     });
+
+    /* ── init theme ── */
+    var themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+      var saved = localStorage.getItem('mdm-theme');
+      var initial = saved || 'dark';
+      document.documentElement.setAttribute('data-theme', initial);
+      themeToggle.textContent = initial === 'light' ? '\u263E' : '\u2600';
+    }
 
     /* ── divider drag ── */
     var divider = document.getElementById('divider');

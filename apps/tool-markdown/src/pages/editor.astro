@@ -27,6 +27,11 @@
       --text:#e2e8f0; --text-dim:#94a3b8;
       --accent:#0ea5e9; --accent-hover:#38bdf8;
     }
+    :root[data-theme="light"] {
+      --bg:#f8fafc; --bg2:#ffffff; --border:#e2e8f0;
+      --text:#1e293b; --text-dim:#64748b;
+      --accent:#0369a1; --accent-hover:#0284c7;
+    }
     html, body { height: 100%; overflow: hidden; }
     body {
       font-family:'Inter',sans-serif; background:var(--bg); color:var(--text);
@@ -50,6 +55,8 @@
       display:flex; align-items:center; gap:6px;
     }
     .tb-dot { width:7px; height:7px; border-radius:50%; background:#22c55e; }
+    .tb-btn.theme-btn { font-size:1rem; padding:4px 7px; line-height:1; }
+    .tb-btn.theme-btn:hover { background:var(--border); }
 
     /* ── Editor area ── */
     .editor-wrap {
@@ -97,6 +104,19 @@
       transition:background 0.15s;
     }
     .divider:hover { background:var(--accent); }
+
+    /* ── Light theme preview overrides ── */
+    :root[data-theme="light"] #preview-pane { background:#f8fafc; }
+    :root[data-theme="light"] #preview-content { color:#334155; }
+    :root[data-theme="light"] #preview-content h1,#preview-content h2,#preview-content h3 { color:#0f172a; }
+    :root[data-theme="light"] #preview-content p,#preview-content li { color:#334155; }
+    :root[data-theme="light"] #preview-content code { background:#e2e8f0; color:#be185d; }
+    :root[data-theme="light"] #preview-content pre { background:#1e293b; }
+    :root[data-theme="light"] #preview-content pre code { color:#a5f3fc; }
+    :root[data-theme="light"] #preview-content blockquote { color:#475569; border-left-color:var(--accent); }
+    :root[data-theme="light"] #preview-content th { background:#e2e8f0; color:#0f172a; }
+    :root[data-theme="light"] #preview-content td { border-color:#e2e8f0; }
+    :root[data-theme="light"] .pane-label { color:#64748b; }
 
     @media print {
       .toolbar, #editor-pane, .divider, #preview-pane > .pane-label { display:none !important; }
@@ -151,6 +171,7 @@
     <button class="tb-btn" data-action="clear" title="Clear all content" style="color:#f87171">Clear</button>
   </div>
   <div class="tb-title"><span class="tb-dot"></span> Live Preview</div>
+  <button class="tb-btn theme-btn" id="theme-toggle" data-action="theme" title="Toggle light/dark theme" aria-label="Toggle theme">☀</button>
 </div>
 
 <div class="editor-wrap">
