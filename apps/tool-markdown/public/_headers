@@ -22,3 +22,4 @@
 # HTML pages — short cache, revalidate
 /*.html
   Cache-Control: public, max-age=3600, must-revalidate
+  X-Robots-Tag: noindex
