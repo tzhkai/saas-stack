@@ -7,7 +7,7 @@ export interface Props {
 }
 
 const { title, description, canonical, jsonld } = Astro.props;
-const ogImage = 'https://markdownmaster.site/og-image.svg';
+const ogImage = 'https://markdownmaster.site/og-image.png';
 
 // Google Analytics 4 - set your Measurement ID (e.g. 'G-XXXXXXXXXX') after creating GA4 property
 const GA_MEASUREMENT_ID = 'G-C9YBSZ3YDN';
@@ -104,7 +104,6 @@ const gaInitScript = GA_MEASUREMENT_ID ? `
     <nav class="site-nav">
       <a href="/editor/">Editor</a>
       <a href="/docs/">Docs</a>
-      <a href="/pricing/">Pricing</a>
       <a href="/blog/">Blog</a>
     </nav>
   </header>

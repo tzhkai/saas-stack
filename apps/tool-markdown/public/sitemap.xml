@@ -3,7 +3,6 @@
   <url><loc>https://markdownmaster.site/</loc><priority>1.0</priority></url>
   <url><loc>https://markdownmaster.site/editor/</loc><priority>0.9</priority></url>
   <url><loc>https://markdownmaster.site/docs/</loc><priority>0.7</priority></url>
-  <url><loc>https://markdownmaster.site/pricing/</loc><priority>0.5</priority></url>
   <url><loc>https://markdownmaster.site/blog/</loc><priority>0.8</priority></url>
   <url><loc>https://markdownmaster.site/blog/markdown-cheat-sheet-complete-guide/</loc><priority>0.8</priority></url>
   <url><loc>https://markdownmaster.site/blog/how-to-write-markdown-step-by-step/</loc><priority>0.8</priority></url>
@@ -16,7 +15,7 @@
   <url><loc>https://markdownmaster.site/blog/markdown-tables-how-to-create-format-align/</loc><priority>0.8</priority></url>
   <url><loc>https://markdownmaster.site/blog/markdown-links-images-complete-guide/</loc><priority>0.8</priority></url>
   <url><loc>https://markdownmaster.site/blog/how-to-use-ai-to-write-markdown/</loc><priority>0.8</priority></url>
-  <url><loc>https://markdownmaster.site/blog/build-blog-with-markdown-astro/</loc><priority>0.8</priority></url>
+  <url><loc>https://markdownmaster.site/blog/how-to-build-blog-with-markdown-astro/</loc><priority>0.8</priority></url>
   <url><loc>https://markdownmaster.site/blog/how-to-write-a-perfect-readme-markdown-github/</loc><priority>0.8</priority></url>
   <url><loc>https://markdownmaster.site/blog/advanced-markdown-footnotes-mermaid-math-guide/</loc><priority>0.8</priority></url>
   <url><loc>https://markdownmaster.site/blog/markdown-vs-html-when-to-use-which/</loc><priority>0.8</priority></url>
