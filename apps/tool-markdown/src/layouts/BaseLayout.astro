@@ -113,9 +113,28 @@ const gaInitScript = GA_MEASUREMENT_ID ? `
   </main>
   <footer class="site-footer">
     <p>&copy; 2026 MarkdownMaster &middot;
+      <a href="/about/">About</a> &middot;
       <a href="/privacy/">Privacy</a> &middot;
-      <a href="/terms/">Terms</a>
+      <a href="/terms/">Terms</a> &middot;
+      <a href="https://github.com/tzhkai/markdownmaster" target="_blank" rel="noopener">GitHub</a>
     </p>
+    <p style="margin-top:0.3rem;font-size:0.8rem;">Built by <a href="https://github.com/tzhkai" target="_blank" rel="noopener">tzhkai</a> &middot; Open source Markdown editor</p>
   </footer>
+
+  <!-- Cookie Consent -->
+  <div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1e293b;border-top:1px solid #334155;padding:14px 20px;z-index:10000;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:0.85rem;color:#e2e8f0;">
+    <span>We use Google Analytics to understand how our site is used. By continuing, you consent to cookies. <a href="/privacy/" style="color:#0ea5e9;">Learn more</a></span>
+    <button id="cookie-accept" style="background:#0ea5e9;color:#fff;border:none;padding:8px 18px;border-radius:6px;cursor:pointer;font-weight:600;font-size:0.85rem;white-space:nowrap;">Got it</button>
+  </div>
+  <script is:inline>
+    (function(){
+      if (document.cookie.indexOf('mm_cookie_consent=1') !== -1) return;
+      document.getElementById('cookie-banner').style.display = 'flex';
+      document.getElementById('cookie-accept').onclick = function(){
+        document.cookie = 'mm_cookie_consent=1;max-age=31536000;path=/;SameSite=Lax';
+        document.getElementById('cookie-banner').style.display = 'none';
+      };
+    })();
+  </script>
 </body>
 </html>

@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="About MarkdownMaster — Free Online Markdown Editor"
+  description="MarkdownMaster is a free, open-source online Markdown editor built for speed and privacy. Learn about the team, our mission, and how the tool works."
+  canonical="https://markdownmaster.site/about/"
+  jsonld={{
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "MarkdownMaster",
+    "url": "https://markdownmaster.site",
+    "description": "Free online Markdown editor with real-time preview, GitHub Flavored Markdown, and syntax highlighting. No sign-up required.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Web",
+    "offers": { "@type": "Offer", "price": "0" },
+    "author": { "@type": "Person", "name": "KK Tian", "url": "https://github.com/tzhkai" }
+  }}
+>
+  <style>
+    .page-wrap { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .page-wrap h1 { font-size: 2rem; margin-bottom: 1rem; }
+    .page-wrap h2 { font-size: 1.2rem; margin: 1.5rem 0 0.5rem; color: var(--accent); }
+    .page-wrap p { color: #cbd5e1; line-height: 1.8; margin-bottom: 0.75rem; }
+    .page-wrap ul { padding-left: 1.5rem; color: #cbd5e1; margin-bottom: 0.75rem; }
+    .page-wrap li { margin: 0.3rem 0; }
+    .team-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.2rem; margin: 1rem 0;
+    }
+    .team-card strong { color: var(--accent); }
+  </style>
+
+  <div class="page-wrap">
+    <h1>About MarkdownMaster</h1>
+    <p><em>Built for speed. Built for privacy. Built for you.</em></p>
+
+    <h2>Our Mission</h2>
+    <p>MarkdownMaster exists because most online Markdown editors are either slow, cluttered with ads, or require sign-up. We wanted a tool that loads instantly, previews in real time, and never asks for your email.</p>
+    <p>Everything runs in your browser. No data leaves your device. No accounts, no tracking, no hidden costs.</p>
+
+    <h2>How It Works</h2>
+    <p>MarkdownMaster is a <strong>client-side application</strong>. When you type on the left, a lightweight parser converts your text to formatted HTML on the right — all inside your browser. No server round-trips, no latency.</p>
+    <p>We support <strong>GitHub Flavored Markdown (GFM)</strong> including tables, task lists, strikethrough, auto-links, and emoji shortcodes. Code blocks get syntax highlighting via Prism.js across 100+ languages.</p>
+
+    <h2>Who Built This</h2>
+    <div class="team-card">
+      <p><strong>KK Tian</strong> — Creator &amp; Developer</p>
+      <p>Independent developer focused on building fast, privacy-first web tools. MarkdownMaster is built with Astro, deployed on Cloudflare Pages, and open source on GitHub.</p>
+      <p><a href="https://github.com/tzhkai" target="_blank" rel="noopener" style="color:var(--accent)">GitHub →</a> &middot;
+      <a href="https://github.com/tzhkai/markdownmaster" target="_blank" rel="noopener" style="color:var(--accent)">Source code →</a></p>
+    </div>
+
+    <h2>Technology</h2>
+    <ul>
+      <li><strong>Astro</strong> — Static site generation with zero JavaScript runtime</li>
+      <li><strong>Cloudflare Pages</strong> — Global edge deployment with instant cache</li>
+      <li><strong>Prism.js</strong> — Syntax highlighting for 100+ languages</li>
+      <li><strong>D1 (Cloudflare)</strong> — Edge database for dynamic content</li>
+    </ul>
+
+    <h2>Open Source</h2>
+    <p>MarkdownMaster is open source under the MIT license. The full source code is available on <a href="https://github.com/tzhkai/markdownmaster" target="_blank" rel="noopener" style="color:var(--accent)">GitHub</a>. Contributions, bug reports, and feature requests are welcome.</p>
+
+    <h2>Contact</h2>
+    <p>Questions or feedback? Open an issue on <a href="https://github.com/tzhkai/markdownmaster/issues" target="_blank" rel="noopener" style="color:var(--accent)">GitHub Issues</a> or reach out via email at <a href="mailto:tianzhenkai@gmail.com" style="color:var(--accent)">tianzhenkai@gmail.com</a>.</p>
+  </div>
+</BaseLayout>
