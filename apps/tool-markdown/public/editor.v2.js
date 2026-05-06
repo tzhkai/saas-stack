@@ -237,7 +237,8 @@
       }
     });
 
-    /* ── initial content ── */
+    /* ── initial content (only if no ?text= prefill) ── */
+    if (!prefill) {
     input.value = [
       '# Markdown Cheat Sheet',
       '',
@@ -314,6 +315,7 @@
       ''
     ].join('\n');
     rerender();
+    }
   }
 
   boot();
