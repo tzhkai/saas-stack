@@ -129,6 +129,29 @@
         if (!confirm('Clear all content?')) return;
         input.value = ''; rerender();
       },
+      'open': function (btn) {
+        var fileInput = document.getElementById('file-open-input');
+        if (!fileInput) {
+          fileInput = document.createElement('input');
+          fileInput.type = 'file';
+          fileInput.id = 'file-open-input';
+          fileInput.accept = '.md,.markdown,.txt,.text';
+          fileInput.style.display = 'none';
+          document.body.appendChild(fileInput);
+          fileInput.addEventListener('change', function () {
+            var file = fileInput.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function () {
+              input.value = reader.result;
+              rerender();
+              flash(btn, 'Opened: ' + file.name);
+            };
+            reader.readAsText(file);
+          });
+        }
+        fileInput.click();
+      },
       'theme': function (btn) {
         var root = document.documentElement;
         var current = root.getAttribute('data-theme');
