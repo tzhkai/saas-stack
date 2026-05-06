@@ -11,6 +11,23 @@ export default {
   async fetch(request, env) {
     const origin = "https://tool-markdown.pages.dev";
     const url = new URL(request.url);
+
+    // ── 301 redirects for zombie URLs (old slugs without "how-to-" prefix) ──
+    const REDIRECTS = {
+      "/blog/build-blog-with-markdown-astro/":          "/blog/how-to-build-blog-with-markdown-astro/",
+      "/blog/write-markdown-step-by-step/":             "/blog/how-to-write-markdown-step-by-step/",
+      "/blog/write-perfect-readme-markdown-github/":    "/blog/how-to-write-a-perfect-readme-markdown-github/",
+      "/blog/write-markdown-complete-beginners-guide/": "/blog/what-is-markdown-complete-beginners-guide/",
+      "/blog/use-ai-write-markdown/":                   "/blog/how-to-use-ai-to-write-markdown/",
+      "/blog/convert-markdown-to-html/":                "/blog/how-to-convert-markdown-to-html/",
+      "/blog/markdown-cheat-sheet/":                    "/blog/markdown-cheat-sheet-complete-guide/",
+      "/blog/markdown-editors-tools-2026/":             "/blog/best-markdown-editors-tools-2026/",
+      "/pricing/":                                      "/editor/",
+    };
+    if (REDIRECTS[url.pathname]) {
+      return Response.redirect("https://markdownmaster.site" + REDIRECTS[url.pathname], 301);
+    }
+
     const proxyUrl = origin + url.pathname + url.search;
 
     // For non-HTML requests (JS, CSS, images, fonts, etc.), pass through directly
@@ -66,7 +83,7 @@ d.innerHTML='<button id="afb" style="position:fixed;bottom:20px;right:20px;z-ind
 var b=d.querySelector("#afb"),p=d.querySelector("#afp");
 p.innerHTML=l.map(function(x){
 var t=x.title||x.text||"Tool",d=x.description||"",u=x.url||"#",c=x.cta||"Learn More";
-return '<a href="'+u+'" target="_blank" rel="noopener sponsored" style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#e2e8f0;transition:background .15s" onmouseover="this.style.background=\\"#334155\\"" onmouseout="this.style.background=\\"transparent\\""><div style="flex:1"><div style="font-weight:600;color:#60a5fa;font-size:.85rem">'+t+'</div><div style="font-size:.8rem;color:#94a3b8">'+d+'</div></div><span style="color:#0ea5e9;font-size:.8rem;white-space:nowrap">'+c+' \\u2192</span></a>'
+return '<a href="'+u+'" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:8px;text-decoration:none;color:#e2e8f0;transition:background .15s" onmouseover="this.style.background=\\"#334155\\"" onmouseout="this.style.background=\\"transparent\\""><div style="flex:1"><div style="font-weight:600;color:#60a5fa;font-size:.85rem">'+t+'</div><div style="font-size:.8rem;color:#94a3b8">'+d+'</div></div><span style="color:#0ea5e9;font-size:.8rem;white-space:nowrap">'+c+' \\u2192</span></a>'
 }).join('<div style="height:1px;background:#334155;margin:4px 0"></div>');
 b.onclick=function(e){e.stopPropagation();var s=p.style.display;p.style.display=s!="block"?"block":"none"};
 document.onclick=function(e){if(!d.contains(e.target))p.style.display="none"};

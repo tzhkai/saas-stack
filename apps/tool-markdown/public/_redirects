@@ -1,0 +1,12 @@
+# 8 zombie URLs — 301 to correct pages
+/blog/build-blog-with-markdown-astro/          /blog/how-to-build-blog-with-markdown-astro/          301
+/blog/write-markdown-step-by-step/             /blog/how-to-write-markdown-step-by-step/             301
+/blog/write-perfect-readme-markdown-github/    /blog/how-to-write-a-perfect-readme-markdown-github/  301
+/blog/write-markdown-complete-beginners-guide/ /blog/what-is-markdown-complete-beginners-guide/       301
+/blog/use-ai-write-markdown/                   /blog/how-to-use-ai-to-write-markdown/                 301
+/blog/convert-markdown-to-html/                /blog/how-to-convert-markdown-to-html/                  301
+/blog/markdown-cheat-sheet/                    /blog/markdown-cheat-sheet-complete-guide/              301
+/blog/markdown-editors-tools-2026/             /blog/best-markdown-editors-tools-2026/                 301
+
+# Pricing → Editor (free tool, no pricing page needed)
+/pricing/                                      /editor/                                               301

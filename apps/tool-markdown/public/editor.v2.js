@@ -16,6 +16,18 @@
       return;
     }
 
+    /* ── URL parameter: ?text= — prefill editor ── */
+    var params = new URLSearchParams(window.location.search);
+    var prefill = params.get('text');
+    if (prefill) {
+      try {
+        input.value = decodeURIComponent(prefill);
+        rerender();
+        // Scroll to top
+        input.scrollTop = 0;
+      } catch(e) { /* ignore bad encoding */ }
+    }
+
     /* ── helpers ── */
     function wrap(before, after) {
       var s = input.selectionStart, e = input.selectionEnd, v = input.value;
