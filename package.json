@@ -4,5 +4,8 @@
   "scripts": {
     "dev": "cd apps/tool-markdown && npx astro dev",
     "build": "cd apps/tool-markdown && npx astro build"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild", "sharp"]
   }
 }
