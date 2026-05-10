@@ -22,14 +22,10 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install pnpm
-        run: npm install -g pnpm
-
       - name: Build
         run: |
           pnpm install --no-frozen-lockfile
-          cd apps/tool-markdown
-          pnpm run build
+          pnpm --filter tool-markdown run build
 
       - name: Deploy Pages
         run: |
