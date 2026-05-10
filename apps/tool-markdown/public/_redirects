@@ -1,3 +1,7 @@
+# www → non-www + http → https
+https://www.markdownmaster.site/* https://markdownmaster.site/:splat 301
+http://*markdownmaster.site/* https://markdownmaster.site/:splat 301
+
 # 8 zombie URLs — 301 to correct pages
 /blog/build-blog-with-markdown-astro/          /blog/how-to-build-blog-with-markdown-astro/          301
 /blog/write-markdown-step-by-step/             /blog/how-to-write-markdown-step-by-step/             301

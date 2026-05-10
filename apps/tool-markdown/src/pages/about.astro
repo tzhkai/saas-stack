@@ -8,14 +8,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   canonical="https://markdownmaster.site/about/"
   jsonld={{
     "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "MarkdownMaster",
-    "url": "https://markdownmaster.site",
-    "description": "Free online Markdown editor with real-time preview, GitHub Flavored Markdown, and syntax highlighting. No sign-up required.",
-    "applicationCategory": "DeveloperApplication",
-    "operatingSystem": "Web",
-    "offers": { "@type": "Offer", "price": "0" },
-    "author": { "@type": "Person", "name": "KK Tian", "url": "https://github.com/tzhkai" }
+    "@type": "AboutPage",
+    "name": "About MarkdownMaster",
+    "url": "https://markdownmaster.site/about/",
+    "description": "MarkdownMaster is a free, open-source online Markdown editor built for speed and privacy. Learn about the team, our mission, and how the tool works.",
+    "about": {
+      "@type": "WebApplication",
+      "name": "MarkdownMaster",
+      "url": "https://markdownmaster.site",
+      "description": "Free online Markdown editor with real-time preview, GitHub Flavored Markdown, and syntax highlighting. No sign-up required.",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Web",
+      "offers": { "@type": "Offer", "price": "0" },
+      "author": { "@type": "Person", "name": "KK Tian", "url": "https://github.com/tzhkai" }
+    }
   }}
 >
   <style>
