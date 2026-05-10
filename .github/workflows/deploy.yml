@@ -27,9 +27,9 @@ jobs:
 
       - name: Build
         run: |
-          cd apps/tool-markdown
           pnpm install --no-frozen-lockfile
-          npx astro build
+          cd apps/tool-markdown
+          pnpm run build
 
       - name: Deploy Pages
         run: |
