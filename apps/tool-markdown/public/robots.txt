@@ -1,3 +1,2 @@
 User-agent: *
-Allow: /
-Sitemap: https://markdownmaster.site/sitemap.xml
+Disallow: /

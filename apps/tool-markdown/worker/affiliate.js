@@ -28,6 +28,30 @@ export default {
       return Response.redirect("https://markdownmaster.site" + REDIRECTS[url.pathname], 301);
     }
 
+    // ── Enforce trailing slash for HTML pages ──
+    // Prevents "Alternative page with proper canonical tag" in Google Search Console.
+    // Pages like /about redirect to /about/ so Google only indexes one canonical URL.
+    const path = url.pathname;
+    if (
+      path !== "/" &&
+      !path.endsWith("/") &&
+      !path.includes(".") // skip files like /og-image.svg, /editor.v2.js
+    ) {
+      return Response.redirect("https://markdownmaster.site" + path + "/" + url.search, 301);
+    }
+
+    // ── Serve custom robots.txt (prevents Google from indexing the Pages origin) ──
+    if (url.pathname === "/robots.txt") {
+      const robotsTxt = `User-agent: *
+Allow: /
+Sitemap: https://markdownmaster.site/sitemap.xml
+`;
+      return new Response(robotsTxt, {
+        status: 200,
+        headers: { "content-type": "text/plain; charset=utf-8" },
+      });
+    }
+
     const proxyUrl = origin + url.pathname + url.search;
 
     // For non-HTML requests (JS, CSS, images, fonts, etc.), pass through directly
