@@ -12,6 +12,17 @@ export default {
     const origin = "https://tool-markdown.pages.dev";
     const url = new URL(request.url);
 
+    // ── Canonical redirects: enforce HTTPS + non-www ──
+    // http → https
+    if (url.protocol === "http:") {
+      return Response.redirect("https:" + url.href.slice(url.protocol.length), 301);
+    }
+    // www → non-www
+    if (url.hostname.startsWith("www.")) {
+      const canonical = "https://markdownmaster.site" + url.pathname + url.search;
+      return Response.redirect(canonical, 301);
+    }
+
     // ── 301 redirects for zombie URLs (old slugs without "how-to-" prefix) ──
     const REDIRECTS = {
       "/blog/build-blog-with-markdown-astro/":          "/blog/how-to-build-blog-with-markdown-astro/",
