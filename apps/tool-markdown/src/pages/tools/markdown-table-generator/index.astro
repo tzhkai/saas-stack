@@ -1,0 +1,64 @@
+---
+import ToolLayout from '../../../components/ToolLayout.astro';
+---
+<ToolLayout
+  title="Markdown Table Generator - Free Online Table Builder | MarkdownMaster"
+  description="Create clean Markdown tables online. Add rows and columns, edit cells, then copy GitHub Flavored Markdown table syntax instantly."
+  canonical="https://markdownmaster.site/tools/markdown-table-generator/"
+  heading="Markdown Table Generator"
+  intro="Build a GitHub Flavored Markdown table without manually aligning pipes. Edit the cells, add rows or columns, then copy the result."
+  toolName="MarkdownMaster Markdown Table Generator"
+  relatedGuideHref="/blog/markdown-tables-how-to-create-format-align/"
+  relatedGuideLabel="Read the Markdown tables guide"
+>
+  <style>
+    .table-toolbar { display:flex; justify-content:space-between; gap:0.8rem; flex-wrap:wrap; margin-bottom:1rem; }
+    .button-group { display:flex; gap:0.6rem; flex-wrap:wrap; }
+    button { border:1px solid var(--border); border-radius:8px; padding:0.6rem 0.8rem; background:transparent; color:var(--text); font:600 0.86rem var(--font); cursor:pointer; }
+    button:hover { border-color:var(--accent); color:var(--accent); }
+    button.primary { background:var(--accent); color:#fff; border-color:var(--accent); }
+    .table-scroll { overflow:auto; border:1px solid var(--border); border-radius:10px; }
+    table { width:100%; min-width:560px; border-collapse:collapse; }
+    th, td { border-right:1px solid var(--border); border-bottom:1px solid var(--border); padding:0; }
+    th:last-child, td:last-child { border-right:0; }
+    tr:last-child td { border-bottom:0; }
+    th { background:rgba(14,165,233,0.08); }
+    input { width:100%; border:0; background:transparent; color:var(--text); padding:0.8rem; font:0.9rem var(--font); outline:none; }
+    th input { font-weight:700; }
+    .output-label { margin:1.25rem 0 0.55rem; color:var(--text-dim); font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; }
+    pre { min-height:150px; margin:0; padding:1rem; border:1px solid var(--border); border-radius:10px; background:#0b1220; color:#dbeafe; font:0.86rem/1.6 var(--font-mono); overflow:auto; }
+  </style>
+  <div class="table-toolbar">
+    <div class="button-group">
+      <button id="add-row" type="button">+ Add row</button>
+      <button id="add-column" type="button">+ Add column</button>
+      <button id="remove-row" type="button">− Remove row</button>
+    </div>
+    <button class="primary" id="copy-table" type="button">Copy Markdown table</button>
+  </div>
+  <div class="table-scroll">
+    <table id="table-builder" aria-label="Markdown table builder">
+      <thead><tr><th><input value="Feature" aria-label="Column 1 header"></th><th><input value="Use case" aria-label="Column 2 header"></th><th><input value="Status" aria-label="Column 3 header"></th></tr></thead>
+      <tbody>
+        <tr><td><input value="Live preview" aria-label="Row 1 column 1"></td><td><input value="Writing" aria-label="Row 1 column 2"></td><td><input value="Ready" aria-label="Row 1 column 3"></td></tr>
+        <tr><td><input value="GFM tables" aria-label="Row 2 column 1"></td><td><input value="Documentation" aria-label="Row 2 column 2"></td><td><input value="Ready" aria-label="Row 2 column 3"></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="output-label">Generated Markdown</p>
+  <pre id="markdown-output" aria-live="polite"></pre>
+  <script is:inline>
+    const table = document.getElementById('table-builder');
+    const output = document.getElementById('markdown-output');
+    const copyButton = document.getElementById('copy-table');
+    function values(row) { return [...row.querySelectorAll('input')].map(input => input.value.replace(/\|/g, '\\|').trim() || ' '); }
+    function render() { const headers = values(table.tHead.rows[0]); const separator = headers.map(() => '---'); const rows = [...table.tBodies[0].rows].map(values); output.textContent = [headers, separator, ...rows].map(row => `| ${row.join(' | ')} |`).join('\n'); }
+    function cell(value, label, header = false) { const element = document.createElement(header ? 'th' : 'td'); const input = document.createElement('input'); input.value = value; input.setAttribute('aria-label', label); element.appendChild(input); return element; }
+    document.getElementById('add-row').addEventListener('click', () => { const row = table.tBodies[0].insertRow(); const count = table.tHead.rows[0].cells.length; for (let i = 0; i < count; i++) row.appendChild(cell('', `New row column ${i + 1}`)); render(); });
+    document.getElementById('add-column').addEventListener('click', () => { const headerRow = table.tHead.rows[0]; headerRow.appendChild(cell(`Column ${headerRow.cells.length + 1}`, 'New column header', true)); [...table.tBodies[0].rows].forEach((row, i) => row.appendChild(cell('', `Row ${i + 1} new column`))); render(); });
+    document.getElementById('remove-row').addEventListener('click', () => { const body = table.tBodies[0]; if (body.rows.length > 1) body.deleteRow(-1); render(); });
+    table.addEventListener('input', render);
+    copyButton.addEventListener('click', async () => { await navigator.clipboard.writeText(output.textContent); copyButton.textContent = 'Copied'; setTimeout(() => copyButton.textContent = 'Copy Markdown table', 1500); });
+    render();
+  </script>
+</ToolLayout>

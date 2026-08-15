@@ -1,0 +1,86 @@
+---
+import ToolLayout from '../../../components/ToolLayout.astro';
+---
+<ToolLayout
+  title="Markdown to HTML Converter - Free, Private & Instant | MarkdownMaster"
+  description="Convert Markdown to clean HTML instantly in your browser. Free, private Markdown to HTML converter with GitHub Flavored Markdown support and one-click copy."
+  canonical="https://markdownmaster.site/tools/markdown-to-html/"
+  heading="Markdown to HTML Converter"
+  intro="Paste Markdown, get clean HTML, and copy it in one click. This converter runs entirely in your browser with no account or upload required."
+  toolName="MarkdownMaster Markdown to HTML Converter"
+  relatedGuideHref="/blog/how-to-convert-markdown-to-html/"
+  relatedGuideLabel="Read the Markdown to HTML guide"
+>
+  <style>
+    .convert-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    .convert-pane { min-width:0; }
+    .pane-label { display:flex; justify-content:space-between; align-items:center; margin:0 0 0.55rem; color:var(--text-dim); font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; }
+    textarea, pre { width:100%; min-height:360px; margin:0; box-sizing:border-box; border:1px solid var(--border); border-radius:10px; background:#0b1220; color:#dbeafe; font:0.88rem/1.65 var(--font-mono); padding:1rem; }
+    textarea { resize:vertical; outline:none; }
+    textarea:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(14,165,233,0.12); }
+    pre { overflow:auto; white-space:pre-wrap; word-break:break-word; }
+    .tool-actions { display:flex; gap:0.7rem; justify-content:flex-end; margin-top:0.9rem; }
+    button { border:0; border-radius:8px; padding:0.65rem 0.9rem; background:var(--accent); color:#fff; font:600 0.9rem var(--font); cursor:pointer; }
+    button:hover { filter:brightness(1.1); }
+    button.secondary { background:transparent; border:1px solid var(--border); color:var(--text); }
+    @media (max-width:760px) { .convert-grid { grid-template-columns:1fr; } textarea, pre { min-height:260px; } }
+  </style>
+  <div class="convert-grid">
+    <div class="convert-pane">
+      <div class="pane-label"><span>Markdown input</span><span id="char-count">0 characters</span></div>
+      <textarea id="markdown-input" aria-label="Markdown input" placeholder="# Hello\n\nWrite **Markdown** here..."># Markdown to HTML
+
+Write **Markdown** on the left and copy clean HTML on the right.
+
+- Fast
+- Private
+- No sign-up</textarea>
+    </div>
+    <div class="convert-pane">
+      <div class="pane-label"><span>HTML output</span><span>Ready to copy</span></div>
+      <pre id="html-output" aria-live="polite"></pre>
+    </div>
+  </div>
+  <div class="tool-actions">
+    <button class="secondary" id="clear-button" type="button">Clear</button>
+    <button id="copy-button" type="button">Copy HTML</button>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" is:inline></script>
+  <script is:inline>
+    const input = document.getElementById('markdown-input');
+    const output = document.getElementById('html-output');
+    const count = document.getElementById('char-count');
+    const copyButton = document.getElementById('copy-button');
+    const clearButton = document.getElementById('clear-button');
+    function escapeHtml(value) { return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    function render(markdown) {
+      if (typeof marked !== 'undefined') return marked.parse(markdown, { gfm: true, breaks: true });
+      const lines = markdown.replace(/\r\n/g, '\n').split('\n');
+      const html = [];
+      let listOpen = false;
+      const closeList = () => { if (listOpen) { html.push('</ul>'); listOpen = false; } };
+      for (const rawLine of lines) {
+        const line = rawLine.trimEnd();
+        if (/^\s*-\s+/.test(line)) {
+          if (!listOpen) { html.push('<ul>'); listOpen = true; }
+          html.push(`<li>${inline(line.replace(/^\s*-\s+/, ''))}</li>`);
+        } else {
+          closeList();
+          if (!line.trim()) continue;
+          const heading = line.match(/^(#{1,6})\s+(.+)$/);
+          if (heading) { const level = heading[1].length; html.push(`<h${level}>${inline(heading[2])}</h${level}>`); }
+          else if (/^>\s?/.test(line)) html.push(`<blockquote>${inline(line.replace(/^>\s?/, ''))}</blockquote>`);
+          else html.push(`<p>${inline(line)}</p>`);
+        }
+      }
+      closeList();
+      return html.join('\n');
+    }
+    function inline(value) { return escapeHtml(value).replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/\*([^*]+)\*/g, '<em>$1</em>').replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2">$1</a>'); }
+    function update() { const html = render(input.value); output.textContent = html; count.textContent = `${input.value.length} characters`; }
+    input.addEventListener('input', update);
+    clearButton.addEventListener('click', () => { input.value = ''; update(); input.focus(); });
+    copyButton.addEventListener('click', async () => { await navigator.clipboard.writeText(output.textContent); copyButton.textContent = 'Copied'; setTimeout(() => copyButton.textContent = 'Copy HTML', 1500); });
+    update();
+  </script>
+</ToolLayout>

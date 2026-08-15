@@ -11,9 +11,33 @@ export interface Props {
 }
 
 const { title, description, canonical, publishedDate, author = 'MarkdownMaster Team', category = 'Markdown Tutorial' } = Astro.props;
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "@id": `${canonical}#article`,
+      "mainEntityOfPage": canonical,
+      "headline": title,
+      "description": description,
+      "datePublished": publishedDate,
+      "dateModified": publishedDate,
+      "author": { "@type": "Organization", "name": author, "url": "https://markdownmaster.site/about/" },
+      "publisher": { "@type": "Organization", "name": "MarkdownMaster", "url": "https://markdownmaster.site/", "logo": { "@type": "ImageObject", "url": "https://markdownmaster.site/og-image.svg" } }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://markdownmaster.site/" },
+        { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://markdownmaster.site/blog/" },
+        { "@type": "ListItem", "position": 3, "name": title, "item": canonical }
+      ]
+    }
+  ]
+};
 ---
 
-<BaseLayout {title} {description} {canonical}>
+<BaseLayout {title} {description} {canonical} jsonld={articleSchema}>
   <style>
     .blog-article {
       max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem;
@@ -122,6 +146,14 @@ const { title, description, canonical, publishedDate, author = 'MarkdownMaster T
     .blog-article .related-articles li a:hover {
       text-decoration: underline;
     }
+    .article-practice { margin-top:2.5rem; padding:1.5rem; border:1px solid var(--border); border-radius:12px; background:linear-gradient(135deg,rgba(14,165,233,0.12),rgba(30,41,59,0.9)); }
+    .article-practice h2 { margin:0 0 0.4rem; color:var(--text); font-size:1.25rem; }
+    .article-practice p { margin:0 0 1rem; color:var(--text-dim); font-size:0.95rem; }
+    .article-practice-actions { display:flex; gap:0.75rem; flex-wrap:wrap; }
+    .article-practice a { display:inline-flex; align-items:center; border-radius:8px; padding:0.65rem 0.9rem; font-size:0.9rem; font-weight:600; text-decoration:none; }
+    .article-practice .primary-link { background:var(--accent); color:#fff; }
+    .article-practice .secondary-link { border:1px solid var(--border); color:var(--text); }
+    .article-practice a:hover { filter:brightness(1.1); }
   </style>
 
   <article class="blog-article" itemscope itemtype="https://schema.org/Article">
@@ -132,5 +164,14 @@ const { title, description, canonical, publishedDate, author = 'MarkdownMaster T
     </div>
     <h1 itemprop="headline">{title}</h1>
     <slot />
+    <aside class="article-practice" aria-label="Practice Markdown online">
+      <h2>Practice with your own Markdown</h2>
+      <p>Open the private browser editor to test the examples from this guide, then use a focused tool when you need a quick conversion or table.</p>
+      <div class="article-practice-actions">
+        <a class="primary-link" href="/editor/">Open Markdown editor &rarr;</a>
+        <a class="secondary-link" href="/tools/">Explore Markdown tools &rarr;</a>
+        <a class="secondary-link" href="/docs/">Browse syntax reference &rarr;</a>
+      </div>
+    </aside>
   </article>
 </BaseLayout>

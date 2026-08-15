@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+  canonical: string;
+  heading: string;
+  intro: string;
+  toolName: string;
+  relatedGuideHref: string;
+  relatedGuideLabel: string;
+}
+
+const { title, description, canonical, heading, intro, toolName, relatedGuideHref, relatedGuideLabel } = Astro.props;
+const toolSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": toolName,
+      "url": canonical,
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web",
+      "isAccessibleForFree": true,
+      "description": description,
+      "browserRequirements": "Requires a modern web browser"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://markdownmaster.site/" },
+        { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://markdownmaster.site/tools/" },
+        { "@type": "ListItem", "position": 3, "name": toolName, "item": canonical }
+      ]
+    }
+  ]
+};
+---
+<BaseLayout {title} {description} {canonical} jsonld={toolSchema}>
+  <style>
+    .tool-page { max-width:1100px; width:100%; margin:0 auto; padding:3rem 1.5rem 4rem; }
+    .eyebrow { display:inline-flex; padding:0.3rem 0.65rem; border:1px solid rgba(14,165,233,0.4); border-radius:999px; color:var(--accent); font-size:0.78rem; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; }
+    .tool-header { max-width:760px; margin:0 auto 2rem; text-align:center; }
+    .tool-header h1 { margin:0.7rem 0 0.8rem; font-size:clamp(2rem,4vw,3rem); line-height:1.12; letter-spacing:-0.03em; }
+    .tool-header p { margin:0 auto; max-width:680px; color:var(--text-dim); font-size:1.05rem; line-height:1.7; }
+    .tool-shell { background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:1.25rem; box-shadow:0 18px 50px rgba(0,0,0,0.16); }
+    .tool-note { display:flex; gap:0.5rem; align-items:center; margin:1rem 0 0; color:var(--text-muted); font-size:0.85rem; }
+    .tool-note::before { content:'✓'; display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:rgba(16,185,129,0.16); color:#6ee7b7; font-weight:700; }
+    .tool-content { margin-top:3.5rem; max-width:780px; }
+    .tool-content h2 { margin:2rem 0 0.75rem; font-size:1.4rem; }
+    .tool-content p, .tool-content li { color:var(--text-dim); line-height:1.75; }
+    .tool-content ul { padding-left:1.3rem; }
+    .tool-content a { color:var(--accent); }
+    .tool-links { display:flex; flex-wrap:wrap; gap:0.75rem; margin-top:1.25rem; }
+    .tool-links a { display:inline-flex; border:1px solid var(--border); border-radius:8px; padding:0.65rem 0.85rem; text-decoration:none; color:var(--text); font-size:0.9rem; }
+    .tool-links a:hover { border-color:var(--accent); color:var(--accent); }
+    @media (max-width:640px) { .tool-page { padding:2rem 1rem 3rem; } .tool-shell { padding:0.85rem; } }
+  </style>
+  <main class="tool-page">
+    <header class="tool-header">
+      <span class="eyebrow">Free browser tool</span>
+      <h1>{heading}</h1>
+      <p>{intro}</p>
+    </header>
+    <section class="tool-shell" aria-label={toolName}>
+      <slot />
+    </section>
+    <p class="tool-note">Your content is processed locally in this browser. Nothing is sent to a server.</p>
+    <section class="tool-content">
+      <h2>Built for a practical Markdown workflow</h2>
+      <p>Use this focused tool for a single task, then continue editing in MarkdownMaster when you need live preview, syntax highlighting, or a full writing workspace.</p>
+      <div class="tool-links">
+        <a href="/editor/">Open the Markdown editor &rarr;</a>
+        <a href={relatedGuideHref}>{relatedGuideLabel} &rarr;</a>
+        <a href="/tools/">Browse all Markdown tools &rarr;</a>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

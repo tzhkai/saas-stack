@@ -1,0 +1,59 @@
+---
+import ToolLayout from '../../../components/ToolLayout.astro';
+---
+<ToolLayout
+  title="README Generator - Free GitHub README Template Builder | MarkdownMaster"
+  description="Create a clean GitHub README in your browser. Fill in your project details, preview a structured Markdown template, and copy it instantly."
+  canonical="https://markdownmaster.site/tools/readme-generator/"
+  heading="GitHub README Generator"
+  intro="Turn the essential details of your project into a clean README structure. Customize the fields below, then copy the Markdown into your repository."
+  toolName="MarkdownMaster GitHub README Generator"
+  relatedGuideHref="/blog/how-to-write-a-perfect-readme-markdown-github/"
+  relatedGuideLabel="Read the complete README guide"
+>
+  <style>
+    .readme-grid { display:grid; grid-template-columns:minmax(260px,0.8fr) minmax(0,1.2fr); gap:1rem; }
+    .form-card, .output-card { min-width:0; }
+    .form-card { display:flex; flex-direction:column; gap:0.8rem; }
+    label { display:flex; flex-direction:column; gap:0.35rem; color:var(--text-dim); font-size:0.84rem; font-weight:600; }
+    input, textarea { width:100%; box-sizing:border-box; border:1px solid var(--border); border-radius:8px; background:#0b1220; color:var(--text); padding:0.7rem; font:0.9rem var(--font); outline:none; }
+    textarea { min-height:80px; resize:vertical; }
+    input:focus, textarea:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(14,165,233,0.12); }
+    .output-head { display:flex; justify-content:space-between; gap:0.8rem; align-items:center; margin-bottom:0.55rem; color:var(--text-dim); font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; }
+    .output-head button { border:0; border-radius:8px; padding:0.55rem 0.75rem; background:var(--accent); color:#fff; font:600 0.82rem var(--font); cursor:pointer; text-transform:none; letter-spacing:0; }
+    pre { min-height:520px; margin:0; padding:1rem; box-sizing:border-box; border:1px solid var(--border); border-radius:10px; background:#0b1220; color:#dbeafe; font:0.84rem/1.65 var(--font-mono); white-space:pre-wrap; overflow:auto; }
+    @media (max-width:820px) { .readme-grid { grid-template-columns:1fr; } pre { min-height:360px; } }
+  </style>
+  <div class="readme-grid">
+    <form class="form-card" id="readme-form">
+      <label>Project name<input id="project-name" value="My Project" maxlength="80"></label>
+      <label>One-sentence description<textarea id="project-description" maxlength="260">A short description of what this project does and who it helps.</textarea></label>
+      <label>Install command<input id="install-command" value="npm install my-project"></label>
+      <label>Quick-start command<input id="usage-command" value="npm run dev"></label>
+      <label>License<input id="license" value="MIT"></label>
+      <label>Repository URL (optional)<input id="repository-url" placeholder="https://github.com/you/project"></label>
+    </form>
+    <div class="output-card">
+      <div class="output-head"><span>README.md preview</span><button id="copy-readme" type="button">Copy README</button></div>
+      <pre id="readme-output" aria-live="polite"></pre>
+    </div>
+  </div>
+  <script is:inline>
+    const fields = ['project-name', 'project-description', 'install-command', 'usage-command', 'license', 'repository-url'].map(id => document.getElementById(id));
+    const output = document.getElementById('readme-output');
+    const copyButton = document.getElementById('copy-readme');
+    const value = id => document.getElementById(id).value.trim();
+    function render() {
+      const name = value('project-name') || 'My Project';
+      const description = value('project-description') || 'A concise project description.';
+      const install = value('install-command') || 'npm install';
+      const usage = value('usage-command') || 'npm run dev';
+      const license = value('license') || 'MIT';
+      const repo = value('repository-url');
+      output.textContent = `# ${name}\n\n${description}\n\n${repo ? `[View the repository](${repo})\n\n` : ''}## Features\n\n- Clear, focused project purpose\n- Simple setup instructions\n- Easy-to-scan documentation\n\n## Getting started\n\n### Installation\n\n\`\`\`bash\n${install}\n\`\`\`\n\n### Usage\n\n\`\`\`bash\n${usage}\n\`\`\`\n\n## Contributing\n\nContributions, issues, and feature requests are welcome.\n\n## License\n\nThis project is licensed under the ${license} License.`;
+    }
+    fields.forEach(field => field.addEventListener('input', render));
+    copyButton.addEventListener('click', async () => { await navigator.clipboard.writeText(output.textContent); copyButton.textContent = 'Copied'; setTimeout(() => copyButton.textContent = 'Copy README', 1500); });
+    render();
+  </script>
+</ToolLayout>
