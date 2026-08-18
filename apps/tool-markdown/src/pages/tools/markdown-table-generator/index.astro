@@ -78,8 +78,14 @@ import ToolLayout from '../../../components/ToolLayout.astro';
   <pre id="markdown-output" aria-live="polite"></pre>
   <p class="status" id="table-status" role="status" aria-live="polite"></p>
 
-  <script>
-    import { trackToolAction } from '../../../scripts/toolClient';
+  <script is:inline>
+    function trackTableCopy() {
+      const source = new URLSearchParams(window.location.search).get('from')?.toLowerCase();
+      const allowedSources = ['homepage-table', 'docs-table'];
+      const params = { tool: 'markdown-table-generator', action: 'copy_table' };
+      if (source && allowedSources.includes(source)) params.source = source;
+      window.mmTrack?.('markdown_tool_action', params);
+    }
 
     const table = document.getElementById('table-builder');
     const head = table.tHead;
@@ -282,7 +288,7 @@ import ToolLayout from '../../../components/ToolLayout.astro';
           if (!copied) throw new Error('Copy was not available');
         }
         setStatus('Copied Markdown table to clipboard.');
-        trackToolAction('markdown-table-generator', 'copy_table');
+        trackTableCopy();
       } catch {
         setStatus('Clipboard access was blocked. Select the output and press Ctrl/Cmd+C.', 'error');
       } finally {
