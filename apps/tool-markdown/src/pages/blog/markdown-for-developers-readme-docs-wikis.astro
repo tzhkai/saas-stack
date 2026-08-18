@@ -15,7 +15,7 @@ const jsonld = {
   "publisher": { "@type": "Organization", "name": "MarkdownMaster", "url": "https://markdownmaster.site" },
   "mainEntityOfPage": { "@type": "WebPage", "@id": "https://markdownmaster.site/blog/markdown-for-developers-readme-docs-wikis/" },
   "datePublished": "2026-04-28",
-  "dateModified": "2026-04-28"
+  "dateModified": "2026-08-19"
 };
 ---
 
@@ -73,7 +73,7 @@ const jsonld = {
 
   <p>A great README is the most important document in any open-source project. It is the first thing people see, and often the deciding factor between "I will use this" and "I will look for something else."</p>
 
-  <p>Here is a battle-tested README structure in Markdown:</p>
+  <p>Here is a battle-tested README structure in Markdown. You can start from the copy-ready <a href="/templates/github-readme-template/">GitHub README template</a> instead of building this structure from an empty file:</p>
 
 <pre><code set:html={codeReadme}></code></pre>
 
@@ -138,7 +138,7 @@ const result = await api.fetch();
 
 <pre><code set:html={codeTableDoc}></code></pre>
 
-  <p>For more complex API docs, consider combining Markdown with OpenAPI/Swagger specifications. Many API documentation tools (like <strong>Redoc</strong>, <strong>Stoplight</strong>, <strong>ReadMe.io</strong>) support Markdown extensions for rich formatting.</p>
+  <p>For more complex API docs, consider combining Markdown with OpenAPI/Swagger specifications. Many API documentation tools (like <strong>Redoc</strong>, <strong>Stoplight</strong>, <strong>ReadMe.io</strong>) support Markdown extensions for rich formatting. Use the <a href="/templates/api-parameter-documentation-template/">API parameter documentation template</a> when you need a consistent Markdown starting structure.</p>
 
   <h2 id="wiki">Project Wikis</h2>
 
@@ -214,7 +214,7 @@ const result = await api.fetch();
 
   <ol>
     <li><strong>Write docs in the same PR as code</strong> — Keep documentation changes alongside the code they describe. Your future self (and your teammates) will thank you.</li>
-    <li><strong>Use templates</strong> — Create Markdown templates for README files, issue reports, and pull requests. Consistent structure saves time and improves quality.</li>
+    <li><strong>Use templates</strong> — Create Markdown templates for README files, issue reports, and pull requests. Consistent structure saves time and improves quality; start with the <a href="/templates/github-readme-template/">GitHub README</a>, <a href="/templates/cli-command-reference-template/">CLI command reference</a>, or <a href="/templates/api-parameter-documentation-template/">API parameter documentation</a> template.</li>
     <li><strong>Preview before pushing</strong> — Use a live preview editor to check formatting before committing. A Markdown table that renders wrong on GitHub is a bad look.</li>
     <li><strong>Keep it readable in source</strong> — The hallmark of good Markdown is that it looks clean even before rendering. Use proper heading hierarchy, blank lines between sections, and consistent indentation.</li>
     <li><strong>Link liberally</strong> — Markdown links are lightweight. Cross-reference between docs, link to related issues, and point to external resources.</li>
@@ -223,5 +223,5 @@ const result = await api.fetch();
 
   <hr>
 
-  <p><em>Master Markdown and write better docs faster. <a href="https://markdownmaster.site/editor/">Try MarkdownMaster Editor</a> — the free, no-sign-up Markdown editor with real-time preview and HTML export.</em></p>
+  <p><em>Master Markdown and write better docs faster. <a href="/templates/">Choose a practical Markdown template</a> or <a href="/editor/?from=blog-guide">try MarkdownMaster Editor</a> — the free, no-sign-up Markdown editor with real-time preview and HTML export.</em></p>
 </BlogLayout>
