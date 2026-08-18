@@ -94,9 +94,19 @@ Sitemap: https://markdownmaster.site/sitemap-index.xml
       return response;
     }
 
+    // Preserve Pages headers when rebuilding HTML. The prior implementation retained only
+    // content-type, which silently discarded cache and security directives from _headers.
+    const htmlHeaders = new Headers(response.headers);
+    htmlHeaders.set("content-type", "text/html; charset=utf-8");
+    if (path.startsWith("/editor/")) htmlHeaders.set("cache-control", "no-cache");
+    const htmlResponse = (body) => new Response(body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: htmlHeaders,
+    });
+
     let html = await response.text();
-    if (!html.includes("</body>"))
-      return new Response(html, { status: response.status, headers: { "content-type": "text/html; charset=utf-8" } });
+    if (!html.includes("</body>")) return htmlResponse(html);
 
     // Load links from D1
     let links = [];
@@ -111,7 +121,7 @@ Sitemap: https://markdownmaster.site/sitemap-index.xml
 
     // No links to show — skip injection entirely
     if (!links || links.length === 0) {
-      return new Response(html, { status: response.status, headers: { "content-type": "text/html; charset=utf-8" } });
+      return htmlResponse(html);
     }
 
     const script = `<script>
@@ -132,6 +142,6 @@ document.body.appendChild(d);
 </script>`;
 
     html = html.replace("</body>", script + "</body>");
-    return new Response(html, { status: response.status, headers: { "content-type": "text/html; charset=utf-8" } });
+    return htmlResponse(html);
   }
 }
