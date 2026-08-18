@@ -3,62 +3,291 @@ import ToolLayout from '../../../components/ToolLayout.astro';
 ---
 <ToolLayout
   title="Markdown Table Generator - Free Online Table Builder | MarkdownMaster"
-  description="Create clean Markdown tables online. Add rows and columns, edit cells, then copy GitHub Flavored Markdown table syntax instantly."
+  description="Create GitHub Flavored Markdown tables online. Start from practical templates, set column alignment, edit cells, and copy the generated Markdown."
   canonical="https://markdownmaster.site/tools/markdown-table-generator/"
   heading="Markdown Table Generator"
-  intro="Build a GitHub Flavored Markdown table without manually aligning pipes. Edit the cells, add rows or columns, then copy the result."
+  intro="Build a GitHub-ready Markdown table without aligning pipes by hand. Start with a useful structure, edit cells and alignment, then copy the exact syntax."
   toolName="MarkdownMaster Markdown Table Generator"
   relatedGuideHref="/blog/markdown-tables-how-to-create-format-align/"
   relatedGuideLabel="Read the Markdown tables guide"
 >
   <style>
-    .table-toolbar { display:flex; justify-content:space-between; gap:0.8rem; flex-wrap:wrap; margin-bottom:1rem; }
-    .button-group { display:flex; gap:0.6rem; flex-wrap:wrap; }
-    button { border:1px solid var(--border); border-radius:8px; padding:0.6rem 0.8rem; background:transparent; color:var(--text); font:600 0.86rem var(--font); cursor:pointer; }
-    button:hover { border-color:var(--accent); color:var(--accent); }
-    button.primary { background:var(--accent); color:#fff; border-color:var(--accent); }
+    .table-toolbar { display:grid; grid-template-columns:1fr auto; gap:.85rem 1rem; margin-bottom:1rem; }
+    .control-group { display:flex; align-items:center; flex-wrap:wrap; gap:.55rem; }
+    .control-label { color:var(--text-dim); font-size:.82rem; font-weight:700; }
+    select,button { min-height:42px; border:1px solid var(--border); border-radius:8px; padding:.55rem .75rem; background:transparent; color:var(--text); font:600 .86rem var(--font); cursor:pointer; }
+    select { background:var(--bg-card); }
+    button:hover:not(:disabled),select:hover { border-color:var(--accent); color:var(--accent); }
+    button:focus-visible,select:focus-visible,input:focus-visible { outline:3px solid rgba(14,165,233,.45); outline-offset:2px; }
+    button:disabled { cursor:not-allowed; opacity:.5; }
+    button.primary { background:var(--accent); color:#082f49; border-color:var(--accent); }
+    button.primary:hover:not(:disabled) { background:#7dd3fc; color:#082f49; }
+    .table-hint { margin:0 0 .6rem; color:var(--text-muted); font-size:.84rem; }
     .table-scroll { overflow:auto; border:1px solid var(--border); border-radius:10px; }
-    table { width:100%; min-width:560px; border-collapse:collapse; }
-    th, td { border-right:1px solid var(--border); border-bottom:1px solid var(--border); padding:0; }
-    th:last-child, td:last-child { border-right:0; }
+    table { width:100%; min-width:620px; border-collapse:collapse; }
+    th,td { border-right:1px solid var(--border); border-bottom:1px solid var(--border); padding:.55rem; vertical-align:top; }
+    th:last-child,td:last-child { border-right:0; }
     tr:last-child td { border-bottom:0; }
-    th { background:rgba(14,165,233,0.08); }
-    input { width:100%; border:0; background:transparent; color:var(--text); padding:0.8rem; font:0.9rem var(--font); outline:none; }
+    th { background:rgba(14,165,233,.08); }
+    th label { display:block; color:var(--text-muted); font-size:.72rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; }
+    th select { width:100%; min-height:32px; margin-top:.45rem; padding:.3rem .4rem; font-size:.76rem; }
+    input { width:100%; border:0; border-radius:5px; background:transparent; color:var(--text); padding:.25rem; font:.9rem var(--font); outline:none; }
     th input { font-weight:700; }
-    .output-label { margin:1.25rem 0 0.55rem; color:var(--text-dim); font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; }
-    pre { min-height:150px; margin:0; padding:1rem; border:1px solid var(--border); border-radius:10px; background:#0b1220; color:#dbeafe; font:0.86rem/1.6 var(--font-mono); overflow:auto; }
+    .finish-row { display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin:1.25rem 0 .55rem; }
+    .output-label { color:var(--text-dim); font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
+    pre { min-height:170px; margin:0; padding:1rem; border:1px solid var(--border); border-radius:10px; background:#0b1220; color:#dbeafe; font:.86rem/1.65 var(--font-mono); overflow:auto; white-space:pre-wrap; word-break:break-word; }
+    .status { min-height:1.5rem; margin:.7rem 0 0; color:var(--text-muted); font-size:.88rem; }
+    .status[data-kind='success'] { color:#86efac; }
+    .status[data-kind='error'] { color:#fca5a5; }
+    @media (max-width:720px) { .table-toolbar { grid-template-columns:1fr; } .table-toolbar > .control-group:last-child { justify-content:flex-start; } .finish-row { align-items:stretch; } .finish-row .control-group { width:100%; } .finish-row button { flex:1; } }
   </style>
+
   <div class="table-toolbar">
-    <div class="button-group">
-      <button id="add-row" type="button">+ Add row</button>
-      <button id="add-column" type="button">+ Add column</button>
-      <button id="remove-row" type="button">− Remove row</button>
+    <div class="control-group">
+      <label class="control-label" for="table-template">Start with</label>
+      <select id="table-template" aria-label="Choose a table template">
+        <option value="feature_comparison">Feature comparison</option>
+        <option value="cli_commands">CLI commands</option>
+        <option value="api_parameters">API parameters</option>
+        <option value="blank">Blank table</option>
+      </select>
+      <button id="reset-table" type="button">Reset</button>
     </div>
-    <button class="primary" id="copy-table" type="button">Copy Markdown table</button>
+    <div class="control-group" aria-label="Table structure controls">
+      <button id="add-row" type="button">+ Row</button>
+      <button id="remove-row" type="button">− Row</button>
+      <button id="add-column" type="button">+ Column</button>
+      <button id="remove-column" type="button">− Column</button>
+    </div>
   </div>
-  <div class="table-scroll">
+
+  <p class="table-hint">Set alignment below each column header. On small screens, scroll horizontally to edit every column. Line breaks become spaces in generated Markdown tables.</p>
+  <div class="table-scroll" tabindex="0" aria-label="Scrollable Markdown table editor">
     <table id="table-builder" aria-label="Markdown table builder">
-      <thead><tr><th><input value="Feature" aria-label="Column 1 header"></th><th><input value="Use case" aria-label="Column 2 header"></th><th><input value="Status" aria-label="Column 3 header"></th></tr></thead>
-      <tbody>
-        <tr><td><input value="Live preview" aria-label="Row 1 column 1"></td><td><input value="Writing" aria-label="Row 1 column 2"></td><td><input value="Ready" aria-label="Row 1 column 3"></td></tr>
-        <tr><td><input value="GFM tables" aria-label="Row 2 column 1"></td><td><input value="Documentation" aria-label="Row 2 column 2"></td><td><input value="Ready" aria-label="Row 2 column 3"></td></tr>
-      </tbody>
+      <thead></thead>
+      <tbody></tbody>
     </table>
   </div>
-  <p class="output-label">Generated Markdown</p>
+
+  <div class="finish-row">
+    <span class="output-label">Generated Markdown</span>
+    <div class="control-group">
+      <button class="primary" id="copy-table" type="button">Copy Markdown table</button>
+    </div>
+  </div>
   <pre id="markdown-output" aria-live="polite"></pre>
+  <p class="status" id="table-status" role="status" aria-live="polite"></p>
+
   <script is:inline>
     const table = document.getElementById('table-builder');
+    const head = table.tHead;
+    const body = table.tBodies[0];
     const output = document.getElementById('markdown-output');
+    const templateSelect = document.getElementById('table-template');
+    const status = document.getElementById('table-status');
     const copyButton = document.getElementById('copy-table');
-    function values(row) { return [...row.querySelectorAll('input')].map(input => input.value.replace(/\|/g, '\\|').trim() || ' '); }
-    function render() { const headers = values(table.tHead.rows[0]); const separator = headers.map(() => '---'); const rows = [...table.tBodies[0].rows].map(values); output.textContent = [headers, separator, ...rows].map(row => `| ${row.join(' | ')} |`).join('\n'); }
-    function cell(value, label, header = false) { const element = document.createElement(header ? 'th' : 'td'); const input = document.createElement('input'); input.value = value; input.setAttribute('aria-label', label); element.appendChild(input); return element; }
-    document.getElementById('add-row').addEventListener('click', () => { const row = table.tBodies[0].insertRow(); const count = table.tHead.rows[0].cells.length; for (let i = 0; i < count; i++) row.appendChild(cell('', `New row column ${i + 1}`)); render(); });
-    document.getElementById('add-column').addEventListener('click', () => { const headerRow = table.tHead.rows[0]; headerRow.appendChild(cell(`Column ${headerRow.cells.length + 1}`, 'New column header', true)); [...table.tBodies[0].rows].forEach((row, i) => row.appendChild(cell('', `Row ${i + 1} new column`))); render(); });
-    document.getElementById('remove-row').addEventListener('click', () => { const body = table.tBodies[0]; if (body.rows.length > 1) body.deleteRow(-1); render(); });
-    table.addEventListener('input', render);
-    copyButton.addEventListener('click', async () => { await navigator.clipboard.writeText(output.textContent); copyButton.textContent = 'Copied'; setTimeout(() => copyButton.textContent = 'Copy Markdown table', 1500); });
-    render();
+    const removeRowButton = document.getElementById('remove-row');
+    const removeColumnButton = document.getElementById('remove-column');
+
+    const templates = {
+      feature_comparison: {
+        columns: [
+          { label: 'Feature', alignment: 'left' },
+          { label: 'Free', alignment: 'center' },
+          { label: 'Pro', alignment: 'center' },
+        ],
+        rows: [['Live preview', 'Yes', 'Yes'], ['Export HTML', '—', 'Yes'], ['Priority support', '—', 'Yes']],
+      },
+      cli_commands: {
+        columns: [
+          { label: 'Command', alignment: 'left' },
+          { label: 'Description', alignment: 'left' },
+          { label: 'Example', alignment: 'left' },
+        ],
+        rows: [['install', 'Install the package', 'npm install your-cli'], ['init', 'Create a configuration file', 'your-cli init']],
+      },
+      api_parameters: {
+        columns: [
+          { label: 'Parameter', alignment: 'left' },
+          { label: 'Type', alignment: 'left' },
+          { label: 'Required', alignment: 'center' },
+          { label: 'Description', alignment: 'left' },
+        ],
+        rows: [['limit', 'integer', 'No', 'Maximum items to return'], ['cursor', 'string', 'No', 'Pagination cursor']],
+      },
+      blank: {
+        columns: [
+          { label: 'Column 1', alignment: 'left' },
+          { label: 'Column 2', alignment: 'left' },
+          { label: 'Column 3', alignment: 'left' },
+        ],
+        rows: [['', '', ''], ['', '', '']],
+      },
+    };
+
+    let state = { columns: [], rows: [], activeTemplate: 'feature_comparison', dirty: false };
+
+    function cloneTemplate(name) {
+      const source = templates[name];
+      return {
+        columns: source.columns.map((column) => ({ ...column })),
+        rows: source.rows.map((row) => [...row]),
+        activeTemplate: name,
+        dirty: false,
+      };
+    }
+
+    function setStatus(message, kind = 'success') {
+      status.textContent = message;
+      status.dataset.kind = kind;
+    }
+
+    function escapeCell(value) {
+      return String(value).replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/[\r\n]+/g, ' ').trim() || ' ';
+    }
+
+    function separator(alignment) {
+      if (alignment === 'center') return ':---:';
+      if (alignment === 'right') return '---:';
+      return ':---';
+    }
+
+    function markdown() {
+      const headers = state.columns.map((column) => escapeCell(column.label));
+      const separators = state.columns.map((column) => separator(column.alignment));
+      const rows = state.rows.map((row) => row.map(escapeCell));
+      return [headers, separators, ...rows].map((row) => `| ${row.join(' | ')} |`).join('\n');
+    }
+
+    function renderMarkdown() {
+      output.textContent = markdown();
+      removeRowButton.disabled = state.rows.length <= 1;
+      removeColumnButton.disabled = state.columns.length <= 1;
+      removeRowButton.title = state.rows.length <= 1 ? 'At least one data row is required' : '';
+      removeColumnButton.title = state.columns.length <= 1 ? 'At least one column is required' : '';
+    }
+
+    function input(value, label, onChange) {
+      const element = document.createElement('input');
+      element.value = value;
+      element.setAttribute('aria-label', label);
+      element.addEventListener('input', () => {
+        onChange(element.value);
+        state.dirty = true;
+        renderMarkdown();
+      });
+      return element;
+    }
+
+    function alignmentSelect(columnIndex) {
+      const select = document.createElement('select');
+      select.setAttribute('aria-label', `Alignment for ${state.columns[columnIndex].label || `column ${columnIndex + 1}`}`);
+      [['left', 'Left'], ['center', 'Center'], ['right', 'Right']].forEach(([value, label]) => {
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = label;
+        option.selected = state.columns[columnIndex].alignment === value;
+        select.appendChild(option);
+      });
+      select.addEventListener('change', () => {
+        state.columns[columnIndex].alignment = select.value;
+        state.dirty = true;
+        renderMarkdown();
+      });
+      return select;
+    }
+
+    function renderTable() {
+      head.replaceChildren();
+      body.replaceChildren();
+      const headerRow = document.createElement('tr');
+      state.columns.forEach((column, columnIndex) => {
+        const cell = document.createElement('th');
+        cell.appendChild(input(column.label, `Column ${columnIndex + 1} header`, (value) => { state.columns[columnIndex].label = value; }));
+        const alignmentLabel = document.createElement('label');
+        alignmentLabel.textContent = 'Alignment';
+        alignmentLabel.appendChild(alignmentSelect(columnIndex));
+        cell.appendChild(alignmentLabel);
+        headerRow.appendChild(cell);
+      });
+      head.appendChild(headerRow);
+
+      state.rows.forEach((row, rowIndex) => {
+        const tableRow = document.createElement('tr');
+        state.columns.forEach((_, columnIndex) => {
+          const cell = document.createElement('td');
+          cell.appendChild(input(row[columnIndex] || '', `Row ${rowIndex + 1}, column ${columnIndex + 1}`, (value) => { state.rows[rowIndex][columnIndex] = value; }));
+          tableRow.appendChild(cell);
+        });
+        body.appendChild(tableRow);
+      });
+      renderMarkdown();
+    }
+
+    function loadTemplate(name, confirmIfDirty = true) {
+      if (confirmIfDirty && state.dirty && !window.confirm('Replace the current table with this template?')) {
+        templateSelect.value = state.activeTemplate;
+        return;
+      }
+      state = cloneTemplate(name);
+      templateSelect.value = name;
+      setStatus(`Loaded ${templateSelect.selectedOptions[0].textContent} template.`);
+      renderTable();
+    }
+
+    document.getElementById('add-row').addEventListener('click', () => {
+      state.rows.push(state.columns.map(() => ''));
+      state.dirty = true;
+      renderTable();
+    });
+    document.getElementById('remove-row').addEventListener('click', () => {
+      if (state.rows.length <= 1) return;
+      state.rows.pop();
+      state.dirty = true;
+      renderTable();
+    });
+    document.getElementById('add-column').addEventListener('click', () => {
+      state.columns.push({ label: `Column ${state.columns.length + 1}`, alignment: 'left' });
+      state.rows.forEach((row) => row.push(''));
+      state.dirty = true;
+      renderTable();
+    });
+    document.getElementById('remove-column').addEventListener('click', () => {
+      if (state.columns.length <= 1) return;
+      state.columns.pop();
+      state.rows.forEach((row) => row.pop());
+      state.dirty = true;
+      renderTable();
+    });
+    templateSelect.addEventListener('change', () => loadTemplate(templateSelect.value));
+    document.getElementById('reset-table').addEventListener('click', () => loadTemplate('feature_comparison'));
+
+    copyButton.addEventListener('click', async () => {
+      const text = markdown();
+      copyButton.disabled = true;
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const helper = document.createElement('textarea');
+          helper.value = text;
+          helper.style.position = 'fixed';
+          helper.style.opacity = '0';
+          document.body.appendChild(helper);
+          helper.select();
+          const copied = document.execCommand('copy');
+          helper.remove();
+          if (!copied) throw new Error('Copy was not available');
+        }
+        setStatus('Copied Markdown table to clipboard.');
+      } catch {
+        setStatus('Clipboard access was blocked. Select the output and press Ctrl/Cmd+C.', 'error');
+      } finally {
+        copyButton.disabled = false;
+      }
+    });
+
+    state = cloneTemplate('feature_comparison');
+    renderTable();
   </script>
 </ToolLayout>

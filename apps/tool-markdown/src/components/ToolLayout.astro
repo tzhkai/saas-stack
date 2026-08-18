@@ -44,6 +44,8 @@ const toolSchema = {
     .tool-header { max-width:760px; margin:0 auto 2rem; text-align:center; }
     .tool-header h1 { margin:0.7rem 0 0.8rem; font-size:clamp(2rem,4vw,3rem); line-height:1.12; letter-spacing:-0.03em; }
     .tool-header p { margin:0 auto; max-width:680px; color:var(--text-dim); font-size:1.05rem; line-height:1.7; }
+    .tool-trust { display:flex; justify-content:center; flex-wrap:wrap; gap:.45rem 1rem; margin-top:1rem; color:var(--text-muted); font-size:.82rem; }
+    .tool-trust span::before { content:'✓'; margin-right:.35rem; color:#86efac; font-weight:800; }
     .tool-shell { background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:1.25rem; box-shadow:0 18px 50px rgba(0,0,0,0.16); }
     .tool-note { display:flex; gap:0.5rem; align-items:center; margin:1rem 0 0; color:var(--text-muted); font-size:0.85rem; }
     .tool-note::before { content:'✓'; display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:rgba(16,185,129,0.16); color:#6ee7b7; font-weight:700; }
@@ -55,6 +57,7 @@ const toolSchema = {
     .tool-links { display:flex; flex-wrap:wrap; gap:0.75rem; margin-top:1.25rem; }
     .tool-links a { display:inline-flex; border:1px solid var(--border); border-radius:8px; padding:0.65rem 0.85rem; text-decoration:none; color:var(--text); font-size:0.9rem; }
     .tool-links a:hover { border-color:var(--accent); color:var(--accent); }
+    .tool-links a:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
     @media (max-width:640px) { .tool-page { padding:2rem 1rem 3rem; } .tool-shell { padding:0.85rem; } }
   </style>
   <main class="tool-page">
@@ -62,6 +65,9 @@ const toolSchema = {
       <span class="eyebrow">Free browser tool</span>
       <h1>{heading}</h1>
       <p>{intro}</p>
+      <div class="tool-trust" aria-label="Tool privacy and availability">
+        <span>No account required</span><span>Processed locally</span><span>Open source</span>
+      </div>
     </header>
     <section class="tool-shell" aria-label={toolName}>
       <slot />
