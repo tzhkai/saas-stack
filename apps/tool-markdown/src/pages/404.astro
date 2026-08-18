@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Page Not Found | MarkdownMaster"
+  description="The page you requested could not be found. Return to MarkdownMaster to edit Markdown, explore templates, or browse guides."
+  robots="noindex, follow"
+>
+  <section class="not-found" aria-labelledby="not-found-title">
+    <p class="eyebrow">Error 404</p>
+    <h1 id="not-found-title">This page does not exist.</h1>
+    <p class="summary">The address may be outdated, mistyped, or no longer available. You can continue with a practical Markdown task instead.</p>
+    <div class="actions">
+      <a class="primary" href="/editor/?from=404">Open the editor</a>
+      <a class="secondary" href="/templates/">Browse templates</a>
+      <a class="secondary" href="/docs/">Read the syntax guide</a>
+    </div>
+  </section>
+
+  <style>
+    .not-found {
+      width: min(100% - 2rem, 720px);
+      margin: auto;
+      padding: clamp(4rem, 12vw, 8rem) 0;
+      text-align: center;
+    }
+    .eyebrow {
+      color: var(--accent); font-family: var(--font-mono); font-size: 0.85rem;
+      font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    h1 { margin: 0.75rem 0 1rem; font-size: clamp(2rem, 6vw, 3.5rem); line-height: 1.1; }
+    .summary { max-width: 560px; margin: 0 auto; color: var(--text-dim); font-size: 1.05rem; }
+    .actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
+    .actions a { border-radius: 8px; padding: 0.75rem 1rem; font-weight: 600; text-decoration: none; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+    .primary { background: var(--accent); color: #fff; }
+    .primary:hover { background: var(--accent-hover); }
+    .secondary { border: 1px solid var(--border); color: var(--text); }
+    .secondary:hover { border-color: var(--accent); color: var(--accent); }
+  </style>
+</BaseLayout>
