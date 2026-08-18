@@ -20,7 +20,11 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"MarkdownMaster Editor","url":"https://markdownmaster.site/editor/","operatingSystem":"Web","applicationCategory":"WebApplication","description":"Free online Markdown editor with real-time live preview, GFM support, and syntax highlighting.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" is:inline></script>
+  <script>
+    import { marked } from 'marked';
+    import DOMPurify from 'dompurify';
+    Object.assign(window, { marked, DOMPurify });
+  </script>
   <style is:global>
     *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
     :root {
@@ -54,6 +58,11 @@
       font-weight:500; padding:0.25rem 0.5rem; border-radius:4px; transition:all 0.1s;
     }
     .site-nav-link:hover { color:var(--text); background:var(--border); }
+    .editor-site-nav { display:flex; align-items:center; gap:0.15rem; flex-wrap:wrap; }
+    @media (max-width:640px) {
+      .site-header { flex-wrap:wrap; gap:0.25rem 0.45rem; }
+      .site-nav-link { padding:0.25rem 0.35rem; font-size:0.75rem; }
+    }
     .toolbar {
       flex-shrink:0; background:var(--bg2); border-bottom:1px solid var(--border);
       padding:0.4rem 0.75rem; display:flex; align-items:center; gap:0.25rem; flex-wrap:wrap;
@@ -162,9 +171,13 @@
 
 <header class="site-header">
   <a href="/" class="site-logo">📝 MarkdownMaster</a>
-  <a href="/" class="site-nav-link">← Home</a>
-  <a href="/docs/" class="site-nav-link">Docs</a>
-  <a href="/blog/" class="site-nav-link">Blog</a>
+  <nav class="editor-site-nav" aria-label="Editor navigation">
+    <a href="/" class="site-nav-link">← Home</a>
+    <a href="/tools/" class="site-nav-link">Tools</a>
+    <a href="/templates/" class="site-nav-link">Templates</a>
+    <a href="/docs/" class="site-nav-link">Docs</a>
+    <a href="/blog/" class="site-nav-link">Blog</a>
+  </nav>
 </header>
 
 <div class="toolbar">
@@ -195,7 +208,7 @@
     <button class="tb-btn" data-action="print" title="Print / Save as PDF" style="color:#4ade80">⬇ PDF</button>
     <button class="tb-btn" data-action="clear" title="Clear all content" style="color:#f87171">Clear</button>
   </div>
-  <div class="tb-title"><span class="tb-dot"></span> Live Preview</div>
+  <div class="tb-title" id="preview-status" role="status" aria-live="polite" title="Markdown is rendered and sanitized locally in this browser"><span class="tb-dot"></span> Safe Preview</div>
   <button class="tb-btn theme-btn" id="theme-toggle" data-action="theme" title="Toggle light/dark theme" aria-label="Toggle theme">☀</button>
 </div>
 
@@ -215,7 +228,7 @@
   </div>
 </div>
 
-<script src="/editor.v2.js?v=3" is:inline></script>
+<script src="/editor.v2.js?v=4" is:inline></script>
 
 </body>
 </html>

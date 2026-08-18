@@ -14,12 +14,7 @@ const GA_MEASUREMENT_ID = 'G-C9YBSZ3YDN';
 // Google Search Console - set verification code after verifying domain ownership
 // To get your code: Google Search Console → Add Property → Choose "HTML tag" → Copy the content value
 const GOOGLE_SITE_VERIFICATION = ''; // e.g. 'your_verification_code_here'
-const gaInitScript = GA_MEASUREMENT_ID ? `
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', '${GA_MEASUREMENT_ID}');
-` : '';
+
 ---
 
 <!DOCTYPE html>
@@ -34,10 +29,6 @@ const gaInitScript = GA_MEASUREMENT_ID ? `
 
   {GOOGLE_SITE_VERIFICATION && <meta name="google-site-verification" content={GOOGLE_SITE_VERIFICATION} />}
 
-  <!-- Google Analytics 4 -->
-  <!-- Google Analytics 4 -->
-  {GA_MEASUREMENT_ID && <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}></script>}
-  {GA_MEASUREMENT_ID && <script is:inline set:html={gaInitScript}></script>}
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content={title} />
@@ -97,6 +88,12 @@ const gaInitScript = GA_MEASUREMENT_ID ? `
     }
     .site-footer a { color: var(--text-dim); text-decoration: none; margin: 0 0.5rem; }
     .site-footer a:hover { color: var(--accent); }
+    @media (max-width: 640px) {
+      .site-header { padding: 0.65rem 0.75rem; gap: 0.35rem; align-items: flex-start; }
+      .site-logo { font-size: 1rem; white-space: nowrap; }
+      .site-nav { flex-wrap: wrap; justify-content: flex-end; gap: 0.1rem; }
+      .site-nav a { padding: 0.35rem 0.45rem; font-size: 0.8rem; }
+    }
   </style>
 </head>
 <body>
@@ -106,6 +103,7 @@ const gaInitScript = GA_MEASUREMENT_ID ? `
       <a href="/editor/">Editor</a>
       <a href="/docs/">Docs</a>
       <a href="/tools/">Tools</a>
+      <a href="/templates/">Templates</a>
       <a href="/blog/">Blog</a>
     </nav>
   </header>
@@ -122,19 +120,54 @@ const gaInitScript = GA_MEASUREMENT_ID ? `
     <p style="margin-top:0.3rem;font-size:0.8rem;">Built by <a href="https://knexio.xyz" target="_blank" rel="noopener">Knexio</a> &middot; Open source Markdown editor</p>
   </footer>
 
-  <!-- Cookie Consent -->
-  <div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1e293b;border-top:1px solid #334155;padding:14px 20px;z-index:10000;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:0.85rem;color:#e2e8f0;">
-    <span>We use Google Analytics to understand how our site is used. By continuing, you consent to cookies. <a href="/privacy/" style="color:#0ea5e9;">Learn more</a></span>
-    <button id="cookie-accept" style="background:#0ea5e9;color:#fff;border:none;padding:8px 18px;border-radius:6px;cursor:pointer;font-weight:600;font-size:0.85rem;white-space:nowrap;">Got it</button>
+  <!-- Optional analytics consent: Markdown content is never passed to analytics. -->
+  <div id="cookie-banner" role="dialog" aria-live="polite" aria-label="Optional analytics preference" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1e293b;border-top:1px solid #334155;padding:14px 20px;z-index:10000;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:0.85rem;color:#e2e8f0;">
+    <span>Optional analytics help us improve the site. Analytics stays off until you choose Allow, and your Markdown text is never sent to analytics. <a href="/privacy/" style="color:#0ea5e9;">Privacy details</a></span>
+    <span style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button id="cookie-decline" style="background:transparent;color:#e2e8f0;border:1px solid #64748b;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:600;font-size:0.85rem;white-space:nowrap;">No analytics</button>
+      <button id="cookie-accept" style="background:#0ea5e9;color:#fff;border:none;padding:8px 18px;border-radius:6px;cursor:pointer;font-weight:600;font-size:0.85rem;white-space:nowrap;">Allow analytics</button>
+    </span>
   </div>
-  <script is:inline>
+  <script is:inline define:vars={{ GA_MEASUREMENT_ID }}>
     (function(){
-      if (document.cookie.indexOf('mm_cookie_consent=1') !== -1) return;
-      document.getElementById('cookie-banner').style.display = 'flex';
-      document.getElementById('cookie-accept').onclick = function(){
-        document.cookie = 'mm_cookie_consent=1;max-age=31536000;path=/;SameSite=Lax';
-        document.getElementById('cookie-banner').style.display = 'none';
-      };
+      var banner = document.getElementById('cookie-banner');
+      var accept = document.getElementById('cookie-accept');
+      var decline = document.getElementById('cookie-decline');
+      var analyticsId = GA_MEASUREMENT_ID;
+
+      function hasCookie(name, value) {
+        return document.cookie.split('; ').some(function (item) { return item === name + '=' + value; });
+      }
+      function saveChoice(value) {
+        document.cookie = 'mm_analytics_choice=' + value + ';max-age=31536000;path=/;SameSite=Lax';
+      }
+      function loadAnalytics() {
+        if (!analyticsId || document.querySelector('script[data-mm-analytics]')) return;
+        window['ga-disable-' + analyticsId] = false;
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function(){ window.dataLayer.push(arguments); };
+        window.gtag('js', new Date());
+        window.gtag('config', analyticsId, { anonymize_ip: true });
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(analyticsId);
+        script.dataset.mmAnalytics = 'true';
+        document.head.appendChild(script);
+      }
+      function closeBanner() { if (banner) banner.style.display = 'none'; }
+
+      var legacyAccepted = hasCookie('mm_cookie_consent', '1');
+      if (hasCookie('mm_analytics_choice', 'accepted') || legacyAccepted) {
+        loadAnalytics();
+        return;
+      }
+      if (hasCookie('mm_analytics_choice', 'declined')) {
+        if (analyticsId) window['ga-disable-' + analyticsId] = true;
+        return;
+      }
+      if (banner) banner.style.display = 'flex';
+      if (accept) accept.onclick = function(){ saveChoice('accepted'); loadAnalytics(); closeBanner(); };
+      if (decline) decline.onclick = function(){ saveChoice('declined'); if (analyticsId) window['ga-disable-' + analyticsId] = true; closeBanner(); };
     })();
   </script>
 </body>

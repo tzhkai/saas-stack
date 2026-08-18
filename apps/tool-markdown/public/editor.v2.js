@@ -2,7 +2,7 @@
   'use strict';
 
   function boot() {
-    if (typeof marked === 'undefined') { setTimeout(boot, 50); return; }
+    if (typeof marked === 'undefined' || typeof DOMPurify === 'undefined') { setTimeout(boot, 50); return; }
 
     marked.setOptions({ breaks: true, gfm: true });
 
@@ -10,6 +10,13 @@
     var input = document.getElementById('md-input');
     var preview = document.getElementById('preview-content');
     var toolbar = document.querySelector('.toolbar');
+    var previewStatus = document.getElementById('preview-status');
+    var sanitizationOptions = {
+      USE_PROFILES: { html: true },
+      FORBID_TAGS: ['base', 'button', 'embed', 'form', 'iframe', 'link', 'meta', 'object', 'option', 'script', 'select', 'style', 'svg', 'textarea', 'math'],
+      FORBID_ATTR: ['style'],
+      ALLOW_UNKNOWN_PROTOCOLS: false
+    };
 
     if (!input || !preview || !toolbar) {
       setTimeout(boot, 50);
@@ -35,7 +42,12 @@
     if (!handoffLoaded) {
       var params = new URLSearchParams(window.location.search);
       var prefill = params.get('text');
-      if (prefill) input.value = prefill;
+      if (prefill) {
+        input.value = prefill;
+        params.delete('text');
+        var remaining = params.toString();
+        window.history.replaceState(null, '', window.location.pathname + (remaining ? '?' + remaining : '') + window.location.hash);
+      }
     }
     if (input.value) {
       rerender();
@@ -57,14 +69,36 @@
       input.focus(); rerender();
     }
 
+    function setPreviewStatus(message) {
+      if (previewStatus) previewStatus.innerHTML = '<span class="tb-dot"></span> ' + message;
+    }
+
     function rerender() {
       var v = input.value.trim();
       try {
-        preview.innerHTML = v
-          ? marked.parse(v)
-          : '<div class="empty-hint"><p>Write Markdown on the left, see the result here</p><p>Try: <code># Hello World</code></p></div>';
+        if (!v) {
+          preview.innerHTML = '<div class="empty-hint"><p>Write Markdown on the left, see the result here</p><p>Try: <code># Hello World</code></p></div>';
+          setPreviewStatus('Safe Preview');
+          return;
+        }
+        DOMPurify.removed = [];
+        preview.innerHTML = DOMPurify.sanitize(marked.parse(v), sanitizationOptions);
+        var additionalRemoved = 0;
+        Array.prototype.forEach.call(preview.querySelectorAll('input'), function (field) {
+          if (field.type !== 'checkbox') {
+            field.remove();
+            additionalRemoved += 1;
+            return;
+          }
+          field.checked = field.hasAttribute('checked');
+          field.disabled = true;
+          field.setAttribute('aria-hidden', 'true');
+        });
+        var removed = DOMPurify.removed.length + additionalRemoved;
+        setPreviewStatus(removed ? 'Safe Preview · filtered ' + removed + ' unsafe item' + (removed === 1 ? '' : 's') : 'Safe Preview');
       } catch(e) {
-        preview.innerHTML = '<pre style="white-space:pre-wrap;color:#94a3b8">' + v.replace(/</g,'&lt;') + '</pre>';
+        preview.textContent = v;
+        setPreviewStatus('Preview unavailable — showing plain text');
       }
     }
 
