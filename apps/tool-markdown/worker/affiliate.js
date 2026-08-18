@@ -63,6 +63,11 @@ Sitemap: https://markdownmaster.site/sitemap-index.xml
       });
     }
 
+    // Preserve the former sitemap endpoint while consolidating discovery on Astro sitemap index.
+    if (url.pathname === "/sitemap.xml") {
+      return Response.redirect("https://markdownmaster.site/sitemap-index.xml", 301);
+    }
+
     const proxyUrl = origin + url.pathname + url.search;
 
     // For non-HTML requests (JS, CSS, images, fonts, etc.), pass through directly
