@@ -23,3 +23,8 @@
 /*.html
   Cache-Control: public, max-age=3600, must-revalidate
   X-Robots-Tag: noindex
+
+# The standalone editor changes more often than its fingerprinted assets.
+# Revalidate its route so new safety/privacy scripts are not delayed by edge HTML caching.
+/editor/*
+  Cache-Control: no-cache
