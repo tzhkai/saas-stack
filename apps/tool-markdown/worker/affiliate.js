@@ -55,7 +55,7 @@ export default {
     if (url.pathname === "/robots.txt") {
       const robotsTxt = `User-agent: *
 Allow: /
-Sitemap: https://markdownmaster.site/sitemap.xml
+Sitemap: https://markdownmaster.site/sitemap-index.xml
 `;
       return new Response(robotsTxt, {
         status: 200,
