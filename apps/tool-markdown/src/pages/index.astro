@@ -88,6 +88,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     .stat-num { font-size:1.5rem; font-weight:700; color:var(--accent); }
     .stat-label { font-size:0.8rem; color:var(--text-muted); margin-top:0.2rem; }
 
+    /* ── Task chooser ── */
+    .task-chooser { max-width:1100px; margin:0 auto; padding:0 1.5rem 3.5rem; }
+    .task-chooser h2 { text-align:center; font-size:1.55rem; margin:0 0 .45rem; }
+    .task-chooser > p { text-align:center; max-width:620px; margin:0 auto 1.5rem; color:var(--text-dim); line-height:1.65; }
+    .task-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.8rem; }
+    .task-card { display:flex; flex-direction:column; min-height:170px; padding:1.15rem; border:1px solid var(--border); border-radius:12px; text-decoration:none; color:var(--text); background:var(--bg-card); transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease; }
+    .task-card:hover { transform:translateY(-2px); border-color:var(--accent); box-shadow:0 12px 28px rgba(0,0,0,.16); }
+    .task-card:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
+    .task-icon { font-size:1.35rem; margin-bottom:.75rem; }
+    .task-card strong { font-size:.98rem; margin-bottom:.35rem; }
+    .task-card span { color:var(--text-dim); font-size:.84rem; line-height:1.55; flex:1; }
+    .task-card em { color:var(--accent); font-size:.82rem; font-style:normal; font-weight:650; margin-top:.85rem; }
+    @media (max-width:850px) { .task-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:500px) { .task-grid { grid-template-columns:1fr; } .task-card { min-height:0; } }
+
     /* ── Features ── */
     .features { max-width:1100px; margin:0 auto; padding:0 1.5rem 3rem; }
     .features h2 {
@@ -207,11 +222,43 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       Just open and write.
     </p>
     <div class="hero-actions">
-      <a href="/editor/" class="btn-primary">
-        Open Editor &#8599;
+      <a href="/editor/?from=homepage-hero" class="btn-primary">
+        Start writing &#8599;
       </a>
-      <a href="/docs/" class="btn-secondary">
-        Learn Markdown &rarr;
+      <a href="/templates/" class="btn-secondary">
+        Start from a template &rarr;
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══ Task chooser ═══ -->
+  <section class="task-chooser" aria-labelledby="task-chooser-title">
+    <h2 id="task-chooser-title">Start with the task you need to finish</h2>
+    <p>Choose a focused workflow instead of opening a blank page. Everything runs locally in your browser.</p>
+    <div class="task-grid">
+      <a class="task-card" href="/editor/?from=homepage-editor">
+        <div class="task-icon">✍️</div>
+        <strong>Write or preview Markdown</strong>
+        <span>Draft, paste, preview, and export one document with live GFM rendering.</span>
+        <em>Open editor →</em>
+      </a>
+      <a class="task-card" href="/tools/readme-generator/?from=homepage-readme">
+        <div class="task-icon">📄</div>
+        <strong>Generate a GitHub README</strong>
+        <span>Turn project details into a structured README you can copy or continue editing.</span>
+        <em>Build a README →</em>
+      </a>
+      <a class="task-card" href="/tools/markdown-table-generator/?from=homepage-table">
+        <div class="task-icon">▦</div>
+        <strong>Create a Markdown table</strong>
+        <span>Edit cells, set alignment, and copy exact GitHub Flavored Markdown syntax.</span>
+        <em>Make a table →</em>
+      </a>
+      <a class="task-card" href="/tools/markdown-to-html/?from=homepage-html">
+        <div class="task-icon">⇄</div>
+        <strong>Convert Markdown to HTML</strong>
+        <span>Review a safe HTML output locally, then copy it for your site or CMS.</span>
+        <em>Convert Markdown →</em>
       </a>
     </div>
   </section>
@@ -259,13 +306,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
       <div class="feature-card">
         <div class="feature-icon">&#x1F4A8;</div>
-        <h3>Fast &amp; Lightweight</h3>
-        <p>Zero dependencies at runtime. Pure client-side rendering means your content never leaves your browser.</p>
+        <h3>Fast, Browser-Based Workflow</h3>
+        <p>Open a focused tool, complete one Markdown task, then copy, download, or continue in the editor without creating an account.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon">&#x1F511;</div>
         <h3>Privacy First</h3>
-        <p>Everything runs in your browser. No data storage, no tracking, no sign-up forms. Your writing stays yours.</p>
+        <p>Your content stays in your browser. Optional anonymous analytics never include Markdown, HTML, file names, or document text.</p>
       </div>
     </div>
   </section>
@@ -340,33 +387,9 @@ const msg = "Hello!";
     <p style="color:var(--text-dim);max-width:480px;margin:0 auto 1.5rem">
       No sign-up, no downloads, no distractions. Just you and your content.
     </p>
-    <a href="/editor/" class="btn-primary" style="font-size:1.05rem;padding:1rem 2.5rem">
-      Start Writing Now &#8599;
+    <a href="/editor/?from=homepage-footer" class="btn-primary" style="font-size:1.05rem;padding:1rem 2.5rem">
+      Start writing privately &#8599;
     </a>
-  </section>
-
-  <!-- ═══ Affiliate ═══ -->
-  <section class="affiliate">
-    <div class="aff-box">
-      <h3>&#x1F517; Recommended Tools for Writers</h3>
-      <a class="aff-item" href="https://markdownmaster.site" target="_blank">
-        <div class="aff-icon">&#x1F4DD;</div>
-        <div class="aff-info">
-          <div class="aff-name">MarkdownMaster Editor</div>
-          <div class="aff-desc">Free online Markdown editor with live preview</div>
-        </div>
-        <span class="aff-cta">Learn More &rarr;</span>
-      </a>
-      <div class="aff-divider"></div>
-      <a class="aff-item" href="/editor/">
-        <div class="aff-icon alt">&#x1F4DD;</div>
-        <div class="aff-info">
-          <div class="aff-name">Online Markdown Editor</div>
-          <div class="aff-desc">Write and preview instantly, no sign-up needed</div>
-        </div>
-        <span class="aff-cta">Try Now &rarr;</span>
-      </a>
-    </div>
   </section>
 
 </BaseLayout>

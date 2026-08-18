@@ -1,15 +1,38 @@
 export const EDITOR_HANDOFF_KEY = 'mm:editor:handoff:v1';
 const MAX_HANDOFF_LENGTH = 524288;
 
+/** Fixed campaign-free entry labels. Never derive analytics values from arbitrary query text. */
+const ALLOWED_ENTRY_SOURCES = new Set([
+  'homepage-hero',
+  'homepage-editor',
+  'homepage-footer',
+  'homepage-readme',
+  'homepage-table',
+  'homepage-html',
+  'docs-reference',
+  'docs-readme',
+  'docs-table',
+  'blog-guide',
+  'template',
+  'readme',
+  'converter',
+]);
+
+function entrySourceFromUrl(): string | undefined {
+  const source = new URLSearchParams(window.location.search).get('from')?.toLowerCase();
+  return source && ALLOWED_ENTRY_SOURCES.has(source) ? source : undefined;
+}
+
 declare global {
   interface Window {
     mmTrack?: (eventName: string, params?: Record<string, string>) => void;
   }
 }
 
-/** Records only a fixed action and tool identifier; never pass document text or field values. */
+/** Records only fixed identifiers. Optional entry attribution is limited to the allowlist above. */
 export function trackToolAction(tool: string, action: string): void {
-  window.mmTrack?.('markdown_tool_action', { tool, action });
+  const source = entrySourceFromUrl();
+  window.mmTrack?.('markdown_tool_action', source ? { tool, action, source } : { tool, action });
 }
 
 export type StatusKind = 'success' | 'error' | 'neutral';

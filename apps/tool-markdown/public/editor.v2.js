@@ -12,7 +12,19 @@
     var toolbar = document.querySelector('.toolbar');
     var previewStatus = document.getElementById('preview-status');
     var sourceParam = new URLSearchParams(window.location.search).get('from') || '';
-    var entryPoint = /^[a-z0-9-]{1,64}$/i.test(sourceParam) ? sourceParam.toLowerCase() : 'editor';
+    var allowedEntryPoints = {
+      'blog-guide': true,
+      'converter': true,
+      'docs-reference': true,
+      'editor': true,
+      'homepage-editor': true,
+      'homepage-footer': true,
+      'homepage-hero': true,
+      'readme': true,
+      'template': true
+    };
+    var normalizedSource = sourceParam.toLowerCase();
+    var entryPoint = allowedEntryPoints[normalizedSource] ? normalizedSource : 'editor';
     var editStarted = false;
     var sanitizedEventTracked = false;
     var handoffSource = '';
@@ -46,7 +58,8 @@
         var age = Date.now() - Number(handoff.createdAt || 0);
         if (typeof handoff.markdown === 'string' && handoff.markdown.length <= 524288 && age >= 0 && age < 900000) {
           input.value = handoff.markdown;
-          handoffSource = typeof handoff.source === 'string' ? handoff.source.slice(0, 64) : 'unknown';
+          var candidateHandoffSource = typeof handoff.source === 'string' ? handoff.source.toLowerCase() : '';
+          handoffSource = allowedEntryPoints[candidateHandoffSource] ? candidateHandoffSource : 'unknown';
           handoffLoaded = true;
         }
         sessionStorage.removeItem(HANDOFF_KEY);

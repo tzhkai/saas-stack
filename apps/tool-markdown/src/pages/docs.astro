@@ -3,8 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
-  title="Markdown Documentation & Tutorial | MarkdownMaster"
-  description="Learn Markdown syntax: headings, bold, italic, lists, code blocks, tables, and more. Complete reference with examples."
+  title="Markdown Syntax Reference: Headings, Tables, Code & More | MarkdownMaster"
+  description="Markdown syntax reference with copyable examples for headings, formatting, lists, code blocks, links, tables, and task lists. Practice each pattern in a free editor."
   canonical="https://markdownmaster.site/docs/"
 >
   <style>
@@ -21,11 +21,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     .page-wrap th, .page-wrap td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
     .page-wrap th { background: var(--bg-card); color: var(--text); }
     .page-wrap td { color: #cbd5e1; }
+    .practice-panel { margin-top: 2.75rem; padding: 1.4rem; border: 1px solid rgba(14,165,233,.45); border-radius: 12px; background: linear-gradient(135deg, rgba(14,165,233,.12), rgba(15,23,42,.25)); }
+    .practice-panel h2 { color: var(--text); margin: 0 0 .45rem; }
+    .practice-panel p { margin-bottom: 1rem; }
+    .practice-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; }
+    .practice-link { display: flex; flex-direction: column; min-height: 120px; padding: .9rem; border: 1px solid var(--border); border-radius: 9px; background: var(--bg-card); color: var(--text); text-decoration: none; transition: transform .15s ease, border-color .15s ease; }
+    .practice-link:hover { transform: translateY(-2px); border-color: var(--accent); }
+    .practice-link:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+    .practice-link strong { margin-bottom: .35rem; font-size: .9rem; }
+    .practice-link span { color: var(--text-dim); font-size: .82rem; line-height: 1.55; }
+    @media (max-width: 680px) { .practice-links { grid-template-columns: 1fr; } .practice-link { min-height: 0; } }
   </style>
 
   <div class="page-wrap">
-    <h1>Markdown Documentation</h1>
-    <p class="subtitle">A complete reference guide to Markdown syntax with examples.</p>
+    <h1>Markdown Syntax Reference</h1>
+    <p class="subtitle">Copyable examples for the Markdown patterns you use most, from headings and formatting to tables and task lists.</p>
 
     <section>
       <h2>Headings</h2>
@@ -41,11 +51,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <section>
       <h2>Text Formatting</h2>
       <table>
-        <tr><th>Style</th><th>Syntax</th><th>Output</th></tr>
-        <tr><td>Bold</td><td><code>**text**</code></td><td><strong>text</strong></td></tr>
-        <tr><td>Italic</td><td><code>*text*</code></td><td><em>text</em></td></tr>
-        <tr><td>Strikethrough</td><td><code>~~text~~</code></td><td><s>text</s></td></tr>
-        <tr><td>Inline Code</td><td><code>`code`</code></td><td><code>code</code></td></tr>
+        <thead><tr><th scope="col">Style</th><th scope="col">Syntax</th><th scope="col">Output</th></tr></thead>
+        <tbody>
+          <tr><td>Bold</td><td><code>**text**</code></td><td><strong>text</strong></td></tr>
+          <tr><td>Italic</td><td><code>*text*</code></td><td><em>text</em></td></tr>
+          <tr><td>Strikethrough</td><td><code>~~text~~</code></td><td><s>text</s></td></tr>
+          <tr><td>Inline Code</td><td><code>`code`</code></td><td><code>code</code></td></tr>
+        </tbody>
       </table>
     </section>
 
@@ -85,6 +97,7 @@ function hello() {
 
     <section>
       <h2>Tables</h2>
+      <p>Use pipes to separate cells and hyphens to separate the header from the body. Need more rows or alignment controls? <a href="/tools/markdown-table-generator/?from=docs-table">Create a table with the generator</a>.</p>
       <pre><code>{`| Header 1 | Header 2 |
 | -------- | -------- |
 | Cell 1   | Cell 2   |`}</code></pre>
@@ -94,6 +107,25 @@ function hello() {
       <h2>Task Lists</h2>
       <pre><code>{`- [x] Completed task
 - [ ] Uncompleted task`}</code></pre>
+    </section>
+
+    <section class="practice-panel" aria-labelledby="practice-title">
+      <h2 id="practice-title">Try a syntax example now</h2>
+      <p>Choose the workflow that matches what you are making. No account is required, and your Markdown stays in your browser.</p>
+      <div class="practice-links">
+        <a class="practice-link" href="/editor/?from=docs-reference">
+          <strong>Practice in the editor →</strong>
+          <span>Paste an example, change it, and see the formatted result as you work.</span>
+        </a>
+        <a class="practice-link" href="/tools/markdown-table-generator/?from=docs-table">
+          <strong>Build a Markdown table →</strong>
+          <span>Edit cells and alignment without lining up pipes by hand.</span>
+        </a>
+        <a class="practice-link" href="/tools/readme-generator/?from=docs-readme">
+          <strong>Start a GitHub README →</strong>
+          <span>Turn your project details into a reusable Markdown structure.</span>
+        </a>
+      </div>
     </section>
   </div>
 </BaseLayout>
