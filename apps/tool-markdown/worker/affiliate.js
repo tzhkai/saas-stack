@@ -77,7 +77,21 @@ Sitemap: https://markdownmaster.site/sitemap-index.xml
     const staticExts = ["js", "css", "png", "jpg", "jpeg", "gif", "svg", "ico", "woff", "woff2", "ttf", "eot", "otf", "webp", "avif", "json", "xml", "txt", "map", "webmanifest"];
     
     if (staticExts.includes(ext)) {
-      return fetch(proxyUrl);
+      const staticResponse = await fetch(proxyUrl);
+
+      // RSS is provided for subscribers, not as a standalone search-result landing page.
+      // Keep it crawlable for feed readers while making its non-webpage indexing intent explicit.
+      if (url.pathname === "/feed.xml") {
+        const feedHeaders = new Headers(staticResponse.headers);
+        feedHeaders.set("X-Robots-Tag", "noindex, follow");
+        return new Response(staticResponse.body, {
+          status: staticResponse.status,
+          statusText: staticResponse.statusText,
+          headers: feedHeaders,
+        });
+      }
+
+      return staticResponse;
     }
 
     let response;
