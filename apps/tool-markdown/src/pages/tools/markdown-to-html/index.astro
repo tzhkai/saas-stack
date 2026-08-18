@@ -71,7 +71,7 @@ Write **Markdown** on the left and copy clean HTML on the right.
   <script>
     import { marked } from 'marked';
     import DOMPurify from 'dompurify';
-    import { announceStatus, copyText, saveEditorHandoff } from '../../../scripts/toolClient';
+    import { announceStatus, copyText, saveEditorHandoff, trackToolAction } from '../../../scripts/toolClient';
 
     const input = document.querySelector<HTMLTextAreaElement>('#markdown-input');
     const output = document.querySelector<HTMLElement>('#html-output');
@@ -144,6 +144,7 @@ Write **Markdown** on the left and copy clean HTML on the right.
       copyButton.disabled = true;
       const copied = await copyText(currentHtml);
       announceStatus(status, copied ? 'Copied HTML to clipboard.' : 'Clipboard access was blocked. Select the output and press Ctrl/Cmd+C.', copied ? 'success' : 'error');
+      if (copied) trackToolAction('markdown-to-html', 'copy_html');
       copyButton.disabled = false;
     });
 
@@ -160,6 +161,7 @@ Write **Markdown** on the left and copy clean HTML on the right.
         announceStatus(status, 'Could not prepare the editor handoff. Copy the Markdown and paste it into the editor instead.', 'error');
         return;
       }
+      trackToolAction('markdown-to-html', 'open_editor');
       window.location.assign('/editor/?from=converter');
     });
 

@@ -1,6 +1,17 @@
 export const EDITOR_HANDOFF_KEY = 'mm:editor:handoff:v1';
 const MAX_HANDOFF_LENGTH = 524288;
 
+declare global {
+  interface Window {
+    mmTrack?: (eventName: string, params?: Record<string, string>) => void;
+  }
+}
+
+/** Records only a fixed action and tool identifier; never pass document text or field values. */
+export function trackToolAction(tool: string, action: string): void {
+  window.mmTrack?.('markdown_tool_action', { tool, action });
+}
+
 export type StatusKind = 'success' | 'error' | 'neutral';
 
 export function announceStatus(target: HTMLElement | null, message: string, kind: StatusKind = 'neutral') {

@@ -11,6 +11,17 @@
     var preview = document.getElementById('preview-content');
     var toolbar = document.querySelector('.toolbar');
     var previewStatus = document.getElementById('preview-status');
+    var editStarted = false;
+    var sanitizedEventTracked = false;
+    var handoffSource = '';
+    function track(eventName, params) {
+      if (typeof window.mmTrack === 'function') window.mmTrack(eventName, params);
+    }
+    function markEditStarted() {
+      if (editStarted || !input.value.trim()) return;
+      editStarted = true;
+      track('markdown_edit_started', { entry_point: 'editor' });
+    }
     var sanitizationOptions = {
       USE_PROFILES: { html: true },
       FORBID_TAGS: ['base', 'button', 'embed', 'form', 'iframe', 'link', 'meta', 'object', 'option', 'script', 'select', 'style', 'svg', 'textarea', 'math'],
@@ -33,6 +44,7 @@
         var age = Date.now() - Number(handoff.createdAt || 0);
         if (typeof handoff.markdown === 'string' && handoff.markdown.length <= 524288 && age >= 0 && age < 900000) {
           input.value = handoff.markdown;
+          handoffSource = typeof handoff.source === 'string' ? handoff.source.slice(0, 64) : 'unknown';
           handoffLoaded = true;
         }
         sessionStorage.removeItem(HANDOFF_KEY);
@@ -52,7 +64,10 @@
     if (input.value) {
       rerender();
       input.scrollTop = 0;
-      if (handoffLoaded) setTimeout(function () { input.focus(); }, 0);
+      if (handoffLoaded) {
+        track('markdown_editor_handoff', { source: handoffSource || 'unknown' });
+        setTimeout(function () { input.focus(); }, 0);
+      }
     }
 
     /* ── helpers ── */
@@ -60,13 +75,13 @@
       var s = input.selectionStart, e = input.selectionEnd, v = input.value;
       var t = v.slice(s, e) || 'text';
       input.setRangeText(before + t + after, s, e, 'select');
-      input.focus(); rerender();
+      input.focus(); markEditStarted(); rerender();
     }
 
     function prefix(p) {
       var s = input.selectionStart, v = input.value;
       input.setRangeText(p, v.lastIndexOf('\n', s - 1) + 1, v.lastIndexOf('\n', s - 1) + 1, 'select');
-      input.focus(); rerender();
+      input.focus(); markEditStarted(); rerender();
     }
 
     function setPreviewStatus(message) {
@@ -95,6 +110,10 @@
           field.setAttribute('aria-hidden', 'true');
         });
         var removed = DOMPurify.removed.length + additionalRemoved;
+        if (removed && !sanitizedEventTracked) {
+          sanitizedEventTracked = true;
+          track('markdown_content_sanitized', { source: 'editor' });
+        }
         setPreviewStatus(removed ? 'Safe Preview · filtered ' + removed + ' unsafe item' + (removed === 1 ? '' : 's') : 'Safe Preview');
       } catch(e) {
         preview.textContent = v;
@@ -123,7 +142,7 @@
         var s = input.selectionStart, e = input.selectionEnd, v = input.value;
         var t = v.slice(s, e) || 'code here';
         input.setRangeText('\n```\n' + t + '\n```\n', s, e, 'select');
-        input.focus(); rerender();
+        input.focus(); markEditStarted(); rerender();
       },
       'task':        function () { prefix('- [ ] '); },
       'hr':          function () { prefix('\n---\n'); }
@@ -134,7 +153,10 @@
       'copy': function (btn) {
         var v = input.value;
         if (!v.trim()) return;
-        navigator.clipboard.writeText(v).then(function () { flash(btn, 'Copied!'); }).catch(function () {});
+        navigator.clipboard.writeText(v).then(function () {
+          flash(btn, 'Copied!');
+          track('markdown_editor_action', { action: 'copy_markdown' });
+        }).catch(function () {});
       },
       'export': function (btn) {
         var v = input.value.trim();
@@ -155,10 +177,12 @@
         document.body.appendChild(a); a.click();
         document.body.removeChild(a); URL.revokeObjectURL(url);
         flash(btn, 'Done!');
+        track('markdown_editor_action', { action: 'export_html' });
       },
       'print': function (btn) {
         var v = input.value.trim();
         if (!v) { alert('Nothing to print — write some Markdown first.'); return; }
+        track('markdown_editor_action', { action: 'print_preview' });
         window.print();
       },
       'download-md': function (btn) {
@@ -172,11 +196,13 @@
         document.body.appendChild(a); a.click();
         document.body.removeChild(a); URL.revokeObjectURL(url);
         flash(btn, 'Done!');
+        track('markdown_editor_action', { action: 'download_markdown' });
       },
       'clear': function () {
         if (!input.value.trim()) return;
         if (!confirm('Clear all content?')) return;
         input.value = ''; rerender();
+        track('markdown_editor_action', { action: 'clear_editor' });
       },
       'open': function (btn) {
         var fileInput = document.getElementById('file-open-input');
@@ -193,8 +219,10 @@
             var reader = new FileReader();
             reader.onload = function () {
               input.value = reader.result;
+              markEditStarted();
               rerender();
-              flash(btn, 'Opened: ' + file.name);
+              flash(btn, 'Opened');
+              track('markdown_editor_action', { action: 'open_file' });
             };
             reader.readAsText(file);
           });
@@ -249,7 +277,7 @@
     });
 
     /* ── input listener ── */
-    input.addEventListener('input', rerender);
+    input.addEventListener('input', function () { markEditStarted(); rerender(); });
 
     /* ── keyboard shortcuts ── */
     input.addEventListener('keydown', function(e) {

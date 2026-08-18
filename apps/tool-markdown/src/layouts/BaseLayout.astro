@@ -128,47 +128,7 @@ const GOOGLE_SITE_VERIFICATION = ''; // e.g. 'your_verification_code_here'
       <button id="cookie-accept" style="background:#0ea5e9;color:#fff;border:none;padding:8px 18px;border-radius:6px;cursor:pointer;font-weight:600;font-size:0.85rem;white-space:nowrap;">Allow analytics</button>
     </span>
   </div>
-  <script is:inline define:vars={{ GA_MEASUREMENT_ID }}>
-    (function(){
-      var banner = document.getElementById('cookie-banner');
-      var accept = document.getElementById('cookie-accept');
-      var decline = document.getElementById('cookie-decline');
-      var analyticsId = GA_MEASUREMENT_ID;
-
-      function hasCookie(name, value) {
-        return document.cookie.split('; ').some(function (item) { return item === name + '=' + value; });
-      }
-      function saveChoice(value) {
-        document.cookie = 'mm_analytics_choice=' + value + ';max-age=31536000;path=/;SameSite=Lax';
-      }
-      function loadAnalytics() {
-        if (!analyticsId || document.querySelector('script[data-mm-analytics]')) return;
-        window['ga-disable-' + analyticsId] = false;
-        window.dataLayer = window.dataLayer || [];
-        window.gtag = window.gtag || function(){ window.dataLayer.push(arguments); };
-        window.gtag('js', new Date());
-        window.gtag('config', analyticsId, { anonymize_ip: true });
-        var script = document.createElement('script');
-        script.async = true;
-        script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(analyticsId);
-        script.dataset.mmAnalytics = 'true';
-        document.head.appendChild(script);
-      }
-      function closeBanner() { if (banner) banner.style.display = 'none'; }
-
-      var legacyAccepted = hasCookie('mm_cookie_consent', '1');
-      if (hasCookie('mm_analytics_choice', 'accepted') || legacyAccepted) {
-        loadAnalytics();
-        return;
-      }
-      if (hasCookie('mm_analytics_choice', 'declined')) {
-        if (analyticsId) window['ga-disable-' + analyticsId] = true;
-        return;
-      }
-      if (banner) banner.style.display = 'flex';
-      if (accept) accept.onclick = function(){ saveChoice('accepted'); loadAnalytics(); closeBanner(); };
-      if (decline) decline.onclick = function(){ saveChoice('declined'); if (analyticsId) window['ga-disable-' + analyticsId] = true; closeBanner(); };
-    })();
-  </script>
+  <script is:inline define:vars={{ GA_MEASUREMENT_ID }}>window.MM_ANALYTICS_ID = GA_MEASUREMENT_ID;</script>
+  <script is:inline src="/analytics-consent.js?v=1"></script>
 </body>
 </html>

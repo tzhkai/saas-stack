@@ -1,4 +1,5 @@
 ---
+const GA_MEASUREMENT_ID = 'G-C9YBSZ3YDN';
 ---
 
 <!DOCTYPE html>
@@ -228,7 +229,17 @@
   </div>
 </div>
 
-<script src="/editor.v2.js?v=4" is:inline></script>
+<!-- Optional analytics consent: document content is never sent to analytics. -->
+<div id="cookie-banner" role="dialog" aria-live="polite" aria-label="Optional analytics preference" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1e293b;border-top:1px solid #334155;padding:14px 20px;z-index:10000;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:0.85rem;color:#e2e8f0;">
+  <span>Optional analytics help us improve the editor. Analytics stays off until you choose Allow, and your Markdown text is never sent to analytics. <a href="/privacy/" style="color:#0ea5e9;">Privacy details</a></span>
+  <span style="display:flex;gap:8px;flex-wrap:wrap;">
+    <button id="cookie-decline" style="background:transparent;color:#e2e8f0;border:1px solid #64748b;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:600;font-size:0.85rem;white-space:nowrap;">No analytics</button>
+    <button id="cookie-accept" style="background:#0ea5e9;color:#fff;border:none;padding:8px 18px;border-radius:6px;cursor:pointer;font-weight:600;font-size:0.85rem;white-space:nowrap;">Allow analytics</button>
+  </span>
+</div>
+<script is:inline define:vars={{ GA_MEASUREMENT_ID }}>window.MM_ANALYTICS_ID = GA_MEASUREMENT_ID;</script>
+<script is:inline src="/analytics-consent.js?v=1"></script>
+<script src="/editor.v2.js?v=5" is:inline></script>
 
 </body>
 </html>

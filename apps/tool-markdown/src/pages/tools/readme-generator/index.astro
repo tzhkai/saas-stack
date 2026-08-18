@@ -90,7 +90,7 @@ import ToolLayout from '../../../components/ToolLayout.astro';
   </div>
 
   <script>
-    import { announceStatus, copyText, saveEditorHandoff } from '../../../scripts/toolClient';
+    import { announceStatus, copyText, saveEditorHandoff, trackToolAction } from '../../../scripts/toolClient';
 
     const form = document.querySelector<HTMLFormElement>('#readme-form');
     const output = document.querySelector<HTMLElement>('#readme-output');
@@ -109,6 +109,7 @@ import ToolLayout from '../../../components/ToolLayout.astro';
     const initialValues = Object.fromEntries(Object.entries(fields).map(([key, field]) => [key, field?.value ?? '']));
 
     let currentReadme = '';
+    let generatedTracked = false;
 
     function cleanSingleLine(value: string) {
       return value.replace(/[\r\n\t]+/g, ' ').replace(/\s{2,}/g, ' ').trim();
@@ -173,7 +174,13 @@ import ToolLayout from '../../../components/ToolLayout.astro';
       announceStatus(status, validation.valid ? 'Ready to copy or continue editing.' : 'Complete the required fields and fix any URL error before copying.', validation.valid ? 'neutral' : 'error');
     }
 
-    Object.values(fields).forEach((field) => field?.addEventListener('input', render));
+    Object.values(fields).forEach((field) => field?.addEventListener('input', () => {
+      render();
+      if (!generatedTracked && validate().valid) {
+        generatedTracked = true;
+        trackToolAction('readme-generator', 'generate_readme');
+      }
+    }));
     form?.addEventListener('submit', (event) => event.preventDefault());
 
     resetButton?.addEventListener('click', () => {
@@ -191,6 +198,7 @@ import ToolLayout from '../../../components/ToolLayout.astro';
       copyButton.disabled = true;
       const copied = await copyText(currentReadme);
       announceStatus(status, copied ? 'Copied README Markdown to clipboard.' : 'Clipboard access was blocked. Select the preview and press Ctrl/Cmd+C.', copied ? 'success' : 'error');
+      if (copied) trackToolAction('readme-generator', 'copy_readme');
       copyButton.disabled = false;
     });
 
@@ -204,6 +212,7 @@ import ToolLayout from '../../../components/ToolLayout.astro';
         announceStatus(status, 'Could not prepare the editor handoff. Copy the README and paste it into the editor instead.', 'error');
         return;
       }
+      trackToolAction('readme-generator', 'open_editor');
       window.location.assign('/editor/?from=readme');
     });
 
