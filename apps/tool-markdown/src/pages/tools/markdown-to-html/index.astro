@@ -3,10 +3,10 @@ import ToolLayout from '../../../components/ToolLayout.astro';
 ---
 <ToolLayout
   title="Markdown to HTML Converter - Free, Private & Instant | MarkdownMaster"
-  description="Convert Markdown to clean HTML instantly in your browser. Free, private Markdown to HTML converter with GitHub Flavored Markdown support and one-click copy."
+  description="Convert Markdown to clean HTML privately in your browser. Safe HTML output is the default; review raw HTML only when you trust the source."
   canonical="https://markdownmaster.site/tools/markdown-to-html/"
   heading="Markdown to HTML Converter"
-  intro="Paste Markdown, get clean HTML, and copy it in one click. This converter runs entirely in your browser with no account or upload required."
+  intro="Paste Markdown, review clean HTML, and copy it in one click. Safe output is enabled by default and nothing is uploaded."
   toolName="MarkdownMaster Markdown to HTML Converter"
   relatedGuideHref="/blog/how-to-convert-markdown-to-html/"
   relatedGuideLabel="Read the Markdown to HTML guide"
@@ -14,21 +14,41 @@ import ToolLayout from '../../../components/ToolLayout.astro';
   <style>
     .convert-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
     .convert-pane { min-width:0; }
-    .pane-label { display:flex; justify-content:space-between; align-items:center; margin:0 0 0.55rem; color:var(--text-dim); font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; }
-    textarea, pre { width:100%; min-height:360px; margin:0; box-sizing:border-box; border:1px solid var(--border); border-radius:10px; background:#0b1220; color:#dbeafe; font:0.88rem/1.65 var(--font-mono); padding:1rem; }
+    .pane-label { display:flex; justify-content:space-between; align-items:center; gap:.75rem; margin:0 0 .55rem; color:var(--text-dim); font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
+    textarea,pre { width:100%; min-height:360px; margin:0; box-sizing:border-box; border:1px solid var(--border); border-radius:10px; background:#0b1220; color:#dbeafe; font:.88rem/1.65 var(--font-mono); padding:1rem; }
     textarea { resize:vertical; outline:none; }
-    textarea:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(14,165,233,0.12); }
+    textarea:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(14,165,233,.12); }
     pre { overflow:auto; white-space:pre-wrap; word-break:break-word; }
-    .tool-actions { display:flex; gap:0.7rem; justify-content:flex-end; margin-top:0.9rem; }
-    button { border:0; border-radius:8px; padding:0.65rem 0.9rem; background:var(--accent); color:#fff; font:600 0.9rem var(--font); cursor:pointer; }
-    button:hover { filter:brightness(1.1); }
-    button.secondary { background:transparent; border:1px solid var(--border); color:var(--text); }
-    @media (max-width:760px) { .convert-grid { grid-template-columns:1fr; } textarea, pre { min-height:260px; } }
+    .converter-options { display:flex; align-items:flex-start; gap:.65rem; margin:0 0 1rem; padding:.85rem 1rem; border:1px solid var(--border); border-radius:10px; background:rgba(14,165,233,.06); }
+    .converter-options input { width:1rem; height:1rem; margin:.18rem 0 0; accent-color:var(--accent); }
+    .converter-options label { color:var(--text); font-size:.9rem; font-weight:700; line-height:1.5; cursor:pointer; }
+    .converter-options small { display:block; margin-top:.15rem; color:var(--text-muted); font-size:.82rem; font-weight:400; line-height:1.55; }
+    .mode-note { min-height:1.5rem; margin:.65rem 0 0; color:var(--text-muted); font-size:.84rem; line-height:1.5; }
+    .mode-note[data-kind='success'] { color:#86efac; }
+    .mode-note[data-kind='warning'] { color:#fcd34d; }
+    .mode-note[data-kind='error'] { color:#fca5a5; }
+    .tool-actions { display:flex; gap:.7rem; justify-content:flex-end; flex-wrap:wrap; margin-top:.9rem; }
+    button { min-height:42px; border:1px solid transparent; border-radius:8px; padding:.65rem .9rem; background:var(--accent); color:#082f49; font:700 .9rem var(--font); cursor:pointer; }
+    button:hover:not(:disabled) { filter:brightness(1.08); }
+    button:active:not(:disabled) { transform:scale(.98); }
+    button:focus-visible { outline:3px solid rgba(14,165,233,.55); outline-offset:3px; }
+    button.secondary { background:transparent; border-color:var(--border); color:var(--text); }
+    button:disabled { cursor:not-allowed; opacity:.55; }
+    @media (max-width:760px) { .convert-grid { grid-template-columns:1fr; } textarea,pre { min-height:260px; } .tool-actions > button { flex:1; } }
   </style>
+
+  <div class="converter-options">
+    <input id="raw-html-mode" type="checkbox" aria-describedby="raw-html-help">
+    <label for="raw-html-mode">
+      Show raw HTML instead of safe HTML
+      <small id="raw-html-help">Safe HTML is the default and removes scripts, event handlers, forms, embedded content, inline styles, and unsafe URLs. Use raw output only when you trust every part of the Markdown source.</small>
+    </label>
+  </div>
+
   <div class="convert-grid">
     <div class="convert-pane">
       <div class="pane-label"><span>Markdown input</span><span id="char-count">0 characters</span></div>
-      <textarea id="markdown-input" aria-label="Markdown input" placeholder="# Hello\n\nWrite **Markdown** here..."># Markdown to HTML
+      <textarea id="markdown-input" aria-label="Markdown input" maxlength="524288" placeholder="# Hello\n\nWrite **Markdown** here..."># Markdown to HTML
 
 Write **Markdown** on the left and copy clean HTML on the right.
 
@@ -37,50 +57,112 @@ Write **Markdown** on the left and copy clean HTML on the right.
 - No sign-up</textarea>
     </div>
     <div class="convert-pane">
-      <div class="pane-label"><span>HTML output</span><span>Ready to copy</span></div>
+      <div class="pane-label"><span id="output-label">Safe HTML output</span><span id="output-state">Ready to copy</span></div>
       <pre id="html-output" aria-live="polite"></pre>
     </div>
   </div>
+  <p class="mode-note" id="converter-status" role="status" aria-live="polite"></p>
   <div class="tool-actions">
     <button class="secondary" id="clear-button" type="button">Clear</button>
+    <button class="secondary" id="open-editor-button" type="button">Open in editor</button>
     <button id="copy-button" type="button">Copy HTML</button>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" is:inline></script>
-  <script is:inline>
-    const input = document.getElementById('markdown-input');
-    const output = document.getElementById('html-output');
-    const count = document.getElementById('char-count');
-    const copyButton = document.getElementById('copy-button');
-    const clearButton = document.getElementById('clear-button');
-    function escapeHtml(value) { return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-    function render(markdown) {
-      if (typeof marked !== 'undefined') return marked.parse(markdown, { gfm: true, breaks: true });
-      const lines = markdown.replace(/\r\n/g, '\n').split('\n');
-      const html = [];
-      let listOpen = false;
-      const closeList = () => { if (listOpen) { html.push('</ul>'); listOpen = false; } };
-      for (const rawLine of lines) {
-        const line = rawLine.trimEnd();
-        if (/^\s*-\s+/.test(line)) {
-          if (!listOpen) { html.push('<ul>'); listOpen = true; }
-          html.push(`<li>${inline(line.replace(/^\s*-\s+/, ''))}</li>`);
-        } else {
-          closeList();
-          if (!line.trim()) continue;
-          const heading = line.match(/^(#{1,6})\s+(.+)$/);
-          if (heading) { const level = heading[1].length; html.push(`<h${level}>${inline(heading[2])}</h${level}>`); }
-          else if (/^>\s?/.test(line)) html.push(`<blockquote>${inline(line.replace(/^>\s?/, ''))}</blockquote>`);
-          else html.push(`<p>${inline(line)}</p>`);
-        }
+
+  <script>
+    import { marked } from 'marked';
+    import DOMPurify from 'dompurify';
+    import { announceStatus, copyText, saveEditorHandoff } from '../../../scripts/toolClient';
+
+    const input = document.querySelector<HTMLTextAreaElement>('#markdown-input');
+    const output = document.querySelector<HTMLElement>('#html-output');
+    const count = document.querySelector<HTMLElement>('#char-count');
+    const copyButton = document.querySelector<HTMLButtonElement>('#copy-button');
+    const clearButton = document.querySelector<HTMLButtonElement>('#clear-button');
+    const openEditorButton = document.querySelector<HTMLButtonElement>('#open-editor-button');
+    const rawMode = document.querySelector<HTMLInputElement>('#raw-html-mode');
+    const outputLabel = document.querySelector<HTMLElement>('#output-label');
+    const outputState = document.querySelector<HTMLElement>('#output-state');
+    const status = document.querySelector<HTMLElement>('#converter-status');
+
+    let currentHtml = '';
+    let removedInSafeMode = 0;
+
+    const sanitizationOptions = {
+      USE_PROFILES: { html: true },
+      FORBID_TAGS: ['base', 'button', 'embed', 'form', 'iframe', 'input', 'link', 'meta', 'object', 'option', 'script', 'select', 'style', 'svg', 'textarea', 'math'],
+      FORBID_ATTR: ['style'],
+      ALLOW_UNKNOWN_PROTOCOLS: false,
+    } as const;
+
+    function render() {
+      if (!input || !output || !count || !rawMode || !outputLabel || !outputState) return;
+
+      const markdown = input.value;
+      const rawHtml = marked.parse(markdown, { gfm: true, breaks: true }) as string;
+      const rawEnabled = rawMode.checked;
+      let removedCount = 0;
+
+      if (rawEnabled) {
+        removedInSafeMode = 0;
+        currentHtml = rawHtml;
+        outputLabel.textContent = 'Raw HTML output';
+        outputState.textContent = 'Review before using';
+        announceStatus(status, 'Raw mode is active. This tool displays text only, but copied HTML may be unsafe when inserted into a page.', 'warning');
+      } else {
+        DOMPurify.removed = [];
+        currentHtml = DOMPurify.sanitize(rawHtml, sanitizationOptions);
+        removedCount = DOMPurify.removed.length;
+        removedInSafeMode = removedCount;
+        outputLabel.textContent = 'Safe HTML output';
+        outputState.textContent = 'Ready to copy';
+        announceStatus(
+          status,
+          removedCount ? `Safe mode removed ${removedCount} potentially unsafe element or attribute${removedCount === 1 ? '' : 's'}.` : 'Safe mode is active. Generated HTML was checked before display.',
+          removedCount ? 'warning' : 'success',
+        );
       }
-      closeList();
-      return html.join('\n');
+
+      output.textContent = currentHtml;
+      count.textContent = `${markdown.length.toLocaleString()} characters`;
     }
-    function inline(value) { return escapeHtml(value).replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/\*([^*]+)\*/g, '<em>$1</em>').replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2">$1</a>'); }
-    function update() { const html = render(input.value); output.textContent = html; count.textContent = `${input.value.length} characters`; }
-    input.addEventListener('input', update);
-    clearButton.addEventListener('click', () => { input.value = ''; update(); input.focus(); });
-    copyButton.addEventListener('click', async () => { await navigator.clipboard.writeText(output.textContent); copyButton.textContent = 'Copied'; setTimeout(() => copyButton.textContent = 'Copy HTML', 1500); });
-    update();
+
+    input?.addEventListener('input', render);
+    rawMode?.addEventListener('change', render);
+
+    clearButton?.addEventListener('click', () => {
+      if (!input) return;
+      input.value = '';
+      render();
+      input.focus();
+    });
+
+    copyButton?.addEventListener('click', async () => {
+      if (!currentHtml) {
+        announceStatus(status, 'Write Markdown before copying HTML.', 'error');
+        return;
+      }
+      copyButton.disabled = true;
+      const copied = await copyText(currentHtml);
+      announceStatus(status, copied ? 'Copied HTML to clipboard.' : 'Clipboard access was blocked. Select the output and press Ctrl/Cmd+C.', copied ? 'success' : 'error');
+      copyButton.disabled = false;
+    });
+
+    openEditorButton?.addEventListener('click', () => {
+      if (!input?.value.trim()) {
+        announceStatus(status, 'Write Markdown before opening the editor.', 'error');
+        return;
+      }
+      if (rawMode?.checked || removedInSafeMode > 0) {
+        announceStatus(status, 'The editor handoff is unavailable for raw or filtered content. Copy the safe HTML instead, or remove unsafe HTML from the Markdown first.', 'error');
+        return;
+      }
+      if (!saveEditorHandoff(input.value, 'markdown-to-html')) {
+        announceStatus(status, 'Could not prepare the editor handoff. Copy the Markdown and paste it into the editor instead.', 'error');
+        return;
+      }
+      window.location.assign('/editor/?from=converter');
+    });
+
+    render();
   </script>
 </ToolLayout>

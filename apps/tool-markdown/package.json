@@ -10,7 +10,9 @@
   "dependencies": {
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.2",
-    "astro": "^5.0.0"
+    "astro": "^5.0.0",
+    "dompurify": "^3.2.6",
+    "marked": "^15.0.7"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

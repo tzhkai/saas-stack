@@ -3,57 +3,210 @@ import ToolLayout from '../../../components/ToolLayout.astro';
 ---
 <ToolLayout
   title="README Generator - Free GitHub README Template Builder | MarkdownMaster"
-  description="Create a clean GitHub README in your browser. Fill in your project details, preview a structured Markdown template, and copy it instantly."
+  description="Create a clean GitHub README privately in your browser. Validate essential project details, preview safe Markdown, then copy or continue editing."
   canonical="https://markdownmaster.site/tools/readme-generator/"
   heading="GitHub README Generator"
-  intro="Turn the essential details of your project into a clean README structure. Customize the fields below, then copy the Markdown into your repository."
+  intro="Turn essential project details into a clean README structure. Required fields and repository links are checked in your browser before you copy."
   toolName="MarkdownMaster GitHub README Generator"
   relatedGuideHref="/blog/how-to-write-a-perfect-readme-markdown-github/"
   relatedGuideLabel="Read the complete README guide"
 >
   <style>
-    .readme-grid { display:grid; grid-template-columns:minmax(260px,0.8fr) minmax(0,1.2fr); gap:1rem; }
-    .form-card, .output-card { min-width:0; }
-    .form-card { display:flex; flex-direction:column; gap:0.8rem; }
-    label { display:flex; flex-direction:column; gap:0.35rem; color:var(--text-dim); font-size:0.84rem; font-weight:600; }
-    input, textarea { width:100%; box-sizing:border-box; border:1px solid var(--border); border-radius:8px; background:#0b1220; color:var(--text); padding:0.7rem; font:0.9rem var(--font); outline:none; }
-    textarea { min-height:80px; resize:vertical; }
-    input:focus, textarea:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(14,165,233,0.12); }
-    .output-head { display:flex; justify-content:space-between; gap:0.8rem; align-items:center; margin-bottom:0.55rem; color:var(--text-dim); font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; }
-    .output-head button { border:0; border-radius:8px; padding:0.55rem 0.75rem; background:var(--accent); color:#fff; font:600 0.82rem var(--font); cursor:pointer; text-transform:none; letter-spacing:0; }
-    pre { min-height:520px; margin:0; padding:1rem; box-sizing:border-box; border:1px solid var(--border); border-radius:10px; background:#0b1220; color:#dbeafe; font:0.84rem/1.65 var(--font-mono); white-space:pre-wrap; overflow:auto; }
-    @media (max-width:820px) { .readme-grid { grid-template-columns:1fr; } pre { min-height:360px; } }
+    .readme-grid { display:grid; grid-template-columns:minmax(260px,.82fr) minmax(0,1.18fr); gap:1rem; }
+    .form-card,.output-card { min-width:0; }
+    .form-card { display:flex; flex-direction:column; gap:.9rem; }
+    .field { display:grid; gap:.35rem; }
+    label { color:var(--text-dim); font-size:.84rem; font-weight:700; }
+    .required { color:#fda4af; }
+    input,textarea { width:100%; box-sizing:border-box; border:1px solid var(--border); border-radius:8px; background:#0b1220; color:var(--text); padding:.7rem; font:.9rem var(--font); outline:none; }
+    textarea { min-height:86px; resize:vertical; }
+    input:focus,textarea:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(14,165,233,.12); }
+    input[aria-invalid='true'],textarea[aria-invalid='true'] { border-color:#fb7185; box-shadow:0 0 0 3px rgba(251,113,133,.12); }
+    .field-help { color:var(--text-muted); font-size:.76rem; line-height:1.45; }
+    .field-error { min-height:1.15rem; color:#fca5a5; font-size:.78rem; line-height:1.45; }
+    .form-note { margin:0; color:var(--text-muted); font-size:.8rem; line-height:1.55; }
+    .output-head { display:flex; justify-content:space-between; gap:.8rem; align-items:center; margin-bottom:.55rem; color:var(--text-dim); font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
+    .output-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:.45rem; }
+    button { min-height:39px; border:1px solid transparent; border-radius:8px; padding:.55rem .75rem; background:var(--accent); color:#082f49; font:700 .82rem var(--font); cursor:pointer; text-transform:none; letter-spacing:0; }
+    button:hover:not(:disabled) { filter:brightness(1.08); }
+    button:active:not(:disabled) { transform:scale(.98); }
+    button.secondary { border-color:var(--border); background:transparent; color:var(--text); }
+    button:focus-visible { outline:3px solid rgba(14,165,233,.55); outline-offset:3px; }
+    button:disabled { cursor:not-allowed; opacity:.55; }
+    pre { min-height:520px; margin:0; padding:1rem; box-sizing:border-box; border:1px solid var(--border); border-radius:10px; background:#0b1220; color:#dbeafe; font:.84rem/1.65 var(--font-mono); white-space:pre-wrap; overflow:auto; }
+    .status { min-height:1.5rem; margin:.7rem 0 0; color:var(--text-muted); font-size:.86rem; line-height:1.5; }
+    .status[data-kind='success'] { color:#86efac; }
+    .status[data-kind='error'] { color:#fca5a5; }
+    @media (max-width:820px) { .readme-grid { grid-template-columns:1fr; } pre { min-height:360px; } .output-head { align-items:flex-start; flex-direction:column; } .output-actions { justify-content:flex-start; } }
   </style>
+
   <div class="readme-grid">
-    <form class="form-card" id="readme-form">
-      <label>Project name<input id="project-name" value="My Project" maxlength="80"></label>
-      <label>One-sentence description<textarea id="project-description" maxlength="260">A short description of what this project does and who it helps.</textarea></label>
-      <label>Install command<input id="install-command" value="npm install my-project"></label>
-      <label>Quick-start command<input id="usage-command" value="npm run dev"></label>
-      <label>License<input id="license" value="MIT"></label>
-      <label>Repository URL (optional)<input id="repository-url" placeholder="https://github.com/you/project"></label>
+    <form class="form-card" id="readme-form" novalidate>
+      <div class="field">
+        <label for="project-name">Project name <span class="required" aria-hidden="true">*</span></label>
+        <input id="project-name" name="project-name" value="My Project" maxlength="80" required aria-describedby="project-name-error">
+        <span class="field-error" id="project-name-error"></span>
+      </div>
+      <div class="field">
+        <label for="project-description">One-sentence description <span class="required" aria-hidden="true">*</span></label>
+        <textarea id="project-description" name="project-description" maxlength="260" required aria-describedby="project-description-help project-description-error">A short description of what this project does and who it helps.</textarea>
+        <span class="field-help" id="project-description-help">Keep it specific: what the project does and who it helps.</span>
+        <span class="field-error" id="project-description-error"></span>
+      </div>
+      <div class="field">
+        <label for="install-command">Install command</label>
+        <input id="install-command" name="install-command" value="npm install my-project" maxlength="160" aria-describedby="install-command-help">
+        <span class="field-help" id="install-command-help">Commands are kept on one line inside a fenced code block.</span>
+      </div>
+      <div class="field">
+        <label for="usage-command">Quick-start command</label>
+        <input id="usage-command" name="usage-command" value="npm run dev" maxlength="160">
+      </div>
+      <div class="field">
+        <label for="license">License</label>
+        <input id="license" name="license" value="MIT" maxlength="80">
+      </div>
+      <div class="field">
+        <label for="repository-url">Repository URL <span class="field-help">(optional)</span></label>
+        <input id="repository-url" name="repository-url" type="url" inputmode="url" autocomplete="url" placeholder="https://github.com/you/project" maxlength="300" aria-describedby="repository-url-help repository-url-error">
+        <span class="field-help" id="repository-url-help">Use a full public http(s) URL. Links with credentials or unsafe protocols are rejected.</span>
+        <span class="field-error" id="repository-url-error"></span>
+      </div>
+      <p class="form-note">No fields are sent to a server. Markdown-sensitive characters in titles and descriptions are escaped so generated text stays inside the intended README sections.</p>
+      <button class="secondary" id="reset-readme" type="button">Reset fields</button>
     </form>
+
     <div class="output-card">
-      <div class="output-head"><span>README.md preview</span><button id="copy-readme" type="button">Copy README</button></div>
+      <div class="output-head">
+        <span>README.md preview</span>
+        <div class="output-actions">
+          <button class="secondary" id="open-editor" type="button">Open in editor</button>
+          <button id="copy-readme" type="button">Copy README</button>
+        </div>
+      </div>
       <pre id="readme-output" aria-live="polite"></pre>
+      <p class="status" id="readme-status" role="status" aria-live="polite"></p>
     </div>
   </div>
-  <script is:inline>
-    const fields = ['project-name', 'project-description', 'install-command', 'usage-command', 'license', 'repository-url'].map(id => document.getElementById(id));
-    const output = document.getElementById('readme-output');
-    const copyButton = document.getElementById('copy-readme');
-    const value = id => document.getElementById(id).value.trim();
-    function render() {
-      const name = value('project-name') || 'My Project';
-      const description = value('project-description') || 'A concise project description.';
-      const install = value('install-command') || 'npm install';
-      const usage = value('usage-command') || 'npm run dev';
-      const license = value('license') || 'MIT';
-      const repo = value('repository-url');
-      output.textContent = `# ${name}\n\n${description}\n\n${repo ? `[View the repository](${repo})\n\n` : ''}## Features\n\n- Clear, focused project purpose\n- Simple setup instructions\n- Easy-to-scan documentation\n\n## Getting started\n\n### Installation\n\n\`\`\`bash\n${install}\n\`\`\`\n\n### Usage\n\n\`\`\`bash\n${usage}\n\`\`\`\n\n## Contributing\n\nContributions, issues, and feature requests are welcome.\n\n## License\n\nThis project is licensed under the ${license} License.`;
+
+  <script>
+    import { announceStatus, copyText, saveEditorHandoff } from '../../../scripts/toolClient';
+
+    const form = document.querySelector<HTMLFormElement>('#readme-form');
+    const output = document.querySelector<HTMLElement>('#readme-output');
+    const copyButton = document.querySelector<HTMLButtonElement>('#copy-readme');
+    const openEditorButton = document.querySelector<HTMLButtonElement>('#open-editor');
+    const resetButton = document.querySelector<HTMLButtonElement>('#reset-readme');
+    const status = document.querySelector<HTMLElement>('#readme-status');
+    const fields = {
+      name: document.querySelector<HTMLInputElement>('#project-name'),
+      description: document.querySelector<HTMLTextAreaElement>('#project-description'),
+      install: document.querySelector<HTMLInputElement>('#install-command'),
+      usage: document.querySelector<HTMLInputElement>('#usage-command'),
+      license: document.querySelector<HTMLInputElement>('#license'),
+      repository: document.querySelector<HTMLInputElement>('#repository-url'),
+    };
+    const initialValues = Object.fromEntries(Object.entries(fields).map(([key, field]) => [key, field?.value ?? '']));
+
+    let currentReadme = '';
+
+    function cleanSingleLine(value: string) {
+      return value.replace(/[\r\n\t]+/g, ' ').replace(/\s{2,}/g, ' ').trim();
     }
-    fields.forEach(field => field.addEventListener('input', render));
-    copyButton.addEventListener('click', async () => { await navigator.clipboard.writeText(output.textContent); copyButton.textContent = 'Copied'; setTimeout(() => copyButton.textContent = 'Copy README', 1500); });
+
+    function escapeMarkdownInline(value: string) {
+      return cleanSingleLine(value).replace(/([\\`*_{}\[\]<>#+\-!|])/g, '\\$1');
+    }
+
+    function setFieldError(field: HTMLInputElement | HTMLTextAreaElement | null, message: string) {
+      if (!field) return;
+      const error = document.querySelector<HTMLElement>(`#${field.id}-error`);
+      field.setAttribute('aria-invalid', message ? 'true' : 'false');
+      if (error) error.textContent = message;
+    }
+
+    function normalizeRepository(value: string): { value: string; error: string } {
+      const candidate = value.trim();
+      if (!candidate) return { value: '', error: '' };
+      try {
+        const parsed = new URL(candidate);
+        if (!['http:', 'https:'].includes(parsed.protocol)) return { value: '', error: 'Use an http(s) repository URL.' };
+        if (parsed.username || parsed.password) return { value: '', error: 'Repository URLs with credentials are not allowed.' };
+        if (!parsed.hostname || parsed.hostname === 'localhost') return { value: '', error: 'Use a public repository URL.' };
+        parsed.hash = '';
+        parsed.search = '';
+        return { value: parsed.toString().replace(/\/$/, ''), error: '' };
+      } catch {
+        return { value: '', error: 'Enter a complete URL such as https://github.com/you/project.' };
+      }
+    }
+
+    function validate() {
+      const name = cleanSingleLine(fields.name?.value ?? '');
+      const description = cleanSingleLine(fields.description?.value ?? '');
+      const repository = normalizeRepository(fields.repository?.value ?? '');
+      const errors = {
+        name: name ? '' : 'Add a project name before copying the README.',
+        description: description ? '' : 'Add a one-sentence project description before copying the README.',
+        repository: repository.error,
+      };
+      setFieldError(fields.name, errors.name);
+      setFieldError(fields.description, errors.description);
+      setFieldError(fields.repository, errors.repository);
+      return { valid: !errors.name && !errors.description && !errors.repository, name, description, repository: repository.value };
+    }
+
+    function render() {
+      if (!output || !copyButton || !openEditorButton) return;
+      const validation = validate();
+      const install = cleanSingleLine(fields.install?.value ?? '') || 'npm install your-project';
+      const usage = cleanSingleLine(fields.usage?.value ?? '') || 'npm run dev';
+      const license = escapeMarkdownInline(fields.license?.value ?? '') || 'MIT';
+      const name = escapeMarkdownInline(validation.name || 'Your Project');
+      const description = escapeMarkdownInline(validation.description || 'Describe what this project does and who it helps.');
+      const repoLine = validation.repository ? `[View the repository](${validation.repository})\n\n` : '';
+
+      currentReadme = `# ${name}\n\n${description}\n\n${repoLine}## Features\n\n- Clear, focused project purpose\n- Simple setup instructions\n- Easy-to-scan documentation\n\n## Getting started\n\n### Installation\n\n\`\`\`bash\n${install}\n\`\`\`\n\n### Usage\n\n\`\`\`bash\n${usage}\n\`\`\`\n\n## Contributing\n\nContributions, issues, and feature requests are welcome.\n\n## License\n\nThis project is licensed under the ${license} License.`;
+      output.textContent = currentReadme;
+      copyButton.disabled = !validation.valid;
+      openEditorButton.disabled = !validation.valid;
+      announceStatus(status, validation.valid ? 'Ready to copy or continue editing.' : 'Complete the required fields and fix any URL error before copying.', validation.valid ? 'neutral' : 'error');
+    }
+
+    Object.values(fields).forEach((field) => field?.addEventListener('input', render));
+    form?.addEventListener('submit', (event) => event.preventDefault());
+
+    resetButton?.addEventListener('click', () => {
+      Object.entries(fields).forEach(([key, field]) => { if (field) field.value = initialValues[key] ?? ''; });
+      render();
+      fields.name?.focus();
+    });
+
+    copyButton?.addEventListener('click', async () => {
+      const validation = validate();
+      if (!validation.valid) {
+        render();
+        return;
+      }
+      copyButton.disabled = true;
+      const copied = await copyText(currentReadme);
+      announceStatus(status, copied ? 'Copied README Markdown to clipboard.' : 'Clipboard access was blocked. Select the preview and press Ctrl/Cmd+C.', copied ? 'success' : 'error');
+      copyButton.disabled = false;
+    });
+
+    openEditorButton?.addEventListener('click', () => {
+      const validation = validate();
+      if (!validation.valid) {
+        render();
+        return;
+      }
+      if (!saveEditorHandoff(currentReadme, 'readme-generator')) {
+        announceStatus(status, 'Could not prepare the editor handoff. Copy the README and paste it into the editor instead.', 'error');
+        return;
+      }
+      window.location.assign('/editor/?from=readme');
+    });
+
     render();
   </script>
 </ToolLayout>
