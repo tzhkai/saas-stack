@@ -1,0 +1,207 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { MARKDOWN_TEMPLATES, type MarkdownTemplate } from '../data/templates';
+
+export interface Props {
+  template: MarkdownTemplate;
+}
+
+const { template } = Astro.props;
+const canonical = `https://markdownmaster.site/templates/${template.slug}/`;
+const relatedTemplates = MARKDOWN_TEMPLATES
+  .filter((item) => item.slug !== template.slug)
+  .slice(0, 3);
+
+const jsonld = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebPage',
+      '@id': `${canonical}#webpage`,
+      url: canonical,
+      name: template.seoTitle,
+      description: template.description,
+      isPartOf: { '@id': 'https://markdownmaster.site/#website' },
+      breadcrumb: { '@id': `${canonical}#breadcrumb` },
+      mainEntity: {
+        '@type': 'CreativeWork',
+        name: template.title,
+        description: template.intro,
+        isAccessibleForFree: true,
+        license: 'https://opensource.org/license/mit/',
+      },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': `${canonical}#breadcrumb`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://markdownmaster.site/' },
+        { '@type': 'ListItem', position: 2, name: 'Markdown Templates', item: 'https://markdownmaster.site/templates/' },
+        { '@type': 'ListItem', position: 3, name: template.title, item: canonical },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout title={template.seoTitle} description={template.description} canonical={canonical} jsonld={jsonld}>
+  <style>
+    .template-page { width:min(100% - 2rem, 980px); margin:0 auto; padding:1.5rem 0 4.5rem; }
+    .template-page section { margin-top:3.25rem; }
+    .breadcrumb { margin-bottom:2.35rem; font-size:.9rem; }
+    .breadcrumb ol { display:flex; flex-wrap:wrap; gap:.45rem; margin:0; padding:0; list-style:none; }
+    .breadcrumb li:not(:last-child)::after { content:'›'; margin-left:.45rem; color:var(--text-muted); }
+    .breadcrumb [aria-current='page'] { color:var(--text-muted); }
+    .template-hero { max-width:800px; margin:0 auto; text-align:center; }
+    .eyebrow,.section-kicker { margin:0; color:var(--accent); font-size:.78rem; font-weight:750; letter-spacing:.08em; text-transform:uppercase; }
+    h1,h2,h3 { letter-spacing:-.025em; }
+    h1 { margin:.7rem auto 1rem; font-size:clamp(2.2rem,6vw,4.3rem); line-height:1.04; }
+    h2 { margin:0 0 .85rem; font-size:clamp(1.4rem,3vw,1.9rem); }
+    p,li { color:var(--text-dim); line-height:1.75; }
+    .template-hero > p:not(.eyebrow):not(.trust-copy) { max-width:710px; margin:0 auto; font-size:1.08rem; }
+    .hero-actions { display:flex; justify-content:center; flex-wrap:wrap; gap:.75rem; margin:1.45rem 0 .85rem; }
+    .button { display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:.68rem 1rem; border:1px solid transparent; border-radius:9px; font:700 .93rem var(--font); cursor:pointer; text-decoration:none; transition:transform .15s, background .15s, border-color .15s; }
+    .button:active { transform:scale(.98); }
+    .button:focus-visible,.text-link:focus-visible,.related-card:focus-visible,summary:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
+    .button-primary { background:var(--accent); color:#082f49; }
+    .button-primary:hover { background:#7dd3fc; }
+    .button-secondary { border-color:var(--border); background:transparent; color:var(--text); }
+    .button-secondary:hover { border-color:var(--accent); color:var(--accent); }
+    .trust-copy { margin:0; color:var(--text-muted); font-size:.88rem; }
+    .template-preview,.final-cta { padding:clamp(1rem,3vw,1.5rem); border:1px solid var(--border); border-radius:14px; background:var(--bg-card); }
+    .section-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; margin-bottom:1rem; }
+    .section-heading h2 { margin-top:.25rem; }
+    .text-link { color:var(--accent); white-space:nowrap; font-size:.92rem; }
+    pre { overflow:auto; margin:1rem 0 0; padding:1rem; border:1px solid var(--border); border-radius:10px; background:#07101f; color:#dbeafe; font:.86rem/1.65 var(--font-mono); tab-size:2; }
+    code { font-family:var(--font-mono); }
+    details { margin-top:1rem; }
+    summary { cursor:pointer; color:var(--text); font-weight:700; }
+    .check-list,.steps { display:grid; gap:.75rem; padding-left:1.4rem; }
+    .check-list li::marker { color:#86efac; content:'✓  '; }
+    .related-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.9rem; }
+    .related-card { display:grid; gap:.45rem; min-height:125px; padding:1rem; border:1px solid var(--border); border-radius:10px; background:var(--bg-card); color:var(--text); text-decoration:none; }
+    .related-card:hover { border-color:var(--accent); }
+    .related-card span { color:var(--text-dim); font-size:.9rem; line-height:1.55; }
+    .final-cta { text-align:center; }
+    .final-cta p { max-width:650px; margin:0 auto 1.2rem; }
+    .tool-link { color:var(--accent); }
+    .status { min-height:1.5rem; margin:.8rem 0 0; color:var(--text-muted); font-size:.9rem; }
+    .status[data-kind='success'] { color:#86efac; }
+    .status[data-kind='error'] { color:#fca5a5; }
+    @media (max-width:680px) { .template-page { width:min(100% - 1.5rem,980px); padding-top:1rem; } .template-page section { margin-top:2.4rem; } .section-heading { display:grid; } .text-link { white-space:normal; } .related-grid { grid-template-columns:1fr; } .hero-actions .button { width:100%; } }
+  </style>
+
+  <main class="template-page">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="/">Home</a></li>
+        <li><a href="/templates/">Markdown templates</a></li>
+        <li aria-current="page">{template.title}</li>
+      </ol>
+    </nav>
+
+    <header class="template-hero">
+      <p class="eyebrow">Free Markdown template</p>
+      <h1>{template.title}</h1>
+      <p>{template.intro}</p>
+      <div class="hero-actions">
+        <button class="button button-primary" id="open-editor" type="button">Use this template in the editor</button>
+        <button class="button button-secondary" id="copy-template" type="button">Copy Markdown template</button>
+      </div>
+      <p class="trust-copy">No account required. The template stays in this browser until you copy or edit it.</p>
+      <p class="status" id="template-status" role="status" aria-live="polite"></p>
+    </header>
+
+    <section class="template-preview" aria-labelledby="preview-heading">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Preview</p>
+          <h2 id="preview-heading">Start with a practical structure</h2>
+        </div>
+        <button class="text-link" id="copy-template-top" type="button">Copy template</button>
+      </div>
+      <pre><code>{template.markdown}</code></pre>
+    </section>
+
+    <section aria-labelledby="includes-heading">
+      <h2 id="includes-heading">What this template includes</h2>
+      <ul class="check-list">{template.includes.map((item) => <li>{item}</li>)}</ul>
+    </section>
+
+    <section aria-labelledby="use-heading">
+      <h2 id="use-heading">How to use this template</h2>
+      <ol class="steps">{template.steps.map((step) => <li>{step}</li>)}</ol>
+    </section>
+
+    <section aria-labelledby="guide-heading">
+      <h2 id="guide-heading">Make the template your own</h2>
+      <p>Use the section order as a starting point, then remove anything that does not help your reader take the next step. Good Markdown is specific, scannable, and easy to maintain.</p>
+      <p><a class="tool-link" href={template.guideHref}>{template.guideLabel} &rarr;</a></p>
+    </section>
+
+    <section aria-labelledby="related-heading">
+      <h2 id="related-heading">More free Markdown templates</h2>
+      <div class="related-grid">
+        {relatedTemplates.map((item) => (
+          <a class="related-card" href={`/templates/${item.slug}/`}>
+            <strong>{item.title}</strong>
+            <span>{item.description}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="final-cta" aria-labelledby="cta-heading">
+      <h2 id="cta-heading">Ready to customize this template?</h2>
+      <p>Open it in the free editor to adapt the structure, preview the result, and keep your work on your device.</p>
+      <button class="button button-primary" id="open-editor-bottom" type="button">Open this template in the editor</button>
+    </section>
+  </main>
+
+  <script define:vars={{ templateMarkdown: template.markdown }}>
+    const handoffKey = 'mm:editor:handoff:v1';
+    const status = document.getElementById('template-status');
+
+    function setStatus(message, kind = 'success') {
+      if (!status) return;
+      status.textContent = message;
+      status.dataset.kind = kind;
+    }
+
+    async function copyTemplate(button) {
+      button.disabled = true;
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(templateMarkdown);
+        } else {
+          const helper = document.createElement('textarea');
+          helper.value = templateMarkdown;
+          helper.style.position = 'fixed';
+          helper.style.opacity = '0';
+          document.body.appendChild(helper);
+          helper.select();
+          const copied = document.execCommand('copy');
+          helper.remove();
+          if (!copied) throw new Error('Copy was not available');
+        }
+        setStatus('Copied to clipboard.');
+      } catch {
+        setStatus('Clipboard access was blocked. Select the template and press Ctrl/Cmd+C.', 'error');
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    function openInEditor() {
+      try {
+        sessionStorage.setItem(handoffKey, JSON.stringify({ markdown: templateMarkdown, source: 'template', createdAt: Date.now() }));
+        window.location.assign('/editor/?from=template');
+      } catch {
+        setStatus('Could not open the editor automatically. Copy the template and paste it into the editor.', 'error');
+      }
+    }
+
+    document.querySelectorAll('#copy-template, #copy-template-top').forEach((button) => button.addEventListener('click', () => copyTemplate(button)));
+    document.querySelectorAll('#open-editor, #open-editor-bottom').forEach((button) => button.addEventListener('click', openInEditor));
+  </script>
+</BaseLayout>

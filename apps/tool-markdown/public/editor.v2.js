@@ -16,16 +16,31 @@
       return;
     }
 
-    /* ── URL parameter: ?text= — prefill editor ── */
-    var params = new URLSearchParams(window.location.search);
-    var prefill = params.get('text');
-    if (prefill) {
-      try {
-        input.value = decodeURIComponent(prefill);
-        rerender();
-        // Scroll to top
-        input.scrollTop = 0;
-      } catch(e) { /* ignore bad encoding */ }
+    /* ── One-time same-origin handoff, then legacy ?text= compatibility ── */
+    var HANDOFF_KEY = 'mm:editor:handoff:v1';
+    var handoffLoaded = false;
+    try {
+      var savedHandoff = sessionStorage.getItem(HANDOFF_KEY);
+      if (savedHandoff) {
+        var handoff = JSON.parse(savedHandoff);
+        var age = Date.now() - Number(handoff.createdAt || 0);
+        if (typeof handoff.markdown === 'string' && handoff.markdown.length <= 524288 && age >= 0 && age < 900000) {
+          input.value = handoff.markdown;
+          handoffLoaded = true;
+        }
+        sessionStorage.removeItem(HANDOFF_KEY);
+      }
+    } catch(e) { /* storage or JSON errors must not block the editor */ }
+
+    if (!handoffLoaded) {
+      var params = new URLSearchParams(window.location.search);
+      var prefill = params.get('text');
+      if (prefill) input.value = prefill;
+    }
+    if (input.value) {
+      rerender();
+      input.scrollTop = 0;
+      if (handoffLoaded) setTimeout(function () { input.focus(); }, 0);
     }
 
     /* ── helpers ── */
@@ -260,8 +275,8 @@
       }
     });
 
-    /* ── initial content (only if no ?text= prefill) ── */
-    if (!prefill) {
+    /* ── initial content only when neither a handoff nor a legacy prefill populated the editor ── */
+    if (!input.value) {
     input.value = [
       '# Markdown Cheat Sheet',
       '',

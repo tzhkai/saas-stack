@@ -1,0 +1,19 @@
+---
+import TemplateLandingPage from '../../components/TemplateLandingPage.astro';
+import { MARKDOWN_TEMPLATES, getTemplate } from '../../data/templates';
+
+export function getStaticPaths() {
+  return MARKDOWN_TEMPLATES.map((template) => ({
+    params: { slug: template.slug },
+  }));
+}
+
+const { slug = '' } = Astro.params;
+const template = getTemplate(slug);
+
+if (!template) {
+  return Astro.redirect('/templates/');
+}
+---
+
+<TemplateLandingPage {template} />
