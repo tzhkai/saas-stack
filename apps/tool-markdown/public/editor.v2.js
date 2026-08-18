@@ -11,6 +11,8 @@
     var preview = document.getElementById('preview-content');
     var toolbar = document.querySelector('.toolbar');
     var previewStatus = document.getElementById('preview-status');
+    var sourceParam = new URLSearchParams(window.location.search).get('from') || '';
+    var entryPoint = /^[a-z0-9-]{1,64}$/i.test(sourceParam) ? sourceParam.toLowerCase() : 'editor';
     var editStarted = false;
     var sanitizedEventTracked = false;
     var handoffSource = '';
@@ -20,7 +22,7 @@
     function markEditStarted() {
       if (editStarted || !input.value.trim()) return;
       editStarted = true;
-      track('markdown_edit_started', { entry_point: 'editor' });
+      track('markdown_edit_started', { entry_point: entryPoint });
     }
     var sanitizationOptions = {
       USE_PROFILES: { html: true },
