@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "test:markdown-lint": "esbuild tests/markdownLint.test.ts --bundle --platform=node --format=esm --outfile=.tmp-markdownLint.test.mjs && node --test .tmp-markdownLint.test.mjs && rm -f .tmp-markdownLint.test.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.18",
@@ -19,5 +20,8 @@
       "esbuild",
       "sharp"
     ]
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.12"
   }
 }

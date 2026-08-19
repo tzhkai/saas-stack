@@ -24,7 +24,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     .practice-panel { margin-top: 2.75rem; padding: 1.4rem; border: 1px solid rgba(14,165,233,.45); border-radius: 12px; background: linear-gradient(135deg, rgba(14,165,233,.12), rgba(15,23,42,.25)); }
     .practice-panel h2 { color: var(--text); margin: 0 0 .45rem; }
     .practice-panel p { margin-bottom: 1rem; }
-    .practice-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; }
+    .practice-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .65rem; }
     .practice-link { display: flex; flex-direction: column; min-height: 120px; padding: .9rem; border: 1px solid var(--border); border-radius: 9px; background: var(--bg-card); color: var(--text); text-decoration: none; transition: transform .15s ease, border-color .15s ease; }
     .practice-link:hover { transform: translateY(-2px); border-color: var(--accent); }
     .practice-link:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
@@ -124,6 +124,10 @@ function hello() {
         <a class="practice-link" href="/tools/readme-generator/?from=docs-readme">
           <strong>Start a GitHub README →</strong>
           <span>Turn your project details into a reusable Markdown structure.</span>
+        </a>
+        <a class="practice-link" href="/tools/markdown-linter/?from=docs-linter">
+          <strong>Check Markdown formatting →</strong>
+          <span>Review heading, list, whitespace, and code-fence checks before you publish.</span>
         </a>
       </div>
     </section>

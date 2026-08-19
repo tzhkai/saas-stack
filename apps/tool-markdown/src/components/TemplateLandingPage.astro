@@ -112,6 +112,7 @@ const jsonld = {
       <p>{template.intro}</p>
       <div class="hero-actions">
         <button class="button button-primary" id="open-editor" type="button">Use this template in the editor</button>
+        <button class="button button-secondary" id="open-linter" type="button">Check formatting first</button>
         <button class="button button-secondary" id="copy-template" type="button">Copy Markdown template</button>
       </div>
       <p class="trust-copy">No account required. The template stays in this browser until you copy or edit it.</p>
@@ -159,8 +160,11 @@ const jsonld = {
 
     <section class="final-cta" aria-labelledby="cta-heading">
       <h2 id="cta-heading">Ready to customize this template?</h2>
-      <p>Open it in the free editor to adapt the structure, preview the result, and keep your work on your device.</p>
-      <button class="button button-primary" id="open-editor-bottom" type="button">Open this template in the editor</button>
+      <p>Open it in the free editor to adapt the structure, preview the result, and keep your work on your device. Before publishing, you can also review safe formatting fixes locally.</p>
+      <div class="hero-actions">
+        <button class="button button-primary" id="open-editor-bottom" type="button">Open this template in the editor</button>
+        <button class="button button-secondary" id="open-linter-bottom" type="button">Check formatting first</button>
+      </div>
     </section>
   </main>
 
@@ -207,7 +211,17 @@ const jsonld = {
       }
     }
 
+    function openInLinter() {
+      try {
+        sessionStorage.setItem(handoffKey, JSON.stringify({ markdown: templateMarkdown, source: 'template', createdAt: Date.now() }));
+        window.location.assign('/tools/markdown-linter/?from=template');
+      } catch {
+        setStatus('Could not open the formatter & linter automatically. Copy the template and paste it into the tool.', 'error');
+      }
+    }
+
     document.querySelectorAll('#copy-template, #copy-template-top').forEach((button) => button.addEventListener('click', () => copyTemplate(button)));
     document.querySelectorAll('#open-editor, #open-editor-bottom').forEach((button) => button.addEventListener('click', openInEditor));
+    document.querySelectorAll('#open-linter, #open-linter-bottom').forEach((button) => button.addEventListener('click', openInLinter));
   </script>
 </BaseLayout>

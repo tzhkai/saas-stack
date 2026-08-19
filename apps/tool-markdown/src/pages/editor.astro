@@ -72,7 +72,7 @@ const GA_MEASUREMENT_ID = 'G-C9YBSZ3YDN';
     .tb-sep { width:1px; height:22px; background:var(--border); margin:0 0.25rem; }
     .tb-btn {
       font:inherit; background:transparent; border:none; color:var(--text-dim);
-      padding:5px 8px; border-radius:4px; cursor:pointer; font-size:0.8rem; transition:all 0.1s;
+      padding:5px 8px; border-radius:4px; cursor:pointer; font-size:0.8rem; transition:all 0.1s; text-decoration:none;
     }
     .tb-btn:hover { background:var(--border); color:var(--text); }
     .tb-title {
@@ -203,6 +203,7 @@ const GA_MEASUREMENT_ID = 'G-C9YBSZ3YDN';
   </div><div class="tb-sep"></div>
   <div class="tb-group">
     <button class="tb-btn" data-action="open" title="Open .md file" style="color:#f59e0b">📂 Open</button>
+    <a class="tb-btn" href="/tools/markdown-linter/?from=editor-linter" title="Check Markdown formatting before publishing" style="color:#86efac">✓ Check</a>
     <button class="tb-btn" data-action="copy" title="Copy Markdown">&larr; Copy</button>
     <button class="tb-btn" data-action="download-md" title="Download as .md file" style="color:#38bdf8">⬇ MD</button>
     <button class="tb-btn" data-action="export" title="Export as HTML" style="color:#a78bfa">⇓ HTML</button>

@@ -16,6 +16,12 @@ const ALLOWED_ENTRY_SOURCES = new Set([
   'template',
   'readme',
   'converter',
+  'editor-linter',
+  'readme-linter',
+  'api-template-linter',
+  'release-notes-linter',
+  'docs-linter',
+  'formatter-linter',
 ]);
 
 function entrySourceFromUrl(): string | undefined {
