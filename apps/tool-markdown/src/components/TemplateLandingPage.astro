@@ -8,6 +8,7 @@ export interface Props {
 
 const { template } = Astro.props;
 const canonical = `https://markdownmaster.site/templates/${template.slug}/`;
+const creativeWorkId = `${canonical}#template`;
 const relatedTemplates = MARKDOWN_TEMPLATES
   .filter((item) => item.slug !== template.slug)
   .slice(0, 3);
@@ -23,13 +24,18 @@ const jsonld = {
       description: template.description,
       isPartOf: { '@id': 'https://markdownmaster.site/#website' },
       breadcrumb: { '@id': `${canonical}#breadcrumb` },
-      mainEntity: {
-        '@type': 'CreativeWork',
-        name: template.title,
-        description: template.intro,
-        isAccessibleForFree: true,
-        license: 'https://opensource.org/license/mit/',
-      },
+      mainEntity: { '@id': creativeWorkId },
+    },
+    {
+      '@type': 'CreativeWork',
+      '@id': creativeWorkId,
+      url: canonical,
+      name: template.title,
+      description: template.description,
+      inLanguage: 'en',
+      genre: 'Markdown documentation template',
+      isAccessibleForFree: true,
+      license: 'https://opensource.org/license/mit/',
     },
     {
       '@type': 'BreadcrumbList',
