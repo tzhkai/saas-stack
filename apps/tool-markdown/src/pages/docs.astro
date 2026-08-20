@@ -48,6 +48,48 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ###### Heading 6`}</code></pre>
     </section>
 
+    <section id="document-titles-and-headings" aria-labelledby="document-titles-and-headings-title">
+      <h2 id="document-titles-and-headings-title">Markdown document titles and headings</h2>
+      <p>
+        Markdown does not define one universal document-title field. In a plain <code>.md</code> file or a GitHub README,
+        start the visible document with one clear H1 heading. The H1 is the title readers see in the rendered document.
+      </p>
+      <pre><code>{`# Project name`}</code></pre>
+      <p>
+        Some publishing tools also read a <code>title</code> value in YAML front matter. That metadata can set a browser-tab
+        title or generated page title, but it is tool-specific. It does not replace a visible H1 in every Markdown renderer.
+      </p>
+      <pre><code>{`---
+title: Project name
+---
+
+# Project name`}</code></pre>
+      <p>
+        Use the H1 to name the document readers see, then use H2 and H3 headings to organize the sections that follow.
+        Choose heading levels for their place in the outline, not only for visual size.
+      </p>
+
+      <h3>README example: fix the heading structure</h3>
+      <p>
+        This README has a missing space after the H1 marker and skips from the title directly to an H3 section:
+      </p>
+      <pre><code>{`#Project name
+
+### Install
+npm install example-package`}</code></pre>
+      <p>Use a space after the <code>#</code> marker and continue with the next level in the document outline:</p>
+      <pre><code>{`# Project name
+
+## Install
+npm install example-package`}</code></pre>
+      <p>
+        Before publishing, use the
+        <a href="/tools/markdown-linter/?from=docs-title-check">Markdown Formatter &amp; Linter</a>
+        to review heading spacing and possible skipped heading levels. It can apply deterministic spacing fixes after you
+        review the diff; choices about a document's structure remain yours.
+      </p>
+    </section>
+
     <section>
       <h2>Text Formatting</h2>
       <table>

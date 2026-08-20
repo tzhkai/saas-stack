@@ -63,6 +63,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       font-size:clamp(1rem,2vw,1.2rem); color:var(--text-dim);
       max-width:640px; margin:1.25rem auto 2rem; line-height:1.7;
     }
+    .hero-help-link { position:relative; max-width:640px; margin:.9rem auto 0; color:var(--text-dim); font-size:.88rem; }
+    .hero-help-link a { color:var(--accent-hover); text-underline-offset:3px; }
+    .hero-help-link a:hover { color:#fff; }
     .hero-actions { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
     .btn-primary {
       display:inline-flex; align-items:center; gap:0.4rem;
@@ -229,6 +232,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         Start from a template &rarr;
       </a>
     </div>
+    <p class="hero-help-link">
+      New to Markdown? <a href="/docs/#document-titles-and-headings">Learn how document titles and headings work</a> before you start.
+    </p>
   </section>
 
   <!-- ═══ Task chooser ═══ -->
