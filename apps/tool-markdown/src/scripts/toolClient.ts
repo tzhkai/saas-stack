@@ -12,6 +12,7 @@ const ALLOWED_ENTRY_SOURCES = new Set([
   'docs-reference',
   'docs-readme',
   'docs-table',
+  'docs-title-heading',
   'blog-guide',
   'template',
   'readme',

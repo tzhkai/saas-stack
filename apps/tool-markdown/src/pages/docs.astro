@@ -3,8 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
-  title="Markdown Syntax Reference: Headings, Tables, Code & More | MarkdownMaster"
-  description="Markdown syntax reference with copyable examples for headings, formatting, lists, code blocks, links, tables, and task lists. Practice each pattern in a free editor."
+  title="Markdown Title, Heading & Syntax Reference | MarkdownMaster"
+  description="Markdown title, heading, header, and syntax reference with copyable examples for H1, YAML front matter, tables, code blocks, lists, and more. Practice in a free editor."
   canonical="https://markdownmaster.site/docs/"
 >
   <style>
@@ -34,8 +34,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </style>
 
   <div class="page-wrap">
-    <h1>Markdown Syntax Reference</h1>
-    <p class="subtitle">Copyable examples for the Markdown patterns you use most, from headings and formatting to tables and task lists.</p>
+    <h1>Markdown Title, Heading &amp; Syntax Reference</h1>
+    <p class="subtitle">Copyable answers and examples for Markdown titles, headings, formatting, tables, code blocks, lists, and task lists.</p>
 
     <section>
       <h2>Headings</h2>
@@ -50,6 +50,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     <section id="document-titles-and-headings" aria-labelledby="document-titles-and-headings-title">
       <h2 id="document-titles-and-headings-title">Markdown document titles and headings</h2>
+      <h3>Quick answers for Markdown titles, headings, and headers</h3>
+      <table>
+        <thead><tr><th scope="col">Term</th><th scope="col">What it means in Markdown</th></tr></thead>
+        <tbody>
+          <tr><td>Markdown title</td><td>In a plain <code>.md</code> file or GitHub README, the visible title is usually one H1, written as <code># Project name</code>.</td></tr>
+          <tr><td>Markdown heading or header</td><td>These usually mean the <code>#</code> through <code>######</code> heading levels. They are not the same as an HTML <code>&lt;title&gt;</code> tag or a webpage <code>&lt;head&gt;</code>.</td></tr>
+          <tr><td>YAML title</td><td>Some site generators read <code>title</code> from front matter as metadata. It is tool-specific and does not replace a visible H1 everywhere.</td></tr>
+        </tbody>
+      </table>
       <p>
         Markdown does not define one universal document-title field. In a plain <code>.md</code> file or a GitHub README,
         start the visible document with one clear H1 heading. The H1 is the title readers see in the rendered document.
@@ -87,6 +96,9 @@ npm install example-package`}</code></pre>
         <a href="/tools/markdown-linter/?from=docs-title-check">Markdown Formatter &amp; Linter</a>
         to review heading spacing and possible skipped heading levels. It can apply deterministic spacing fixes after you
         review the diff; choices about a document's structure remain yours.
+      </p>
+      <p>
+        Want to try the syntax? <a href="/editor/?from=docs-title-heading">Open the editor and change the included heading examples</a> to see the rendered outline update locally.
       </p>
     </section>
 

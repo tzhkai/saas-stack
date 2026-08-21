@@ -16,6 +16,7 @@
       'blog-guide': true,
       'converter': true,
       'docs-reference': true,
+      'docs-title-heading': true,
       'editor': true,
       'homepage-editor': true,
       'homepage-footer': true,
@@ -258,6 +259,12 @@
     toolbar.addEventListener('click', function (e) {
       var btn = e.target.closest('.tb-btn');
       if (!btn) return;
+
+      var editorAction = btn.getAttribute('data-editor-action');
+      if (editorAction) {
+        track('markdown_editor_action', { action: editorAction });
+        return;
+      }
 
       var fmt = btn.getAttribute('data-format');
       if (fmt && FORMATS[fmt]) { FORMATS[fmt](); return; }
