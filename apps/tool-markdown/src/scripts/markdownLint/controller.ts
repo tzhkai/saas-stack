@@ -1,10 +1,12 @@
+import DOMPurify from 'dompurify';
+import { marked } from 'marked';
 import { applyIssueEdits, makeLineDiff, selectedSafeIssues } from './apply';
 import { analyzeMarkdown } from './rules';
 import { DEFAULT_FORMATTER_SETTINGS, type AnalysisResult, type FormatterSettings, type Issue } from './types';
 import { getRuleHelp } from './ruleHelp';
 import { EDITOR_HANDOFF_KEY, announceStatus, copyText, saveEditorHandoff, trackToolAction } from '../toolClient';
 
-type ResultTab = 'diff' | 'formatted';
+type ResultTab = 'diff' | 'formatted' | 'preview';
 type Status = 'idle' | 'checking' | 'ready' | 'error';
 
 type State = {
@@ -71,6 +73,8 @@ const ruleHelpGoToLine = document.querySelector<HTMLButtonElement>('[data-action
 const ruleHelpCloseButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-action="close-rule-help"]'));
 
 let debounceTimer: number | undefined;
+
+marked.setOptions({ breaks: true, gfm: true });
 
 function readEditorHandoff(): { markdown: string; source: string } | null {
   try {
@@ -205,6 +209,22 @@ function renderResult(): void {
   if (state.activeTab === 'formatted') {
     resultPanel.className = 'result-panel result-panel--formatted';
     resultPanel.textContent = output || 'Formatted Markdown will appear here.';
+    return;
+  }
+  if (state.activeTab === 'preview') {
+    resultPanel.className = 'result-panel result-panel--preview';
+    if (!output.trim()) {
+      resultPanel.textContent = 'A safe local preview will appear here.';
+      return;
+    }
+    resultPanel.innerHTML = DOMPurify.sanitize(marked.parse(output) as string, {
+      USE_PROFILES: { html: true },
+      FORBID_TAGS: ['img', 'audio', 'video', 'source', 'iframe', 'object', 'embed', 'link', 'style'],
+    });
+    resultPanel.querySelectorAll<HTMLAnchorElement>('a[href]').forEach((link) => {
+      link.rel = 'noopener noreferrer';
+      link.target = '_blank';
+    });
     return;
   }
 
@@ -378,10 +398,10 @@ document.addEventListener('keydown', (event) => {
 
 tabs.forEach((tab) => tab.addEventListener('click', () => {
   const nextTab = tab.dataset.tab;
-  if (nextTab === 'diff' || nextTab === 'formatted') {
+  if (nextTab === 'diff' || nextTab === 'formatted' || nextTab === 'preview') {
     state = { ...state, activeTab: nextTab };
     render();
-    trackToolAction('markdown-linter', nextTab === 'formatted' ? 'view_formatted' : 'view_diff');
+    trackToolAction('markdown-linter', nextTab === 'formatted' ? 'view_formatted' : nextTab === 'preview' ? 'view_preview' : 'view_diff');
   }
 }));
 

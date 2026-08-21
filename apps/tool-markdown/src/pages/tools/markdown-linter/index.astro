@@ -53,9 +53,27 @@ import ToolLayout from '../../../components/ToolLayout.astro';
     .issue-line { padding-top:.1rem; color:var(--text-muted); font:500 .7rem var(--font-mono); white-space:nowrap; }
     .result-tabs { display:flex; gap:.3rem; padding:.65rem .75rem 0; }
     [role='tab'] { min-height:32px; padding:.38rem .6rem; border-radius:6px; color:var(--text-dim); font-size:.76rem; }
+    .preview-note { margin:0; padding:.42rem .8rem 0; color:var(--text-muted); font-size:.72rem; line-height:1.4; }
     [role='tab'][aria-selected='true'] { border-color:rgba(14,165,233,.65); background:rgba(14,165,233,.1); color:var(--accent-hover); }
     [data-result-panel] { min-height:145px; max-height:220px; overflow:auto; margin:.55rem .75rem .75rem; border:1px solid var(--border); border-radius:8px; background:#070d18; color:#dbeafe; font:.76rem/1.55 var(--font-mono); tab-size:2; }
     .result-panel--formatted { padding:.75rem; white-space:pre; }
+    .result-panel--preview { padding:.85rem .95rem; overflow-wrap:anywhere; color:var(--text); font:400 .84rem/1.6 var(--font); white-space:normal; }
+    .result-panel--preview > :first-child { margin-top:0; }
+    .result-panel--preview > :last-child { margin-bottom:0; }
+    .result-panel--preview h1, .result-panel--preview h2, .result-panel--preview h3 { margin:1rem 0 .45rem; color:var(--text); line-height:1.25; }
+    .result-panel--preview h1 { font-size:1.35rem; }
+    .result-panel--preview h2 { font-size:1.1rem; }
+    .result-panel--preview h3 { font-size:.96rem; }
+    .result-panel--preview p, .result-panel--preview ul, .result-panel--preview ol, .result-panel--preview blockquote, .result-panel--preview pre, .result-panel--preview table { margin:.6rem 0; }
+    .result-panel--preview ul, .result-panel--preview ol { padding-left:1.25rem; }
+    .result-panel--preview blockquote { padding:.05rem .7rem; border-left:3px solid var(--accent); color:var(--text-dim); }
+    .result-panel--preview pre { overflow:auto; padding:.7rem; border:1px solid rgba(51,65,85,.7); border-radius:6px; background:#08111f; color:#dbeafe; font:.76rem/1.5 var(--font-mono); }
+    .result-panel--preview :not(pre) > code { padding:.08rem .24rem; border-radius:4px; background:rgba(148,163,184,.12); color:#bae6fd; font:.8em var(--font-mono); }
+    .result-panel--preview table { width:100%; border-collapse:collapse; font-size:.78rem; }
+    .result-panel--preview th, .result-panel--preview td { padding:.38rem .45rem; border:1px solid var(--border); text-align:left; vertical-align:top; }
+    .result-panel--preview th { background:rgba(14,165,233,.08); }
+    .result-panel--preview a { color:var(--accent-hover); }
+    .result-panel--preview img { max-width:100%; height:auto; }
     .diff-line { display:grid; grid-template-columns:2.3rem 2.3rem 1rem minmax(0,1fr); min-width:max-content; padding:0 .55rem; white-space:pre; }
     .diff-number { color:#64748b; text-align:right; user-select:none; }
     .diff-marker { padding-left:.4rem; color:#94a3b8; }
@@ -152,7 +170,9 @@ import ToolLayout from '../../../components/ToolLayout.astro';
         <div class="result-tabs" role="tablist" aria-label="Formatting result">
           <button type="button" role="tab" aria-selected="true" data-tab="diff">Diff</button>
           <button type="button" role="tab" aria-selected="false" data-tab="formatted">Formatted Markdown</button>
+          <button type="button" role="tab" aria-selected="false" data-tab="preview">Preview</button>
         </div>
+        <p class="preview-note">Preview is rendered locally and safely. It shows selected safe fixes without applying them to your input.</p>
         <div data-result-panel tabindex="0" aria-label="Formatting result"></div>
       </section>
     </div>
