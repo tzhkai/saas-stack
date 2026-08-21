@@ -21,6 +21,7 @@ type State = {
 
 export const MAX_MARKDOWN_LENGTH = 524_288;
 const ANALYSIS_DELAY_MS = 400;
+let interactionPendingAnalysis = false;
 
 export const SAMPLE_MARKDOWN = [
   '#README draft',
@@ -72,9 +73,9 @@ function readEditorHandoff(): { markdown: string; source: string } | null {
 
 const handoff = readEditorHandoff();
 let state: State = {
-  sourceText: handoff?.markdown ?? SAMPLE_MARKDOWN,
+  sourceText: handoff?.markdown ?? '',
   revision: 0,
-  status: 'checking',
+  status: handoff?.markdown ? 'checking' : 'idle',
   result: null,
   selectedSafeIssueIds: new Set(),
   activeTab: 'diff',
@@ -100,7 +101,9 @@ function escapeText(value: string): string {
 function renderIssues(issues: Issue[]): void {
   if (!issuesRoot) return;
   if (!issues.length) {
-    issuesRoot.innerHTML = '<p class="issues-empty">No selected checks found a formatting issue in this Markdown.</p>';
+    issuesRoot.innerHTML = state.sourceText.trim()
+      ? '<p class="issues-empty">No selected checks found a formatting issue in this Markdown.</p>'
+      : '<div class="issues-empty issues-empty--start"><strong>Start a local Markdown check</strong><span>Paste Markdown, import a local file, or try the README example. Safe fixes stay reviewable, and structural choices remain yours.</span></div>';
     return;
   }
 
@@ -209,7 +212,10 @@ function analyze(text: string, revision: number): void {
       errorMessage: null,
     };
     render();
-    trackToolAction('markdown-linter', 'check_complete');
+    if (interactionPendingAnalysis) {
+      interactionPendingAnalysis = false;
+      trackToolAction('markdown-linter', 'check_complete');
+    }
   } catch {
     if (revision !== state.revision) return;
     state = { ...state, status: 'error', errorMessage: 'The document could not be checked. Your text is still available.' };
@@ -228,12 +234,13 @@ function scheduleAnalysis(text: string): void {
   debounceTimer = window.setTimeout(() => analyze(text, revision), ANALYSIS_DELAY_MS);
 }
 
-function updateInput(nextText: string, importedFrom: string | null = null): void {
+function updateInput(nextText: string, importedFrom: string | null = null, initiatedByUser = true): void {
   if (nextText.length > MAX_MARKDOWN_LENGTH) {
     state = { ...state, status: 'error', errorMessage: 'This tool checks up to 512 KiB at a time.' };
     render();
     return;
   }
+  if (initiatedByUser && nextText.trim()) interactionPendingAnalysis = true;
   state = {
     ...state,
     sourceText: nextText.replace(/\r\n?/g, '\n'),
@@ -282,6 +289,7 @@ tabs.forEach((tab) => tab.addEventListener('click', () => {
   if (nextTab === 'diff' || nextTab === 'formatted') {
     state = { ...state, activeTab: nextTab };
     render();
+    trackToolAction('markdown-linter', nextTab === 'formatted' ? 'view_formatted' : 'view_diff');
   }
 }));
 
@@ -331,14 +339,17 @@ openEditorButton?.addEventListener('click', () => {
 sampleButton?.addEventListener('click', () => {
   if (!input) return;
   input.value = SAMPLE_MARKDOWN;
-  updateInput(SAMPLE_MARKDOWN, 'the built-in example');
+  updateInput(SAMPLE_MARKDOWN, 'the built-in README example');
+  trackToolAction('markdown-linter', 'load_example');
 });
 
 clearButton?.addEventListener('click', () => {
   if (!input) return;
   input.value = '';
-  updateInput('', null);
+  updateInput('', null, false);
+  interactionPendingAnalysis = false;
   input.focus();
+  trackToolAction('markdown-linter', 'clear_input');
 });
 
 importButton?.addEventListener('click', () => fileInput?.click());
@@ -372,5 +383,8 @@ fileInput?.addEventListener('change', async () => {
 
 if (input) input.value = state.sourceText;
 render();
-scheduleAnalysis(state.sourceText);
+if (state.sourceText.trim()) {
+  interactionPendingAnalysis = Boolean(handoff);
+  scheduleAnalysis(state.sourceText);
+}
 trackToolAction('markdown-linter', 'open');

@@ -3,156 +3,147 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
-  title="Free Markdown Tools - Online Editor, Converter, Cheat Sheet & More | MarkdownMaster"
-  description="Free online Markdown tools: real-time editor, Markdown to HTML converter, syntax reference, cheat sheet, and documentation. No sign-up required."
+  title="Free Markdown Tools – Write, Check, Convert & Publish | MarkdownMaster"
+  description="Free browser-based Markdown tools to write, format, lint, convert, and publish Markdown privately. No sign-up, uploads, or account required."
   canonical="https://markdownmaster.site/tools/"
 >
   <style>
-    .tools-hero {
-      text-align:center; padding:4rem 1.5rem 2rem;
-      background: linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-      position:relative; overflow:hidden;
-    }
-    .tools-hero h1 { font-size:clamp(1.75rem,4vw,2.75rem); font-weight:800; letter-spacing:-0.03em; }
-    .tools-hero p { color:var(--text-dim); max-width:600px; margin:0.75rem auto 0; line-height:1.7; }
-
-    .tools-grid { max-width:1100px; margin:0 auto; padding:2.5rem 1.5rem 4rem; }
-    .tools-subtitle { text-align:center; color:var(--text-muted); margin-bottom:2rem; font-size:0.9rem; }
-    .tgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1rem; }
-    .tcard {
-      display:flex; flex-direction:column; background:var(--bg-card); border:1px solid var(--border);
-      border-radius:12px; padding:1.75rem; text-decoration:none; color:var(--text);
-      transition:all 0.15s;
-    }
-    .tcard:hover { border-color:var(--accent); transform:translateY(-2px); }
-    .tcard-icon { width:44px; height:44px; background:rgba(14,165,233,0.12); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; margin-bottom:1rem; }
-    .tcard h3 { font-size:1rem; font-weight:600; margin-bottom:0.4rem; }
-    .tcard p { font-size:0.85rem; color:var(--text-dim); line-height:1.7; flex:1; }
-    .tcard-cta { margin-top:0.75rem; font-weight:600; color:var(--accent); font-size:0.85rem; }
-
-    .tsection { max-width:800px; margin:0 auto; padding:0 1.5rem 3rem; }
-    .tsection h2 { font-size:1.5rem; font-weight:700; margin-bottom:1rem; text-align:center; }
-    .tsection p { color:var(--text-dim); line-height:1.8; margin-bottom:1rem; font-size:0.95rem; }
-
-    @media (max-width: 640px) { .tgrid { grid-template-columns:1fr; } }
+    .tools-hero { text-align:center; padding:4rem 1.5rem 2.25rem; background:linear-gradient(180deg,#0f172a 0%,#1e293b 50%,#0f172a 100%); position:relative; overflow:hidden; }
+    .eyebrow { display:inline-flex; margin:0 0 .8rem; padding:.3rem .6rem; border:1px solid rgba(14,165,233,.42); border-radius:999px; color:#7dd3fc; font-size:.72rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+    .tools-hero h1 { font-size:clamp(1.85rem,4vw,2.85rem); font-weight:800; letter-spacing:-.035em; }
+    .tools-hero p { max-width:660px; margin:.8rem auto 0; color:var(--text-dim); line-height:1.7; }
+    .tools-main { max-width:1100px; margin:0 auto; padding:2.5rem 1.5rem 4rem; }
+    .section-heading { max-width:720px; margin:0 auto 1.25rem; text-align:center; }
+    .section-heading h2 { margin:0; font-size:1.35rem; }
+    .section-heading p { margin:.55rem 0 0; color:var(--text-dim); font-size:.92rem; line-height:1.65; }
+    .tool-section { margin:0 0 3.1rem; }
+    .tgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(255px,1fr)); gap:1rem; }
+    .tcard { display:flex; flex-direction:column; min-height:240px; padding:1.35rem; border:1px solid var(--border); border-radius:12px; background:var(--bg-card); color:var(--text); text-decoration:none; transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease; }
+    .tcard:hover { border-color:var(--accent); box-shadow:0 12px 28px rgba(2,8,23,.22); transform:translateY(-2px); }
+    .tcard:focus-visible,.workflow-step:focus-visible,.learn-link:focus-visible { outline:3px solid rgba(14,165,233,.55); outline-offset:3px; }
+    .tcard--featured { border-color:rgba(14,165,233,.62); background:linear-gradient(135deg,rgba(14,165,233,.15),rgba(15,23,42,.82)); }
+    .tcard-icon { display:flex; align-items:center; justify-content:center; width:42px; height:42px; margin-bottom:.9rem; border-radius:10px; background:rgba(14,165,233,.12); font-size:1.25rem; }
+    .tcard h3 { margin:0 0 .4rem; font-size:1rem; }
+    .tcard p { flex:1; margin:0; color:var(--text-dim); font-size:.86rem; line-height:1.65; }
+    .tcard-cta { margin-top:.9rem; color:var(--accent); font-size:.84rem; font-weight:700; }
+    .workflow { padding:1.45rem; border:1px solid rgba(14,165,233,.35); border-radius:14px; background:linear-gradient(120deg,rgba(14,165,233,.1),rgba(15,23,42,.35)); }
+    .workflow h2 { margin:0; font-size:1.2rem; text-align:center; }
+    .workflow > p { max-width:680px; margin:.55rem auto 1.1rem; color:var(--text-dim); font-size:.9rem; line-height:1.65; text-align:center; }
+    .workflow-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.75rem; }
+    .workflow-step { display:block; padding:1rem; border:1px solid var(--border); border-radius:9px; background:rgba(15,23,42,.5); color:var(--text); text-decoration:none; }
+    .workflow-step span { display:block; margin-bottom:.35rem; color:#7dd3fc; font-size:.73rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; }
+    .workflow-step strong { display:block; font-size:.92rem; }
+    .workflow-step em { display:block; margin-top:.35rem; color:var(--text-dim); font-size:.8rem; font-style:normal; line-height:1.5; }
+    .learn-panel { display:grid; grid-template-columns:minmax(0,1fr) minmax(255px,.7fr); gap:1rem; align-items:start; padding:1.35rem; border:1px solid var(--border); border-radius:12px; background:var(--bg-card); }
+    .learn-copy h2 { margin:0; font-size:1.2rem; }
+    .learn-copy p { margin:.55rem 0 0; color:var(--text-dim); font-size:.9rem; line-height:1.7; }
+    .learn-copy a { color:var(--accent); }
+    .learn-links { display:grid; gap:.5rem; }
+    .learn-link { display:block; padding:.65rem .72rem; border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:.84rem; text-decoration:none; transition:border-color .16s ease,color .16s ease; }
+    .learn-link:hover { border-color:var(--accent); color:var(--accent); }
+    .privacy-note { max-width:800px; margin:2.2rem auto 0; color:var(--text-muted); font-size:.83rem; line-height:1.65; text-align:center; }
+    @media (max-width:700px) { .workflow-grid,.learn-panel { grid-template-columns:1fr; } .tcard { min-height:0; } }
   </style>
 
   <section class="tools-hero">
+    <p class="eyebrow">Private browser tools</p>
     <h1>Free Markdown Tools</h1>
-    <p>Everything you need to write, preview, convert, and master Markdown — all free, no sign-up required.</p>
+    <p>Choose one Markdown task, finish it locally, then continue with the next step when you need it. No account, upload, or sign-up required.</p>
   </section>
 
-  <section class="tools-grid">
-    <p class="tools-subtitle">Choose a tool to get started instantly.</p>
-    <div class="tgrid">
-      <a href="/templates/" class="tcard">
-        <div class="tcard-icon">&#x1F9E9;</div>
-        <h3>Markdown Templates</h3>
-        <p>Start a GitHub README, API reference, command guide, release note, technical brief, or comparison table with a practical Markdown structure.</p>
-        <span class="tcard-cta">Browse free templates &rarr;</span>
-      </a>
-      <a href="/tools/markdown-linter/" class="tcard">
-        <div class="tcard-icon">&#x2713;</div>
-        <h3>Markdown Formatter &amp; Linter</h3>
-        <p>Check headings, lists, whitespace, and code fences before publishing. Review safe fixes locally before applying them.</p>
-        <span class="tcard-cta">Check Markdown formatting &rarr;</span>
-      </a>
-      <a href="/tools/markdown-to-html/" class="tcard">
-        <div class="tcard-icon">&#x21C4;</div>
-        <h3>Markdown to HTML Converter</h3>
-        <p>Convert Markdown to clean HTML instantly, then copy the output. Runs privately in your browser.</p>
-        <span class="tcard-cta">Convert Markdown to HTML &rarr;</span>
-      </a>
-      <a href="/tools/markdown-table-generator/" class="tcard">
-        <div class="tcard-icon">&#x25A6;</div>
-        <h3>Markdown Table Generator</h3>
-        <p>Build GitHub Flavored Markdown tables with editable cells, then copy the exact syntax you need.</p>
-        <span class="tcard-cta">Create a Markdown table &rarr;</span>
-      </a>
-      <a href="/tools/readme-generator/" class="tcard">
-        <div class="tcard-icon">&#x1F4C3;</div>
-        <h3>GitHub README Generator</h3>
-        <p>Turn your project details into a clear, structured README template ready to copy into a repository.</p>
-        <span class="tcard-cta">Generate a README &rarr;</span>
-      </a>
-      <a href="/editor/" class="tcard">
-        <div class="tcard-icon">&#x270F;&#xFE0F;</div>
-        <h3>Markdown Editor</h3>
-        <p>Real-time Markdown editor with live preview, syntax highlighting, GFM support, and HTML export. Write and preview instantly.</p>
-        <span class="tcard-cta">Open Editor &rarr;</span>
-      </a>
-      <a href="/docs/" class="tcard">
-        <div class="tcard-icon">&#x1F4D6;</div>
-        <h3>Markdown Syntax Reference</h3>
-        <p>Complete Markdown syntax guide covering headings, bold, italic, links, images, tables, code blocks, lists, and all GFM extensions.</p>
-        <span class="tcard-cta">View Docs &rarr;</span>
-      </a>
-      <a href="/blog/markdown-cheat-sheet-complete-guide/" class="tcard">
-        <div class="tcard-icon">&#x1F4DD;</div>
-        <h3>Markdown Cheat Sheet</h3>
-        <p>Quick-reference cheat sheet covering every Markdown syntax element with examples. Perfect for beginners and experienced users alike.</p>
-        <span class="tcard-cta">View Cheat Sheet &rarr;</span>
-      </a>
-      <a href="/blog/what-is-markdown-complete-beginners-guide/" class="tcard">
-        <div class="tcard-icon">&#x1F393;</div>
-        <h3>What Is Markdown? Beginner's Guide</h3>
-        <p>New to Markdown? Start here. Learn what Markdown is, why it is used by millions, and how to write your first Markdown document.</p>
-        <span class="tcard-cta">Learn Markdown &rarr;</span>
-      </a>
-      <a href="/blog/markdown-syntax-complete-guide/" class="tcard">
-        <div class="tcard-icon">&#x1F4C4;</div>
-        <h3>Complete Markdown Syntax Guide</h3>
-        <p>Every Markdown rule, extension, and feature explained with examples — from basic formatting to advanced features like footnotes, Mermaid diagrams, and math formulas.</p>
-        <span class="tcard-cta">Read Guide &rarr;</span>
-      </a>
-      <a href="/blog/markdown-tables-how-to-create-format-align/" class="tcard">
-        <div class="tcard-icon">&#x1F4CA;</div>
-        <h3>Markdown Tables Guide</h3>
-        <p>How to create, format, and align tables in Markdown. Full syntax reference with alignment options, advanced formatting, and common pitfalls.</p>
-        <span class="tcard-cta">Master Tables &rarr;</span>
-      </a>
-      <a href="/blog/markdown-links-images-complete-guide/" class="tcard">
-        <div class="tcard-icon">&#x1F517;</div>
-        <h3>Markdown Links &amp; Images Guide</h3>
-        <p>Complete guide to adding links, images, and reference-style links in Markdown. Covers inline links, auto-links, clickable images, and footnotes.</p>
-        <span class="tcard-cta">Read Guide &rarr;</span>
-      </a>
-      <a href="/blog/markdown-for-developers-readme-docs-wikis/" class="tcard">
-        <div class="tcard-icon">&#x1F4BB;</div>
-        <h3>Markdown for Developers</h3>
-        <p>How to use Markdown for GitHub READMEs, API documentation, project wikis, and technical writing. Practical developer-focused guide.</p>
-        <span class="tcard-cta">Read for Devs &rarr;</span>
-      </a>
-      <a href="/blog/how-to-convert-markdown-to-html/" class="tcard">
-        <div class="tcard-icon">&#x1F504;</div>
-        <h3>Markdown to HTML Converter Guide</h3>
-        <p>Learn how to convert Markdown to HTML using online tools and libraries. Includes step-by-step examples and a free online converter.</p>
-        <span class="tcard-cta">Convert Now &rarr;</span>
-      </a>
-      <a href="/blog/how-to-use-ai-to-write-markdown/" class="tcard">
-        <div class="tcard-icon">&#x1F916;</div>
-        <h3>AI + Markdown Guide</h3>
-        <p>Use ChatGPT, Claude, and Gemini to write Markdown faster. Practical prompts for docs, meeting notes, tables, and code blocks.</p>
-        <span class="tcard-cta">Explore &rarr;</span>
-      </a>
-      <a href="/blog/markdown-vs-rich-text-editors-compared/" class="tcard">
-        <div class="tcard-icon">&#x2696;&#xFE0F;</div>
-        <h3>Markdown vs Rich Text Comparison</h3>
-        <p>Markdown or WYSIWYG? Compare both formats across 8 key criteria and find out which one works best for your workflow.</p>
-        <span class="tcard-cta">Compare &rarr;</span>
-      </a>
-      <a href="/blog/markdown-vs-html-when-to-use-which/" class="tcard">
-        <div class="tcard-icon">&#x1F4AC;</div>
-        <h3>Markdown vs HTML Guide</h3>
-        <p>When to use Markdown vs HTML for writing content, documentation, and web pages. Real examples showing why Markdown wins for content creation.</p>
-        <span class="tcard-cta">Read More &rarr;</span>
-      </a>
-    </div>
-  </section>
+  <main class="tools-main">
+    <section class="tool-section" aria-labelledby="write-create-heading">
+      <div class="section-heading">
+        <h2 id="write-create-heading">Write &amp; create Markdown</h2>
+        <p>Start from a blank document, a practical structure, or a visual table builder.</p>
+      </div>
+      <div class="tgrid">
+        <a href="/editor/?from=tools-write" class="tcard">
+          <div class="tcard-icon">&#x270F;&#xFE0F;</div>
+          <h3>Online Markdown Editor</h3>
+          <p>Write Markdown with a live preview, GitHub Flavored Markdown support, copy, download, HTML export, and local processing.</p>
+          <span class="tcard-cta">Write Markdown online &rarr;</span>
+        </a>
+        <a href="/tools/readme-generator/?from=tools-readme" class="tcard">
+          <div class="tcard-icon">&#x1F4C3;</div>
+          <h3>GitHub README Generator</h3>
+          <p>Turn project details into a clear README structure that you can copy or continue editing locally.</p>
+          <span class="tcard-cta">Generate a README &rarr;</span>
+        </a>
+        <a href="/tools/markdown-table-generator/?from=tools-table" class="tcard">
+          <div class="tcard-icon">&#x25A6;</div>
+          <h3>Markdown Table Generator</h3>
+          <p>Edit cells and alignment visually, then copy exact GitHub Flavored Markdown table syntax.</p>
+          <span class="tcard-cta">Create a Markdown table &rarr;</span>
+        </a>
+        <a href="/templates/" class="tcard">
+          <div class="tcard-icon">&#x1F9E9;</div>
+          <h3>Markdown Templates</h3>
+          <p>Start a README, API reference, command guide, release note, technical brief, or comparison table with a practical structure.</p>
+          <span class="tcard-cta">Browse free templates &rarr;</span>
+        </a>
+      </div>
+    </section>
 
-  <section class="tsection">
-    <h2>More Markdown Resources</h2>
-    <p>Browse our full collection of <a href="/blog/">Markdown tutorials, guides, and comparisons</a>. Whether you are just getting started or looking to master advanced features like footnotes, Mermaid diagrams, and math formulas, we have a guide for you.</p>
-    <p>All tools are <strong>100% free</strong>, run entirely in your browser, and require no account or sign-up. Your content stays private and never leaves your device.</p>
-  </section>
+    <section class="tool-section" aria-labelledby="check-improve-heading">
+      <div class="section-heading">
+        <h2 id="check-improve-heading">Check &amp; improve before publishing</h2>
+        <p>Review predictable formatting fixes without giving up control of decisions that need an author’s judgment.</p>
+      </div>
+      <div class="tgrid">
+        <a href="/tools/markdown-linter/?from=tools-check" class="tcard tcard--featured">
+          <div class="tcard-icon">&#x2713;</div>
+          <h3>Markdown Formatter &amp; Linter</h3>
+          <p>Check headings, lists, whitespace, and code fences. Review a local diff, apply safe fixes, and keep structural choices in your hands.</p>
+          <span class="tcard-cta">Check Markdown formatting &rarr;</span>
+        </a>
+        <a href="/docs/#document-titles-and-headings" class="tcard">
+          <div class="tcard-icon">&#x1F4D6;</div>
+          <h3>Markdown Title &amp; Heading Reference</h3>
+          <p>Understand visible H1 titles, heading levels, Markdown headers, and YAML front matter with copyable examples.</p>
+          <span class="tcard-cta">Learn heading structure &rarr;</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="tool-section" aria-labelledby="convert-publish-heading">
+      <div class="section-heading">
+        <h2 id="convert-publish-heading">Convert &amp; publish</h2>
+        <p>Turn a finished Markdown document into HTML when your CMS or website needs it.</p>
+      </div>
+      <div class="tgrid">
+        <a href="/tools/markdown-to-html/?from=tools-convert" class="tcard">
+          <div class="tcard-icon">&#x21C4;</div>
+          <h3>Markdown to HTML Converter</h3>
+          <p>Convert Markdown to clean HTML in your browser, review the result safely, and copy the output for your site or CMS.</p>
+          <span class="tcard-cta">Convert Markdown to HTML &rarr;</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="tool-section workflow" aria-labelledby="workflow-heading">
+      <h2 id="workflow-heading">A practical Markdown publishing workflow</h2>
+      <p>Use one focused tool at a time. Each step stays in your browser and gives you a clear next action.</p>
+      <div class="workflow-grid">
+        <a class="workflow-step" href="/editor/?from=tools-workflow-write"><span>Step 1</span><strong>Write or start from a template</strong><em>Draft with a live preview, or begin from a README, API, or release-note structure.</em></a>
+        <a class="workflow-step" href="/tools/markdown-linter/?from=tools-workflow-check"><span>Step 2</span><strong>Check Markdown formatting</strong><em>Review safe fixes and structural checks before you publish a document.</em></a>
+        <a class="workflow-step" href="/tools/markdown-to-html/?from=tools-workflow-convert"><span>Step 3</span><strong>Copy, export, or convert</strong><em>Keep Markdown, export HTML, or continue editing without sending document text to a server.</em></a>
+      </div>
+    </section>
+
+    <section class="learn-panel" aria-labelledby="learn-heading">
+      <div class="learn-copy">
+        <h2 id="learn-heading">Learn the Markdown pattern you need</h2>
+        <p>Use a guide when you need an explanation, then return to a focused tool to finish the task. Browse all <a href="/blog/">Markdown tutorials, guides, and comparisons</a> when you want to explore further.</p>
+      </div>
+      <nav class="learn-links" aria-label="Featured Markdown guides">
+        <a class="learn-link" href="/blog/markdown-cheat-sheet-complete-guide/">Markdown cheat sheet with examples &rarr;</a>
+        <a class="learn-link" href="/blog/markdown-tables-how-to-create-format-align/">How to create and format Markdown tables &rarr;</a>
+        <a class="learn-link" href="/blog/markdown-links-images-complete-guide/">Markdown links and images guide &rarr;</a>
+        <a class="learn-link" href="/blog/markdown-for-developers-readme-docs-wikis/">Markdown for GitHub READMEs and documentation &rarr;</a>
+      </nav>
+    </section>
+
+    <p class="privacy-note">All tools are free and run locally in your browser. Your Markdown stays on your device; optional analytics are off until you explicitly allow them and never include your document text.</p>
+  </main>
 </BaseLayout>

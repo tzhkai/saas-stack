@@ -21,6 +21,8 @@
       'homepage-editor': true,
       'homepage-footer': true,
       'homepage-hero': true,
+      'tools-write': true,
+      'tools-workflow-write': true,
       'readme': true,
       'template': true
     };
