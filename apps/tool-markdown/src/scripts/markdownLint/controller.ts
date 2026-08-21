@@ -1,6 +1,7 @@
 import { applyIssueEdits, makeLineDiff, selectedSafeIssues } from './apply';
 import { analyzeMarkdown } from './rules';
 import { DEFAULT_FORMATTER_SETTINGS, type AnalysisResult, type FormatterSettings, type Issue } from './types';
+import { getRuleHelp } from './ruleHelp';
 import { EDITOR_HANDOFF_KEY, announceStatus, copyText, saveEditorHandoff, trackToolAction } from '../toolClient';
 
 type ResultTab = 'diff' | 'formatted';
@@ -17,6 +18,8 @@ type State = {
   undoText: string | null;
   importedFrom: string | null;
   errorMessage: string | null;
+  activeHelpIssueId: string | null;
+  helpReturnIssueId: string | null;
 };
 
 export const MAX_MARKDOWN_LENGTH = 524_288;
@@ -54,6 +57,18 @@ const clearButton = document.querySelector<HTMLButtonElement>('[data-action="cle
 const importButton = document.querySelector<HTMLButtonElement>('[data-action="import"]');
 const fileInput = document.querySelector<HTMLInputElement>('#markdown-file-input');
 const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-tab]'));
+const ruleHelpDrawer = document.querySelector<HTMLElement>('[data-rule-help]');
+const ruleHelpTier = document.querySelector<HTMLElement>('[data-rule-help-tier]');
+const ruleHelpTitle = document.querySelector<HTMLElement>('[data-rule-help-title]');
+const ruleHelpWhy = document.querySelector<HTMLElement>('[data-rule-help-why]');
+const ruleHelpBoundary = document.querySelector<HTMLElement>('[data-rule-help-boundary]');
+const ruleHelpBefore = document.querySelector<HTMLElement>('[data-rule-help-before]');
+const ruleHelpAfterLabel = document.querySelector<HTMLElement>('[data-rule-help-after-label]');
+const ruleHelpAfterWrap = document.querySelector<HTMLElement>('[data-rule-help-after-wrap]');
+const ruleHelpAfter = document.querySelector<HTMLElement>('[data-rule-help-after]');
+const ruleHelpReview = document.querySelector<HTMLElement>('[data-rule-help-review]');
+const ruleHelpGoToLine = document.querySelector<HTMLButtonElement>('[data-action="rule-help-go-to-line"]');
+const ruleHelpCloseButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-action="close-rule-help"]'));
 
 let debounceTimer: number | undefined;
 
@@ -83,6 +98,8 @@ let state: State = {
   undoText: null,
   importedFrom: handoff?.source ?? null,
   errorMessage: null,
+  activeHelpIssueId: null,
+  helpReturnIssueId: null,
 };
 
 function selectedIssues(): Issue[] {
@@ -128,12 +145,58 @@ function renderIssues(issues: Issue[]): void {
                 <p class="issue-title"><code>${issue.ruleId}</code> ${escapeText(issue.title)}</p>
                 <p>${escapeText(issue.message)}</p>
                 ${issue.suggestion ? `<p class="issue-suggestion">${escapeText(issue.suggestion)}</p>` : ''}
+                <button type="button" class="issue-help" data-rule-help-id="${escapeText(issue.id)}" aria-label="Explain Markdown rule ${escapeText(issue.ruleId)}">Why?</button>
               </div>
               <span class="issue-line">Line ${issue.range.start.line}</span>
             </article>`;
         }).join('')}
       </section>`)
     .join('');
+}
+
+function activeHelpIssue(): Issue | null {
+  if (!state.activeHelpIssueId || !state.result) return null;
+  return state.result.issues.find((issue) => issue.id === state.activeHelpIssueId) ?? null;
+}
+
+function renderRuleHelp(): void {
+  if (!ruleHelpDrawer) return;
+  const issue = activeHelpIssue();
+  ruleHelpDrawer.hidden = !issue;
+  if (!issue) return;
+
+  const help = getRuleHelp(issue.ruleId);
+  if (!help) {
+    ruleHelpDrawer.hidden = true;
+    return;
+  }
+
+  if (ruleHelpTier) ruleHelpTier.textContent = issue.tier === 'safe' ? 'Safe fix · review before applying' : 'Review needed · author decision';
+  if (ruleHelpTitle) ruleHelpTitle.textContent = `${help.ruleId} · ${help.title}`;
+  if (ruleHelpWhy) ruleHelpWhy.textContent = help.why;
+  if (ruleHelpBoundary) ruleHelpBoundary.textContent = help.boundary;
+  if (ruleHelpBefore) ruleHelpBefore.textContent = help.before;
+
+  const showAfter = issue.tier === 'safe' && Boolean(help.after);
+  if (ruleHelpAfterLabel) ruleHelpAfterLabel.hidden = !showAfter;
+  if (ruleHelpAfterWrap) ruleHelpAfterWrap.hidden = !showAfter;
+  if (ruleHelpAfter) ruleHelpAfter.textContent = showAfter ? help.after ?? '' : '';
+
+  const reviewText = issue.suggestion || (issue.tier === 'review' ? help.reviewNote ?? '' : '');
+  if (ruleHelpReview) {
+    ruleHelpReview.hidden = !reviewText;
+    ruleHelpReview.textContent = reviewText;
+  }
+}
+
+function closeRuleHelp(restoreFocus = true): void {
+  const returnIssueId = state.helpReturnIssueId;
+  state = { ...state, activeHelpIssueId: null, helpReturnIssueId: null };
+  renderRuleHelp();
+  if (!restoreFocus || !returnIssueId || !issuesRoot) return;
+  const button = Array.from(issuesRoot.querySelectorAll<HTMLButtonElement>('[data-rule-help-id]'))
+    .find((candidate) => candidate.dataset.ruleHelpId === returnIssueId);
+  button?.focus();
 }
 
 function renderResult(): void {
@@ -192,6 +255,7 @@ function render(): void {
   }
 
   renderIssues(state.status === 'ready' ? state.result?.issues ?? [] : []);
+  renderRuleHelp();
   renderResult();
 
   if (applyButton) applyButton.disabled = !selectedIssues().length || state.status !== 'ready';
@@ -210,6 +274,8 @@ function analyze(text: string, revision: number): void {
       result,
       selectedSafeIssueIds: new Set(result.issues.filter((issue) => issue.tier === 'safe' && issue.edits?.length).map((issue) => issue.id)),
       errorMessage: null,
+      activeHelpIssueId: null,
+      helpReturnIssueId: null,
     };
     render();
     if (interactionPendingAnalysis) {
@@ -218,7 +284,7 @@ function analyze(text: string, revision: number): void {
     }
   } catch {
     if (revision !== state.revision) return;
-    state = { ...state, status: 'error', errorMessage: 'The document could not be checked. Your text is still available.' };
+    state = { ...state, status: 'error', errorMessage: 'The document could not be checked. Your text is still available.', activeHelpIssueId: null, helpReturnIssueId: null };
     render();
   }
 }
@@ -226,7 +292,7 @@ function analyze(text: string, revision: number): void {
 function scheduleAnalysis(text: string): void {
   window.clearTimeout(debounceTimer);
   if (!text.trim()) {
-    state = { ...state, status: 'idle', result: null, selectedSafeIssueIds: new Set(), errorMessage: null };
+    state = { ...state, status: 'idle', result: null, selectedSafeIssueIds: new Set(), errorMessage: null, activeHelpIssueId: null, helpReturnIssueId: null };
     render();
     return;
   }
@@ -236,7 +302,7 @@ function scheduleAnalysis(text: string): void {
 
 function updateInput(nextText: string, importedFrom: string | null = null, initiatedByUser = true): void {
   if (nextText.length > MAX_MARKDOWN_LENGTH) {
-    state = { ...state, status: 'error', errorMessage: 'This tool checks up to 512 KiB at a time.' };
+    state = { ...state, status: 'error', errorMessage: 'This tool checks up to 512 KiB at a time.', activeHelpIssueId: null, helpReturnIssueId: null };
     render();
     return;
   }
@@ -248,6 +314,8 @@ function updateInput(nextText: string, importedFrom: string | null = null, initi
     status: nextText.trim() ? 'checking' : 'idle',
     importedFrom,
     errorMessage: null,
+    activeHelpIssueId: null,
+    helpReturnIssueId: null,
   };
   render();
   scheduleAnalysis(state.sourceText);
@@ -271,16 +339,40 @@ issuesRoot?.addEventListener('change', (event) => {
   render();
 });
 issuesRoot?.addEventListener('click', (event) => {
-  const row = (event.target as HTMLElement).closest<HTMLElement>('[data-line]');
-  if (row && !(event.target as HTMLElement).matches('input')) focusIssueLine(Number(row.dataset.line));
+  const target = event.target as HTMLElement;
+  const helpButton = target.closest<HTMLButtonElement>('[data-rule-help-id]');
+  if (helpButton) {
+    const issueId = helpButton.dataset.ruleHelpId ?? '';
+    state = { ...state, activeHelpIssueId: issueId, helpReturnIssueId: issueId };
+    renderRuleHelp();
+    trackToolAction('markdown-linter', 'open_rule_help');
+    return;
+  }
+  const row = target.closest<HTMLElement>('[data-line]');
+  if (row && !target.matches('input, button')) focusIssueLine(Number(row.dataset.line));
 });
 issuesRoot?.addEventListener('keydown', (event) => {
-  if ((event.key === 'Enter' || event.key === ' ') && !(event.target as HTMLElement).matches('input')) {
+  if ((event.key === 'Enter' || event.key === ' ') && !(event.target as HTMLElement).matches('input, button')) {
     const row = (event.target as HTMLElement).closest<HTMLElement>('[data-line]');
     if (row) {
       event.preventDefault();
       focusIssueLine(Number(row.dataset.line));
     }
+  }
+});
+
+ruleHelpGoToLine?.addEventListener('click', () => {
+  const issue = activeHelpIssue();
+  if (!issue) return;
+  closeRuleHelp(false);
+  focusIssueLine(issue.range.start.line);
+  trackToolAction('markdown-linter', 'rule_help_go_to_line');
+});
+ruleHelpCloseButtons.forEach((button) => button.addEventListener('click', () => closeRuleHelp()));
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && state.activeHelpIssueId) {
+    event.preventDefault();
+    closeRuleHelp();
   }
 });
 
@@ -299,7 +391,7 @@ applyButton?.addEventListener('click', () => {
   if (output === state.sourceText) return;
   const previous = state.sourceText;
   input!.value = output;
-  state = { ...state, sourceText: output, revision: state.revision + 1, undoText: previous, status: 'checking', result: null, selectedSafeIssueIds: new Set() };
+  state = { ...state, sourceText: output, revision: state.revision + 1, undoText: previous, status: 'checking', result: null, selectedSafeIssueIds: new Set(), activeHelpIssueId: null, helpReturnIssueId: null };
   announceStatus(statusMessage, 'Applied selected safe fixes. You can undo this change.', 'success');
   render();
   trackToolAction('markdown-linter', 'apply_selected');
@@ -310,7 +402,7 @@ undoButton?.addEventListener('click', () => {
   if (state.undoText === null || !input) return;
   const restored = state.undoText;
   input.value = restored;
-  state = { ...state, sourceText: restored, revision: state.revision + 1, undoText: null, status: 'checking', result: null, selectedSafeIssueIds: new Set() };
+  state = { ...state, sourceText: restored, revision: state.revision + 1, undoText: null, status: 'checking', result: null, selectedSafeIssueIds: new Set(), activeHelpIssueId: null, helpReturnIssueId: null };
   announceStatus(statusMessage, 'Restored the text from before the last apply.', 'success');
   render();
   scheduleAnalysis(restored);

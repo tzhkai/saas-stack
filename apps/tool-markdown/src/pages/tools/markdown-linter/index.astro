@@ -21,7 +21,7 @@ import ToolLayout from '../../../components/ToolLayout.astro';
     .control-buttons button:focus-visible, .tool-actions button:focus-visible, [role='tab']:focus-visible, .issue:focus-visible { outline:3px solid rgba(14,165,233,.55); outline-offset:3px; }
     .workspace-grid { display:grid; grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr); gap:1rem; min-height:510px; }
     .input-pane, .review-pane { min-width:0; border:1px solid var(--border); border-radius:10px; background:#0b1220; overflow:hidden; }
-    .review-pane { display:flex; flex-direction:column; background:rgba(15,23,42,.72); }
+    .review-pane { position:relative; display:flex; flex-direction:column; background:rgba(15,23,42,.72); }
     .pane-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:.7rem; min-height:44px; padding:.75rem .9rem; border-bottom:1px solid var(--border); color:var(--text-dim); font-size:.78rem; font-weight:700; letter-spacing:.045em; text-transform:uppercase; }
     .pane-heading label { color:var(--text-dim); }
     .pane-heading output { max-width:65%; color:var(--text-muted); font-size:.72rem; font-weight:500; letter-spacing:0; line-height:1.35; text-align:right; text-transform:none; }
@@ -47,6 +47,9 @@ import ToolLayout from '../../../components/ToolLayout.astro';
     .issue-title code { color:var(--accent-hover); font:600 .72rem var(--font-mono); }
     .issue-copy > p:not(.issue-title) { margin:.18rem 0 0; color:var(--text-muted); font-size:.77rem; line-height:1.45; }
     .issue-copy .issue-suggestion { color:#fcd34d; }
+    .issue-help { margin:.38rem 0 0; border:0; padding:0; background:transparent; color:var(--accent-hover); font:700 .73rem var(--font); cursor:pointer; }
+    .issue-help:hover { color:#7dd3fc; text-decoration:underline; }
+    .issue-help:focus-visible { outline:3px solid rgba(14,165,233,.55); outline-offset:3px; }
     .issue-line { padding-top:.1rem; color:var(--text-muted); font:500 .7rem var(--font-mono); white-space:nowrap; }
     .result-tabs { display:flex; gap:.3rem; padding:.65rem .75rem 0; }
     [role='tab'] { min-height:32px; padding:.38rem .6rem; border-radius:6px; color:var(--text-dim); font-size:.76rem; }
@@ -60,6 +63,21 @@ import ToolLayout from '../../../components/ToolLayout.astro';
     .diff-line--added .diff-marker { color:#86efac; }
     .diff-line--removed { background:rgba(248,113,113,.12); }
     .diff-line--removed .diff-marker { color:#fca5a5; }
+    .rule-help-drawer { position:absolute; z-index:5; inset:.55rem; overflow:auto; padding:1rem; border:1px solid rgba(14,165,233,.72); border-radius:9px; background:#0b1220; box-shadow:0 18px 36px rgba(2,6,23,.46); }
+    .rule-help-drawer[hidden] { display:none; }
+    .rule-help-header, .rule-help-actions { display:flex; align-items:center; justify-content:space-between; gap:.7rem; }
+    .rule-help-kicker { margin:0; color:#7dd3fc; font-size:.7rem; font-weight:800; letter-spacing:.065em; text-transform:uppercase; }
+    .rule-help-close, .rule-help-actions button { min-height:36px; border:1px solid var(--border); border-radius:7px; padding:.42rem .65rem; background:transparent; color:var(--text); font:700 .76rem var(--font); cursor:pointer; }
+    .rule-help-close:hover, .rule-help-actions button:hover { border-color:var(--accent); color:var(--accent-hover); }
+    .rule-help-close:focus-visible, .rule-help-actions button:focus-visible { outline:3px solid rgba(14,165,233,.55); outline-offset:3px; }
+    .rule-help-drawer h3 { margin:.65rem 0; color:var(--text); font-size:1rem; }
+    .rule-help-drawer h4 { margin:1rem 0 .35rem; color:var(--text); font-size:.82rem; }
+    .rule-help-drawer p { margin:.5rem 0; color:var(--text-dim); font-size:.82rem; line-height:1.55; }
+    .rule-help-drawer pre { margin:.65rem 0; overflow:auto; padding:.7rem; border:1px solid rgba(51,65,85,.7); border-radius:6px; background:#070d18; color:#dbeafe; font:.76rem/1.5 var(--font-mono); white-space:pre-wrap; }
+    .rule-help-after-label { display:block; margin-top:.8rem; color:var(--text-dim); font-size:.72rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; }
+    .rule-help-after-label[hidden], .rule-help-drawer pre[hidden] { display:none; }
+    .rule-help-review { color:#fcd34d !important; }
+    .rule-help-actions { justify-content:flex-start; margin-top:1rem; }
     .tool-actions { display:flex; justify-content:flex-end; gap:.65rem; flex-wrap:wrap; margin-top:.9rem; }
     .tool-actions button.primary { border-color:transparent; background:var(--accent); color:#082f49; }
     .tool-actions button.secondary { background:transparent; }
@@ -81,6 +99,7 @@ import ToolLayout from '../../../components/ToolLayout.astro';
       #markdown-input { min-height:310px; }
       [data-issues] { max-height:none; }
       [data-result-panel] { max-height:220px; }
+      .rule-help-drawer { position:fixed; inset:auto 0 0; max-height:72vh; border-radius:12px 12px 0 0; }
       .tool-actions > button { flex:1 1 calc(50% - .4rem); }
       .pane-heading { align-items:flex-start; }
     }
@@ -118,6 +137,18 @@ import ToolLayout from '../../../components/ToolLayout.astro';
         <h2 class="review-heading" id="review-heading">Review</h2>
         <p data-summary role="status" aria-live="polite">Paste Markdown, import a local file, or try the README example to begin.</p>
         <div data-issues></div>
+        <aside class="rule-help-drawer" data-rule-help aria-labelledby="rule-help-title" hidden>
+          <div class="rule-help-header"><p class="rule-help-kicker" data-rule-help-tier></p><button type="button" class="rule-help-close" data-action="close-rule-help" aria-label="Close rule explanation">Close</button></div>
+          <h3 id="rule-help-title" data-rule-help-title></h3>
+          <p data-rule-help-why></p>
+          <h4>What this tool changes</h4>
+          <p data-rule-help-boundary></p>
+          <pre><code data-rule-help-before></code></pre>
+          <span class="rule-help-after-label" data-rule-help-after-label hidden>After</span>
+          <pre data-rule-help-after-wrap hidden><code data-rule-help-after></code></pre>
+          <p class="rule-help-review" data-rule-help-review hidden></p>
+          <div class="rule-help-actions"><button type="button" data-action="rule-help-go-to-line">Go to line</button><button type="button" data-action="close-rule-help">Close</button></div>
+        </aside>
         <div class="result-tabs" role="tablist" aria-label="Formatting result">
           <button type="button" role="tab" aria-selected="true" data-tab="diff">Diff</button>
           <button type="button" role="tab" aria-selected="false" data-tab="formatted">Formatted Markdown</button>

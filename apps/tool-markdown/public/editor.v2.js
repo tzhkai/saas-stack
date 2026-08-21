@@ -2,7 +2,7 @@
   'use strict';
 
   function boot() {
-    if (typeof marked === 'undefined' || typeof DOMPurify === 'undefined') { setTimeout(boot, 50); return; }
+    if (typeof marked === 'undefined' || typeof DOMPurify === 'undefined' || !window.MMEditorOutline) { setTimeout(boot, 50); return; }
 
     marked.setOptions({ breaks: true, gfm: true });
 
@@ -11,6 +11,15 @@
     var preview = document.getElementById('preview-content');
     var toolbar = document.querySelector('.toolbar');
     var previewStatus = document.getElementById('preview-status');
+    var outlineToggle = document.getElementById('outline-toggle');
+    var outlinePanel = document.getElementById('editor-outline');
+    var outlineList = document.querySelector('[data-outline-list]');
+    var outlineEmpty = document.querySelector('[data-outline-empty]');
+    var outlineCount = document.getElementById('outline-count');
+    var outlineClose = document.querySelector('[data-outline-close]');
+    var outlineOpen = false;
+    var outlineTimer;
+    var outlineApi = window.MMEditorOutline;
     var sourceParam = new URLSearchParams(window.location.search).get('from') || '';
     var allowedEntryPoints = {
       'blog-guide': true,
@@ -106,7 +115,53 @@
       if (previewStatus) previewStatus.innerHTML = '<span class="tb-dot"></span> ' + message;
     }
 
+    function renderOutline() {
+      if (!outlineList || !outlineEmpty || !outlineCount) return;
+      var headings = outlineApi.scanEditorOutline(input.value);
+      outlineList.replaceChildren();
+      outlineEmpty.hidden = headings.length > 0;
+      outlineCount.hidden = !headings.length;
+      outlineCount.textContent = headings.length ? headings.length + (headings.length === 1 ? ' heading' : ' headings') : '';
+
+      headings.forEach(function (heading) {
+        var item = document.createElement('li');
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'outline-item outline-item--h' + heading.level + (heading.isLevelJump ? ' outline-item--warning' : '');
+        button.dataset.outlineLine = String(heading.line);
+        button.dataset.outlineWarning = heading.isLevelJump ? 'true' : 'false';
+        button.setAttribute('aria-label', 'Go to line ' + heading.line);
+        if (heading.isLevelJump) button.title = 'Heading level jumps from H' + heading.previousLevel + ' to H' + heading.level + '. Review the structure manually.';
+
+        var level = document.createElement('span');
+        level.className = 'outline-level';
+        level.textContent = 'H' + heading.level;
+        var text = document.createElement('span');
+        text.className = 'outline-text';
+        text.textContent = heading.text;
+        var line = document.createElement('span');
+        line.className = 'outline-line';
+        line.textContent = String(heading.line);
+        button.append(level, text, line);
+        item.appendChild(button);
+        outlineList.appendChild(item);
+      });
+    }
+
+    function scheduleOutline() {
+      window.clearTimeout(outlineTimer);
+      outlineTimer = window.setTimeout(renderOutline, 120);
+    }
+
+    function setOutlineOpen(next) {
+      outlineOpen = next;
+      if (outlinePanel) outlinePanel.hidden = !outlineOpen;
+      if (outlineToggle) outlineToggle.setAttribute('aria-expanded', String(outlineOpen));
+      if (outlineOpen) renderOutline();
+    }
+
     function rerender() {
+      scheduleOutline();
       var v = input.value.trim();
       try {
         if (!v) {
@@ -254,6 +309,10 @@
         root.setAttribute('data-theme', next);
         localStorage.setItem('mdm-theme', next);
         btn.textContent = next === 'light' ? '\u263E' : '\u2600'; // moon or sun
+      },
+      'outline': function () {
+        setOutlineOpen(!outlineOpen);
+        track('markdown_editor_action', { action: 'toggle_outline' });
       }
     };
 
@@ -273,6 +332,17 @@
 
       var action = btn.getAttribute('data-action');
       if (action && ACTIONS[action]) { ACTIONS[action](btn); return; }
+    });
+
+    outlineList && outlineList.addEventListener('click', function (event) {
+      var button = event.target.closest('[data-outline-line]');
+      if (!button) return;
+      var jumped = outlineApi.jumpTextareaToOutlineLine(input, Number(button.dataset.outlineLine));
+      if (jumped) track('markdown_editor_action', { action: button.dataset.outlineWarning === 'true' ? 'review_outline_jump' : 'jump_to_heading' });
+    });
+    outlineClose && outlineClose.addEventListener('click', function () {
+      setOutlineOpen(false);
+      outlineToggle && outlineToggle.focus();
     });
 
     /* ── init theme (data-action=theme handles the click via delegation) ── */
@@ -305,6 +375,12 @@
 
     /* ── keyboard shortcuts ── */
     input.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && outlineOpen) {
+        e.preventDefault();
+        setOutlineOpen(false);
+        outlineToggle && outlineToggle.focus();
+        return;
+      }
       // 只处理 Ctrl (Windows/Linux) 或 Cmd (Mac) 组合键
       if (!e.ctrlKey && !e.metaKey) return;
 

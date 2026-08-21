@@ -24,7 +24,8 @@ const GA_MEASUREMENT_ID = 'G-C9YBSZ3YDN';
   <script>
     import { marked } from 'marked';
     import DOMPurify from 'dompurify';
-    Object.assign(window, { marked, DOMPurify });
+    import { jumpTextareaToOutlineLine, scanEditorOutline } from '../scripts/editorOutline';
+    Object.assign(window, { marked, DOMPurify, MMEditorOutline: { jumpTextareaToOutlineLine, scanEditorOutline } });
   </script>
   <style is:global>
     *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
@@ -125,6 +126,25 @@ const GA_MEASUREMENT_ID = 'G-C9YBSZ3YDN';
     #preview-content img { max-width:100%; border-radius:8px; }
     #preview-content input[type="checkbox"] { margin-right:6px; }
     .empty-hint { color:var(--text-dim); text-align:center; margin-top:3rem; }
+    .pane-label--editor { display:flex; align-items:center; justify-content:space-between; gap:.75rem; }
+    .outline-count { color:var(--accent); font-size:.68rem; font-weight:700; letter-spacing:0; text-transform:none; }
+    .editor-outline { flex:0 0 auto; max-height:182px; overflow:auto; border-bottom:1px solid var(--border); background:rgba(15,23,42,.62); }
+    .editor-outline[hidden] { display:none; }
+    .outline-header { display:flex; align-items:center; justify-content:space-between; gap:.75rem; padding:.55rem .9rem; color:var(--text-dim); font-size:.75rem; }
+    .outline-header strong { color:var(--text); font-size:.78rem; }
+    .outline-close { border:0; border-radius:4px; padding:.25rem .45rem; background:transparent; color:var(--text-dim); font:600 .72rem 'Inter',sans-serif; cursor:pointer; }
+    .outline-close:hover { background:var(--border); color:var(--text); }
+    .outline-close:focus-visible, .outline-item:focus-visible { outline:3px solid rgba(14,165,233,.55); outline-offset:2px; }
+    .outline-empty { margin:0; padding:.25rem .9rem .75rem; color:var(--text-dim); font-size:.78rem; line-height:1.45; }
+    .outline-list { list-style:none; margin:0; padding:.1rem .45rem .65rem; }
+    .outline-list li { margin:0; }
+    .outline-item { display:grid; grid-template-columns:2rem minmax(0,1fr) auto; width:100%; gap:.45rem; border:0; border-radius:5px; padding:.4rem .5rem; background:transparent; color:var(--text); font:500 .78rem 'Inter',sans-serif; text-align:left; cursor:pointer; }
+    .outline-item:hover { background:var(--border); }
+    .outline-item--h2 { padding-left:1rem; }
+    .outline-item--h3 { padding-left:1.5rem; }
+    .outline-item--warning .outline-level { color:#fbbf24; }
+    .outline-level, .outline-line { color:var(--text-dim); font:600 .68rem 'JetBrains Mono',monospace; }
+    .outline-text { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     .divider {
       width:4px; flex-shrink:0; background:var(--border); cursor:col-resize;
       transition:background 0.15s;
@@ -164,7 +184,11 @@ const GA_MEASUREMENT_ID = 'G-C9YBSZ3YDN';
     }
     @media (max-width:768px) {
       .editor-wrap { flex-direction:column; }
-      #editor-pane { border-right:none; border-bottom:1px solid var(--border); }
+      #editor-pane { border-right:none; border-bottom:1px solid var(--border); position:relative; }
+      .editor-outline { position:absolute; z-index:12; top:2rem; left:.75rem; right:.75rem; max-height:45vh; border:1px solid var(--border); border-radius:8px; box-shadow:0 16px 32px rgba(2,6,23,.35); }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .editor-outline { transition:opacity .18s cubic-bezier(.23,1,.32,1), transform .18s cubic-bezier(.23,1,.32,1); }
     }
   </style>
 </head>
@@ -194,6 +218,7 @@ const GA_MEASUREMENT_ID = 'G-C9YBSZ3YDN';
   </div><div class="tb-sep"></div>
   <div class="tb-group">
     <button class="tb-btn" data-format="h2" title="Heading 2 (Ctrl/Cmd+H)"># H2</button>
+    <button class="tb-btn" id="outline-toggle" data-action="outline" aria-expanded="false" aria-controls="editor-outline" title="Show document outline">Outline</button>
     <a class="tb-btn" href="/docs/#document-titles-and-headings" data-editor-action="open_headings_help" title="Learn how Markdown document titles and heading levels work">Headings help</a>
     <button class="tb-btn" data-format="quote" title="Blockquote (Ctrl/Cmd+Shift+Q)">Quote</button>
     <button class="tb-btn" data-format="code-block" title="Code Block (Ctrl/Cmd+Shift+C)">&lt;/&gt; Block</button>
@@ -217,7 +242,12 @@ const GA_MEASUREMENT_ID = 'G-C9YBSZ3YDN';
 
 <div class="editor-wrap">
   <div id="editor-pane" class="pane">
-    <div class="pane-label">Markdown</div>
+    <div class="pane-label pane-label--editor"><span>Markdown</span><span id="outline-count" class="outline-count" hidden></span></div>
+    <aside id="editor-outline" class="editor-outline" aria-label="Document outline" hidden>
+      <div class="outline-header"><strong>Document outline</strong><button type="button" class="outline-close" data-outline-close aria-label="Close document outline">Close</button></div>
+      <p class="outline-empty" data-outline-empty>Add an H1, H2, or H3 to build an outline.</p>
+      <ol class="outline-list" data-outline-list></ol>
+    </aside>
     <div class="pane-scroll">
       <textarea id="md-input" placeholder="Start writing..."></textarea>
     </div>
@@ -241,7 +271,7 @@ const GA_MEASUREMENT_ID = 'G-C9YBSZ3YDN';
 </div>
 <script is:inline define:vars={{ GA_MEASUREMENT_ID }}>window.MM_ANALYTICS_ID = GA_MEASUREMENT_ID;</script>
 <script is:inline src="/analytics-consent.js?v=1"></script>
-<script src="/editor.v2.js?v=6" is:inline></script>
+  <script src="/editor.v2.js?v=7" is:inline></script>
 
 </body>
 </html>
