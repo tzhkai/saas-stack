@@ -23,6 +23,7 @@
     var sourceParam = new URLSearchParams(window.location.search).get('from') || '';
     var allowedEntryPoints = {
       'blog-guide': true,
+      'blog-formatter-vs-linter': true,
       'converter': true,
       'docs-reference': true,
       'docs-title-heading': true,

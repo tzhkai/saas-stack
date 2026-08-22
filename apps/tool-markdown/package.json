@@ -8,7 +8,8 @@
     "preview": "astro preview",
     "test:markdown-lint": "esbuild tests/markdownLint.test.ts --bundle --platform=node --format=esm --outfile=.tmp-markdownLint.test.mjs && node --test .tmp-markdownLint.test.mjs && rm -f .tmp-markdownLint.test.mjs",
     "test:editor-outline": "esbuild tests/editorOutline.test.ts --bundle --platform=node --format=esm --outfile=.tmp-editorOutline.test.mjs && node --test .tmp-editorOutline.test.mjs && rm -f .tmp-editorOutline.test.mjs",
-    "test:rule-help": "esbuild tests/ruleHelp.test.ts --bundle --platform=node --format=esm --outfile=.tmp-ruleHelp.test.mjs && node --test .tmp-ruleHelp.test.mjs && rm -f .tmp-ruleHelp.test.mjs"
+    "test:rule-help": "esbuild tests/ruleHelp.test.ts --bundle --platform=node --format=esm --outfile=.tmp-ruleHelp.test.mjs && node --test .tmp-ruleHelp.test.mjs && rm -f .tmp-ruleHelp.test.mjs",
+    "test:decision-helper": "esbuild tests/markdownDecisionHelper.test.ts --bundle --platform=node --format=esm --outfile=.tmp-decisionHelper.test.mjs && node --test .tmp-decisionHelper.test.mjs && rm -f .tmp-decisionHelper.test.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.18",

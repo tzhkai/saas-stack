@@ -31,6 +31,7 @@ const ALLOWED_ENTRY_SOURCES = new Set([
   'release-notes-linter',
   'docs-linter',
   'formatter-linter',
+  'blog-formatter-vs-linter',
 ]);
 
 function entrySourceFromUrl(): string | undefined {
@@ -48,6 +49,15 @@ declare global {
 export function trackToolAction(tool: string, action: string): void {
   const source = entrySourceFromUrl();
   window.mmTrack?.('markdown_tool_action', source ? { tool, action, source } : { tool, action });
+}
+
+/**
+ * Records a fixed action from a fixed allowlisted source. This is for local
+ * UI widgets whose source is known by implementation rather than query text.
+ */
+export function trackFixedToolAction(tool: string, action: string, source: string): void {
+  if (!ALLOWED_ENTRY_SOURCES.has(source)) return;
+  window.mmTrack?.('markdown_tool_action', { tool, action, source });
 }
 
 export type StatusKind = 'success' | 'error' | 'neutral';

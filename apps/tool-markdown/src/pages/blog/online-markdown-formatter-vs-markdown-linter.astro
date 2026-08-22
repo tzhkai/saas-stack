@@ -1,0 +1,250 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const publishedDate = '2026-08-22';
+const beforeReadme = `#README draft
+A short project description.   
+###Setup
+-item one
+-  item two
+
+
+Run this command:
+\`\`\`
+npm install
+\`\`\`
+![ ](preview.png)`;
+
+const formattedReadme = `# README draft
+A short project description.
+
+### Setup
+- item one
+- item two
+
+Run this command:
+\`\`\`
+npm install
+\`\`\``;
+---
+
+<BlogLayout
+  title="Online Markdown Formatter vs Markdown Linter: What’s the Difference?"
+  description="Learn when to use an online Markdown formatter and when to use a Markdown linter. See a practical README example, review safe fixes, and keep structural decisions in your hands."
+  canonical="https://markdownmaster.site/blog/online-markdown-formatter-vs-markdown-linter/"
+  publishedDate={publishedDate}
+  category="Markdown Comparison"
+>
+  <style>
+    .lead { font-size:1.06rem; color:var(--text-dim); line-height:1.85; }
+    .answer-card { margin:1.5rem 0; padding:1.1rem 1.2rem; border:1px solid rgba(14,165,233,.42); border-radius:12px; background:rgba(14,165,233,.08); }
+    .answer-card strong { color:var(--text); }
+    .callout { margin:1.25rem 0; padding:1rem 1.1rem; border-left:3px solid var(--accent); border-radius:0 10px 10px 0; background:rgba(14,165,233,.07); color:var(--text-dim); line-height:1.7; }
+    .table-wrap { overflow-x:auto; margin:1.25rem 0; }
+    .comparison-table { min-width:640px; }
+    .comparison-table td:first-child { color:var(--text); font-weight:700; white-space:nowrap; }
+    .decision-helper { margin:2.25rem 0; padding:clamp(1rem,3vw,1.5rem); border:1px solid rgba(14,165,233,.42); border-radius:14px; background:linear-gradient(135deg,rgba(14,165,233,.1),rgba(15,23,42,.7)); }
+    .decision-helper__eyebrow,.decision-helper__result-kicker { margin:0 0 .35rem; color:var(--accent); font-size:.72rem; font-weight:800; letter-spacing:.07em; text-transform:uppercase; }
+    .decision-helper h2 { margin:.1rem 0 .55rem; color:var(--text); font-size:1.42rem; }
+    .decision-helper h3 { margin:.15rem 0 .45rem; color:var(--text); font-size:1.12rem; }
+    .decision-helper h4 { margin:.1rem 0 .4rem; color:var(--text); font-size:.95rem; }
+    .decision-helper__intro > p:last-child,.decision-helper__result > p,.decision-helper__status,.decision-helper__noscript { color:var(--text-dim); line-height:1.65; }
+    .decision-helper__fieldset { margin:1.1rem 0 0; padding:0; border:0; }
+    .decision-helper__fieldset legend { margin-bottom:.6rem; color:var(--text); font-size:.9rem; font-weight:750; }
+    .decision-helper__choices { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.65rem; }
+    .decision-helper__choices button { display:grid; gap:.35rem; min-height:100%; padding:.75rem; border:1px solid var(--border); border-radius:9px; background:rgba(2,6,23,.38); color:var(--text); text-align:left; cursor:pointer; }
+    .decision-helper__choices button strong { font-size:.86rem; }
+    .decision-helper__choices button span { color:var(--text-muted); font-size:.78rem; line-height:1.45; }
+    .decision-helper__choices button:hover:not(:disabled),.decision-helper__choices button[data-selected='true'] { border-color:var(--accent); background:rgba(14,165,233,.13); }
+    .decision-helper__choices button:disabled { cursor:not-allowed; opacity:.52; }
+    .decision-helper__choices button:focus-visible,.decision-helper__actions a:focus-visible,.decision-helper__template:focus-visible { outline:3px solid rgba(14,165,233,.55); outline-offset:3px; }
+    .decision-helper__result { margin-top:1.1rem; padding:1rem; border:1px solid rgba(51,65,85,.86); border-radius:10px; background:rgba(2,6,23,.44); }
+    .decision-helper__result ol,.decision-helper__result ul { padding-left:1.2rem; color:var(--text-dim); line-height:1.65; }
+    .decision-helper__scenario { margin-top:.9rem; padding-top:.85rem; border-top:1px solid rgba(51,65,85,.78); }
+    .decision-helper__template,.decision-helper__actions a { display:inline-flex; align-items:center; min-height:40px; margin-top:.75rem; padding:.52rem .72rem; border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:.84rem; font-weight:700; text-decoration:none; }
+    .decision-helper__actions { display:flex; flex-wrap:wrap; gap:.6rem; margin-top:1rem; }
+    .decision-helper__actions a:hover,.decision-helper__template:hover { border-color:var(--accent); color:var(--accent-hover); }
+    .decision-helper__primary { border-color:transparent !important; background:var(--accent); color:#082f49 !important; }
+    .decision-helper__status { min-height:1.5rem; margin:.8rem 0 0; font-size:.82rem; }
+    .related-articles a { color:var(--accent); }
+    .references li { font-size:.92rem; }
+    @media (max-width:720px) { .decision-helper__choices { grid-template-columns:1fr; } }
+  </style>
+
+  <div class="toc" aria-label="Table of contents">
+    <p>Table of Contents</p>
+    <a href="#quick-answer">Formatter vs linter: the quick answer</a>
+    <a href="#readme-example">A practical README example</a>
+    <a href="#decision-helper">Choose your next Markdown check</a>
+    <a href="#formatter">What an online formatter should fix</a>
+    <a href="#linter">What a linter should report</a>
+    <a href="#workflow">A release-ready Markdown workflow</a>
+    <a href="#choose-tool">How to choose an online tool</a>
+    <a href="#faq">Frequently asked questions</a>
+  </div>
+
+  <p class="lead">A Markdown file can be technically readable and still be awkward to publish. A heading may be missing a space, a list may be uneven, a code block may have no language label, or an image may have empty alt text. Some of these problems are mechanical; others require the author to decide what the document is trying to say.</p>
+
+  <p class="lead">That distinction is the practical difference between an <strong>online Markdown formatter</strong> and a <strong>Markdown linter</strong>. A formatter normalizes predictable syntax. A linter finds potential style, structure, and quality problems. Good publishing workflows use both, but they do not give both tools the same permission.</p>
+
+  <div class="answer-card" id="quick-answer">
+    <strong>The short answer:</strong> Use a formatter to review narrow, deterministic source changes such as heading spacing and extra blank lines. Use a linter to surface questions about hierarchy, code labels, images, and links. Use both when you want a clean document without giving up editorial control.
+  </div>
+
+  <div class="table-wrap">
+    <table class="comparison-table">
+      <thead><tr><th>Question</th><th>Online Markdown formatter</th><th>Markdown linter</th></tr></thead>
+      <tbody>
+        <tr><td>Main job</td><td>Make predictable Markdown syntax consistent.</td><td>Identify possible document-quality or structure issues.</td></tr>
+        <tr><td>Typical result</td><td>A reviewable formatted version of the same Markdown.</td><td>A list of findings with a rule, explanation, and line location.</td></tr>
+        <tr><td>Can it change text?</td><td>For narrow, deterministic edits that can be inspected.</td><td>Usually report first; only a subset of findings may have a safe fix.</td></tr>
+        <tr><td>Needs author judgment?</td><td>Not for simple syntax spacing and final-newline normalization.</td><td>Often, especially for headings, images, links, and code labels.</td></tr>
+        <tr><td>Example</td><td>Change <code>#Project</code> to <code># Project</code>.</td><td>Flag an H4 that follows directly after an H2.</td></tr>
+        <tr><td>Best moment</td><td>Before copying, committing, exporting, or opening a pull request.</td><td>Before publishing docs that readers need to navigate and understand.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <blockquote>A formatter asks, <strong>“Can this explicit piece of syntax be normalized safely?”</strong> A linter asks, <strong>“Could this document create a readability, structure, or maintenance problem?”</strong></blockquote>
+
+  <h2 id="readme-example">A practical README example: where formatting ends</h2>
+  <p>Consider this small README draft. It is intentionally close to the kind of real-world source that accumulates after copy-paste and hurried edits:</p>
+  <pre><code>{beforeReadme}</code></pre>
+
+  <p>A formatter can propose several changes without guessing what the project means. It can add the missing space after the heading marker and list marker, reduce non-semantic whitespace, and make the code fence easier to scan.</p>
+  <pre><code>{formattedReadme}</code></pre>
+
+  <p>Those changes are mechanical. They should still be reviewable in a diff, but they do not require the tool to decide what the document is about. The same README has questions that should remain with the author:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Finding</th><th>Why it needs review</th></tr></thead>
+      <tbody>
+        <tr><td><code>### Setup</code> follows an H1</td><td>A missing H2 may be an error, or the README may intentionally be a small fragment. Only the author knows the intended outline.</td></tr>
+        <tr><td>The code fence has no language</td><td><code>npm install</code> is probably shell syntax, but a tool should not infer a language from every arbitrary code block.</td></tr>
+        <tr><td>The image has empty alt text</td><td>Only the author can describe the image’s purpose or decide that it is decorative.</td></tr>
+        <tr><td>Trailing spaces may create a hard line break</td><td>Exactly two spaces can be intentional in many Markdown flavors, so removing them requires context.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>The first group is about predictable syntax. The second group is about intent. A dependable Markdown workflow keeps those two kinds of work separate.</p>
+
+  <section class="decision-helper" id="decision-helper" data-decision-helper aria-labelledby="decision-helper-title">
+    <div class="decision-helper__intro">
+      <p class="decision-helper__eyebrow">Choose your next Markdown check</p>
+      <h2 id="decision-helper-title">Should you format, lint, or do both?</h2>
+      <p>A formatter normalizes predictable syntax. A linter highlights questions that need author judgment. Choose a task to see a local, release-ready path.</p>
+    </div>
+
+    <fieldset class="decision-helper__fieldset">
+      <legend>What do you need right now?</legend>
+      <div class="decision-helper__choices" role="group" aria-label="Markdown check goal">
+        <button type="button" data-decision-goal="format" aria-pressed="false"><strong>Make source consistent</strong><span>Review heading, list, whitespace, and blank-line fixes.</span></button>
+        <button type="button" data-decision-goal="lint" aria-pressed="false"><strong>Inspect document structure</strong><span>Review headings, code labels, images, and links.</span></button>
+        <button type="button" data-decision-goal="both" aria-pressed="false"><strong>Do both before publishing</strong><span>Format predictable syntax, then review meaning-dependent findings.</span></button>
+      </div>
+    </fieldset>
+
+    <fieldset class="decision-helper__fieldset">
+      <legend>What are you preparing?</legend>
+      <div class="decision-helper__choices" role="group" aria-label="Markdown document scenario">
+        <button type="button" data-decision-scenario="readme" aria-pressed="false" disabled>README</button>
+        <button type="button" data-decision-scenario="api-docs" aria-pressed="false" disabled>API docs</button>
+        <button type="button" data-decision-scenario="release-notes" aria-pressed="false" disabled>Release notes</button>
+      </div>
+    </fieldset>
+
+    <div class="decision-helper__result" data-decision-result hidden>
+      <p class="decision-helper__result-kicker">Your local next step</p>
+      <h3 data-decision-title></h3>
+      <p data-decision-summary></p>
+      <ol data-decision-steps></ol>
+      <section class="decision-helper__scenario" data-decision-scenario-result hidden aria-labelledby="decision-scenario-title">
+        <h4 id="decision-scenario-title" data-decision-scenario-title></h4>
+        <ul data-decision-checklist></ul>
+        <a class="decision-helper__template" data-decision-template hidden></a>
+      </section>
+      <div class="decision-helper__actions">
+        <a class="decision-helper__primary" data-decision-primary hidden></a>
+        <a class="decision-helper__secondary" data-decision-secondary hidden></a>
+      </div>
+    </div>
+
+    <p class="decision-helper__status" data-decision-status aria-live="polite">Choose what you need to do first.</p>
+    <noscript><p class="decision-helper__noscript">Start with the <a href="/tools/markdown-linter/">Markdown Formatter &amp; Linter</a> for a local release check, or use the <a href="/editor/">Markdown Editor</a> to keep writing and previewing.</p></noscript>
+  </section>
+
+  <h2 id="formatter">What an online Markdown formatter should fix</h2>
+  <p>An online formatter is most useful when the document already says what you mean, but its source has become inconsistent through editing, copy-paste, or combining snippets from several places.</p>
+  <h3>Heading and list spacing</h3>
+  <p>Source is easier to scan when markers are consistently separated from text. Turning <code>#Release notes</code> into <code># Release notes</code> or <code>-Added a new export action</code> into <code>- Added a new export action</code> makes the source more predictable for people, diffs, and Markdown renderers without rewriting the release note’s meaning.</p>
+  <h3>Extra blank lines, tabs, and final newlines</h3>
+  <p>Long Markdown documents often collect blank lines and tabs during revisions. Reducing non-semantic whitespace can make a README easier to maintain and produce cleaner diffs. The important exception is deliberate whitespace: a hard line break or platform-specific convention may need review. The useful behavior is not “delete every space”; it is <strong>propose a limited, inspectable change and leave ambiguity visible</strong>.</p>
+  <p><a href="/tools/markdown-linter/#safe-fixes">Review Markdown formatting locally before you apply it</a>.</p>
+
+  <h2 id="linter">What a Markdown linter should report instead of rewriting</h2>
+  <p>A linter becomes useful when a tool cannot know the author’s intention. The correct resolution can be different in a README, a changelog, an API reference, and a combined document.</p>
+  <h3>Heading hierarchy and document structure</h3>
+  <p>A skipped heading level can make a document harder to navigate. It can signal a missing section, an incorrectly chosen level, or content copied from a larger page. A linter should point to the line and explain the risk; it should not guess which heading level belongs there. Learn more about <a href="/docs/#document-titles-and-headings">document titles and heading levels</a>, then use the local Editor Outline to inspect the structure while you write.</p>
+  <h3>Code blocks, images, and links</h3>
+  <p>A code fence without a language label may reduce readability. An image without useful alt text may be inaccessible. A suspicious Markdown link may be a typo. These findings matter because they raise a useful question, not because they pretend to know the answer.</p>
+  <p>The <a href="https://dlaa.me/markdownlint/">markdownlint demo</a> illustrates the broader pattern of rendering content, locating violations, and inspecting rules. MarkdownMaster takes a narrower, browser-local approach for release checks: its visible MM rules explain whether a finding is a selectable Safe fix or a Review needed decision. It does not claim complete markdownlint compatibility or identical behavior in every renderer.</p>
+  <p><a href="/tools/markdown-linter/#review-needed">Check Markdown rules before you publish</a>.</p>
+
+  <h2>Why “fix everything” is a risky promise</h2>
+  <p>Changing <code>#Project</code> to <code># Project</code> has a narrow, visible effect. Changing an H3 to an H2 changes the document outline. Adding image alt text requires knowing what the image communicates. Adding a code language label requires knowing the sample language. Removing exactly two trailing spaces can erase an intentional line break.</p>
+  <p>Markdown is a family of related conventions rather than one identical renderer everywhere. The <a href="https://commonmark.org/">CommonMark project</a> provides a strongly specified implementation and test suite, but publishing platforms can still add their own extensions and behavior. A formatter or linter should make modest claims: show the proposed change, explain the rule boundary, and encourage authors to preview in the environment where a document will be published.</p>
+
+  <h2 id="workflow">A release-ready Markdown workflow</h2>
+  <ol>
+    <li><strong>Write or assemble the draft.</strong> Use a live editor while the content is still changing.</li>
+    <li><strong>Format predictable syntax.</strong> Review spacing, whitespace, blank lines, and other explicit changes in a diff.</li>
+    <li><strong>Review lint findings.</strong> Decide how to handle hierarchy, alt text, code labels, duplicate headings, and links.</li>
+    <li><strong>Preview the result.</strong> Confirm that the safe formatting changes produce the expected visual structure before changing the source.</li>
+    <li><strong>Copy, export, or commit.</strong> Keep the document as plain Markdown so the next review is equally transparent.</li>
+  </ol>
+  <div class="callout">MarkdownMaster’s Formatter &amp; Linter processes the document in your browser. Its Preview sanitizes rendered HTML and does not automatically load external media or embedded resources. Optional analytics stay off until you allow them and do not include Markdown text.</div>
+  <p>After checking a document, you can <a href="/editor/?from=blog-formatter-vs-linter">open the cleaned Markdown in the editor</a> to continue writing with a live preview and a local heading outline.</p>
+
+  <h2 id="choose-tool">How to choose an online Markdown formatter or linter</h2>
+  <p>Before trusting an online tool with a document, ask four practical questions. First, <strong>where is the document processed?</strong> A local browser workflow can be useful for internal notes and drafts you do not want to upload. Second, <strong>can you inspect the output?</strong> A reviewable diff is more useful than a hidden transformation. Third, <strong>does the tool explain its limits?</strong> Reliable tools distinguish deterministic formatting from choices that require author judgment. Finally, <strong>is the next action clear?</strong> You should be able to preview, copy, export, or return to an editor without creating an account.</p>
+
+  <h2 id="faq">Frequently asked questions</h2>
+  <h3>Do I need both a formatter and a Markdown linter?</h3>
+  <p>Not always. A short note with uneven spacing may only need formatting. A README, API reference, release note, or guide usually benefits from both: format predictable syntax first, then review structural and accessibility-related findings.</p>
+  <h3>Will a formatter rewrite my writing?</h3>
+  <p>It should not rewrite prose. A formatter should be limited to explicit, reviewable syntax and whitespace changes. If an edit might alter meaning, it should remain a review item rather than an automatic change.</p>
+  <h3>Can a Markdown linter guarantee correct rendering everywhere?</h3>
+  <p>No. A linter can flag common risks, but Markdown flavors and publishing platforms differ. Preview the final document in the renderer or platform where you intend to publish it.</p>
+  <h3>Is browser-local Markdown processing useful?</h3>
+  <p>Yes, particularly for private READMEs, internal documentation, and early drafts. Browser-local processing lets you review a document on your device instead of sending the text to an application server. Read the tool’s privacy page and feature boundaries before relying on that claim.</p>
+  <h3>Is MarkdownMaster compatible with every markdownlint rule?</h3>
+  <p>No. MarkdownMaster’s Formatter &amp; Linter uses a focused set of MM rules for release-ready formatting and review. It is inspired by common Markdown lint workflows, but it does not claim complete rule compatibility with markdownlint.</p>
+
+  <div class="related-articles">
+    <h3>Continue with a practical Markdown task</h3>
+    <ul>
+      <li><a href="/templates/github-readme-template/">GitHub README template</a> — start an open-source project document with a clear structure.</li>
+      <li><a href="/templates/api-parameter-documentation-template/">API parameter documentation template</a> — organize endpoint details, fields, and responses.</li>
+      <li><a href="/templates/release-notes-template/">Release notes template</a> — publish version changes that readers can scan.</li>
+      <li><a href="/blog/how-to-write-a-perfect-readme-markdown-github/">How to write a practical GitHub README</a> — learn the structure before running a final check.</li>
+    </ul>
+  </div>
+
+  <h2>The decision in one sentence</h2>
+  <p>Use an <strong>online Markdown formatter</strong> to make predictable syntax consistent. Use a <strong>Markdown linter</strong> to surface questions that deserve your attention. Use both when you want cleaner source, a more readable document, and control over the decisions that affect meaning.</p>
+  <p>Try the <a href="/tools/markdown-linter/">Markdown Formatter &amp; Linter</a> to review safe formatting changes locally, then continue in the <a href="/editor/?from=blog-formatter-vs-linter">Markdown Editor</a> when you want a live preview and document outline.</p>
+
+  <h2>References</h2>
+  <ol class="references">
+    <li><a href="https://dlaa.me/markdownlint/">markdownlint demo</a></li>
+    <li><a href="https://commonmark.org/">CommonMark</a></li>
+    <li><a href="/tools/markdown-linter/">MarkdownMaster Formatter &amp; Linter</a></li>
+  </ol>
+
+  <script>
+    import { autoMountMarkdownDecisionHelper } from '../../scripts/markdownDecisionHelper';
+    autoMountMarkdownDecisionHelper();
+  </script>
+</BlogLayout>
