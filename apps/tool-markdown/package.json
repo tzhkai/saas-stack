@@ -11,7 +11,9 @@
     "test:rule-help": "esbuild tests/ruleHelp.test.ts --bundle --platform=node --format=esm --outfile=.tmp-ruleHelp.test.mjs && node --test .tmp-ruleHelp.test.mjs && rm -f .tmp-ruleHelp.test.mjs",
     "test:decision-helper": "esbuild tests/markdownDecisionHelper.test.ts tests/decisionHelperLoader.test.ts --bundle --platform=node --format=esm --outdir=.tmp-decision-helper-tests --out-extension:.js=.mjs && node --test .tmp-decision-helper-tests/*.mjs && rm -rf .tmp-decision-helper-tests",
     "test:markdown-table": "esbuild tests/markdownTable.test.ts --bundle --platform=node --format=esm --outfile=.tmp-markdownTable.test.mjs && node --test .tmp-markdownTable.test.mjs && rm -f .tmp-markdownTable.test.mjs",
-    "test:decision-funnel": "esbuild tests/decisionFunnelContract.test.ts --bundle --platform=node --format=esm --outfile=.tmp-decisionFunnel.test.mjs && node --test .tmp-decisionFunnel.test.mjs && rm -f .tmp-decisionFunnel.test.mjs"
+    "test:decision-funnel": "esbuild tests/decisionFunnelContract.test.ts --bundle --platform=node --format=esm --outfile=.tmp-decisionFunnel.test.mjs && node --test .tmp-decisionFunnel.test.mjs && rm -f .tmp-decisionFunnel.test.mjs",
+    "test:d7-seo-check": "node --test tests/d7SeoCheck.test.mjs",
+    "check:d7-seo": "node scripts/d7-seo-check.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.18",

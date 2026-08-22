@@ -3,3 +3,4 @@ dist/
 .env
 .wrangler/
 .DS_Store
+apps/tool-markdown/reports/
