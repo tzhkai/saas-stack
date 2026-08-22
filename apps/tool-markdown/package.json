@@ -9,7 +9,9 @@
     "test:markdown-lint": "esbuild tests/markdownLint.test.ts --bundle --platform=node --format=esm --outfile=.tmp-markdownLint.test.mjs && node --test .tmp-markdownLint.test.mjs && rm -f .tmp-markdownLint.test.mjs",
     "test:editor-outline": "esbuild tests/editorOutline.test.ts --bundle --platform=node --format=esm --outfile=.tmp-editorOutline.test.mjs && node --test .tmp-editorOutline.test.mjs && rm -f .tmp-editorOutline.test.mjs",
     "test:rule-help": "esbuild tests/ruleHelp.test.ts --bundle --platform=node --format=esm --outfile=.tmp-ruleHelp.test.mjs && node --test .tmp-ruleHelp.test.mjs && rm -f .tmp-ruleHelp.test.mjs",
-    "test:decision-helper": "esbuild tests/markdownDecisionHelper.test.ts --bundle --platform=node --format=esm --outfile=.tmp-decisionHelper.test.mjs && node --test .tmp-decisionHelper.test.mjs && rm -f .tmp-decisionHelper.test.mjs"
+    "test:decision-helper": "esbuild tests/markdownDecisionHelper.test.ts tests/decisionHelperLoader.test.ts --bundle --platform=node --format=esm --outdir=.tmp-decision-helper-tests --out-extension:.js=.mjs && node --test .tmp-decision-helper-tests/*.mjs && rm -rf .tmp-decision-helper-tests",
+    "test:markdown-table": "esbuild tests/markdownTable.test.ts --bundle --platform=node --format=esm --outfile=.tmp-markdownTable.test.mjs && node --test .tmp-markdownTable.test.mjs && rm -f .tmp-markdownTable.test.mjs",
+    "test:decision-funnel": "esbuild tests/decisionFunnelContract.test.ts --bundle --platform=node --format=esm --outfile=.tmp-decisionFunnel.test.mjs && node --test .tmp-decisionFunnel.test.mjs && rm -f .tmp-decisionFunnel.test.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.18",

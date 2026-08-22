@@ -138,7 +138,8 @@ export const SCENARIO_CONTENT: Readonly<Record<DocumentScenario, ScenarioContent
   },
 });
 
-const EVENT_ACTIONS = Object.freeze({
+export const EVENT_ACTIONS = Object.freeze({
+  visible: 'decision_helper_visible',
   started: 'decision_helper_started',
   format: 'decision_path_formatter',
   lint: 'decision_path_linter',
@@ -146,9 +147,11 @@ const EVENT_ACTIONS = Object.freeze({
   readme: 'decision_scenario_readme',
   'api-docs': 'decision_scenario_api_docs',
   'release-notes': 'decision_scenario_release_notes',
+  resultShown: 'decision_helper_result_shown',
 } as const);
 
 export type DecisionAnalyticsAction =
+  | typeof EVENT_ACTIONS.visible
   | typeof EVENT_ACTIONS.started
   | typeof EVENT_ACTIONS.format
   | typeof EVENT_ACTIONS.lint
@@ -156,11 +159,13 @@ export type DecisionAnalyticsAction =
   | typeof EVENT_ACTIONS.readme
   | typeof EVENT_ACTIONS['api-docs']
   | typeof EVENT_ACTIONS['release-notes']
+  | typeof EVENT_ACTIONS.resultShown
   | Decision['primaryAction']
   | Decision['secondaryAction']
   | 'article_open_template';
 
-const DECISION_ANALYTICS_ACTIONS: ReadonlySet<DecisionAnalyticsAction> = new Set([
+export const DECISION_ANALYTICS_ACTIONS: ReadonlySet<DecisionAnalyticsAction> = new Set([
+  EVENT_ACTIONS.visible,
   EVENT_ACTIONS.started,
   EVENT_ACTIONS.format,
   EVENT_ACTIONS.lint,
@@ -168,6 +173,7 @@ const DECISION_ANALYTICS_ACTIONS: ReadonlySet<DecisionAnalyticsAction> = new Set
   EVENT_ACTIONS.readme,
   EVENT_ACTIONS['api-docs'],
   EVENT_ACTIONS['release-notes'],
+  EVENT_ACTIONS.resultShown,
   'article_open_linter',
   'article_open_editor',
   'article_open_docs',
@@ -286,6 +292,7 @@ export function mountMarkdownDecisionHelper(root: HTMLElement): DecisionHelperCo
   const status = root.querySelector<HTMLElement>('[data-decision-status]');
 
   let state: DecisionState = INITIAL_DECISION_STATE;
+  let resultShownTracked = false;
 
   function render(): void {
     const decision = decisionForGoal(state.goal);
@@ -342,7 +349,13 @@ export function mountMarkdownDecisionHelper(root: HTMLElement): DecisionHelperCo
 
     if (event.type === 'SELECT_GOAL' && !wasStarted) track(EVENT_ACTIONS.started);
     if (event.type === 'SELECT_GOAL' && state.goal !== previousGoal && state.goal) track(EVENT_ACTIONS[state.goal]);
-    if (event.type === 'SELECT_SCENARIO' && state.scenario !== previousScenario && state.scenario) track(EVENT_ACTIONS[state.scenario]);
+    if (event.type === 'SELECT_SCENARIO' && state.scenario !== previousScenario && state.scenario) {
+      track(EVENT_ACTIONS[state.scenario]);
+      if (!resultShownTracked) {
+        track(EVENT_ACTIONS.resultShown);
+        resultShownTracked = true;
+      }
+    }
 
     render();
   }
@@ -380,6 +393,10 @@ export function mountMarkdownDecisionHelper(root: HTMLElement): DecisionHelperCo
     dispatch,
     destroy: () => root.removeEventListener('click', onClick),
   });
+}
+
+export function trackDecisionHelperVisible(): void {
+  track(EVENT_ACTIONS.visible);
 }
 
 export function autoMountMarkdownDecisionHelper(): void {

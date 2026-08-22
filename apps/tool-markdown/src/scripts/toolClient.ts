@@ -32,6 +32,7 @@ const ALLOWED_ENTRY_SOURCES = new Set([
   'docs-linter',
   'formatter-linter',
   'blog-formatter-vs-linter',
+  'table-style-generator',
 ]);
 
 function entrySourceFromUrl(): string | undefined {

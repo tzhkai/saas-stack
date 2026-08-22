@@ -244,7 +244,11 @@ npm install
   </ol>
 
   <script>
-    import { autoMountMarkdownDecisionHelper } from '../../scripts/markdownDecisionHelper';
-    autoMountMarkdownDecisionHelper();
+    import { mountDeferredDecisionHelper } from '../../scripts/decisionHelperLoader';
+
+    const helper = document.querySelector('[data-decision-helper]');
+    if (helper instanceof HTMLElement) {
+      mountDeferredDecisionHelper(helper, () => import('../../scripts/markdownDecisionHelper'));
+    }
   </script>
 </BlogLayout>
